@@ -8,8 +8,8 @@ Summary(pt_BR):	Gerenciador de inicialização GRUB2
 Summary(de):	GRUB2 - ein Bootloader für x86 und ppc
 Name:		grub2
 Version:	1.90
-Release:	0.%{_snap}.1
-License:	GPL
+Release:	0.%{_snap}.0.1
+License:	GPL v2
 Group:		Base
 Source0:	%{name}-%{_snap}.tar.gz
 # Source0-md5:	4f5b46206d2724a54b1be0744fd03061
@@ -74,7 +74,8 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n %{name}
-
+sed 's_grubof_%{_libdir}/grubof_' -i \
+	 util/powerpc/ieee1275/grub-mkimage.c
 rm -rf doc/*info*
 
 %build
@@ -91,7 +92,8 @@ CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 	BUILD_CC="%{__cc} -I%{_includedir}/ncurses" \
 	BUILD_CFLAGS="$CFLAGS"
 %{__make} \
-	BUILD_CFLAGS="$CFLAGS"
+	BUILD_CFLAGS="$CFLAGS" \
+	pkgdatadir="%{_libdir}/%{name}"
 
 
 %install
@@ -99,10 +101,14 @@ rm -rf $RPM_BUILD_ROOT
 #install -d $RPM_BUILD_ROOT/etc/sysconfig/rc-boot
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
+	DESTDIR=$RPM_BUILD_ROOT \
+	pkgdatadir="%{_libdir}/%{name}"
 
-mv -f $RPM_BUILD_ROOT%{_libdir}/grub/%{_arch}-*/* \
-	$RPM_BUILD_ROOT%{_libdir}/grub/
+%ifarch ppc
+install grubof $RPM_BUILD_ROOT/%{_libdir}
+%endif
+#mv -f $RPM_BUILD_ROOT%{_libdir}/grub/%{_arch}-*/* \
+#	$RPM_BUILD_ROOT%{_libdir}/grub/
 
 #install %{SOURCE1} $RPM_BUILD_ROOT%{_libdir}/grub/menu.lst
 #install %{SOURCE2} $RPM_BUILD_ROOT%{_sbindir}/rebootin
@@ -120,13 +126,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc TODO BUGS NEWS ChangeLog docs/menu.lst
-%dir %{_libdir}/grub
-%{_libdir}/grub/*stage*
-%{_libdir}/grub/splash.xpm.gz
-%config(noreplace) %verify(not md5 mtime size) %{_libdir}/grub/menu.lst
+%doc AUTHORS ChangeLog NEWS README THANKS TODO
+%{_libdir}/%{name}
 %attr(754,root,root) %{_bindir}/*
-%attr(754,root,root) %{_sbindir}/*
-%{_infodir}/*.info*
-%{_mandir}/*/*
-/etc/sysconfig/rc-boot/%{name}_functions.sh
+#%attr(754,root,root) %{_sbindir}/*
+%ifarch ppc
+%{_libdir}/grubof
+%endif
