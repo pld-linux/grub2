@@ -1,5 +1,5 @@
 # TODO:
-#  - rewrite summary/desc ? GRUB2 has notging to see with GRUB
+#  - rewrite summary/desc ? GRUB2 has nothing to see with GRUB
 #
 %bcond_with	static
 
