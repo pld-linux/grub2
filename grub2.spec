@@ -88,10 +88,14 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n %{name}
-sed 's_grubof_%{_libdir}/grubof_' \
+sed 's_grubof_%{_libdir}/%{name}/grubof_' \
 	-i util/powerpc/ieee1275/grub-mkimage.c
 sed '/i\[\[3456\]\]86)/a  x86_64) host_cpu=i386 ;;' \
 	-i configure.ac
+sed 's_"/boot/grub"_"%{_libdir}/%{name}"_' \
+	-i util/grub-emu.c \
+	-i util/i386/pc/grub-setup.c \
+	-i kern/i386/pc/startup.S
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -132,7 +136,7 @@ rm -rf $RPM_BUILD_ROOT
 	pkgdatadir="%{_libdir}/%{name}"
 
 %ifarch ppc
-install grubof $RPM_BUILD_ROOT/%{_libdir}
+install grubof $RPM_BUILD_ROOT/%{_libdir}/%{name}
 %endif
 
 %clean
@@ -146,7 +150,4 @@ rm -rf $RPM_BUILD_ROOT
 %attr(754,root,root) %{_sbindir}/grub-mkimage
 %ifarch %{ix86} amd64
 %attr(754,root,root) %{_sbindir}/grub-setup
-%endif
-%ifarch ppc
-%{_libdir}/grubof
 %endif
