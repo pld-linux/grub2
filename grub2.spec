@@ -1,6 +1,7 @@
 # TODO:
 #  - rewrite summary/desc ? GRUB2 has notging to see with GRUB
 #
+%bcond_with	static
 
 %define		_snap	20050330
 Summary:	GRand Unified Bootloader
@@ -23,6 +24,11 @@ BuildRequires:	lzo-devel >= 1.0.2
 BuildRequires:	ncurses-devel
 #BuildRequires:	ruby >= 1.6
 BuildRequires:	sed >= 4.0
+%if %{with static}
+BuildRequires:	glibc-static
+BuildRequires:	lzo-static
+BuildRequires:	ncurses-static
+%endif
 # needed for 'cmp' program
 Requires:	diffutils
 Provides:	bootloader
@@ -106,6 +112,9 @@ CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 
 %{__make} \
 	BUILD_CFLAGS="$CFLAGS" \
+	%if %{with static}
+	BUILD_LDFLAGS="-s -static" \
+	%endif
 	pkgdatadir="%{_libdir}/%{name}"
 
 
