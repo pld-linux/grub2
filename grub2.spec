@@ -26,6 +26,7 @@ ExclusiveArch:	%{ix86} amd64 ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
+%define		_bindir		%{_sbindir}
 %define		_libdir		/boot
 
 %description
@@ -98,7 +99,6 @@ CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 
 %install
 rm -rf $RPM_BUILD_ROOT
-#install -d $RPM_BUILD_ROOT/etc/sysconfig/rc-boot
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
@@ -107,29 +107,19 @@ rm -rf $RPM_BUILD_ROOT
 %ifarch ppc
 install grubof $RPM_BUILD_ROOT/%{_libdir}
 %endif
-#mv -f $RPM_BUILD_ROOT%{_libdir}/grub/%{_arch}-*/* \
-#	$RPM_BUILD_ROOT%{_libdir}/grub/
-
-#install %{SOURCE1} $RPM_BUILD_ROOT%{_libdir}/grub/menu.lst
-#install %{SOURCE2} $RPM_BUILD_ROOT%{_sbindir}/rebootin
-#install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/rc-boot
-#install %{SOURCE4} $RPM_BUILD_ROOT%{_libdir}/grub/splash.xpm.gz
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-
-#%post
-#[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
-
-#%postun
-#[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
 
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %{_libdir}/%{name}
-%attr(754,root,root) %{_bindir}/*
-#%attr(754,root,root) %{_sbindir}/*
+%attr(754,root,root) %{_sbindir}/grub-emu
+%attr(754,root,root) %{_sbindir}/grub-mkimage
+%ifarch %{ix86} amd64
+%attr(754,root,root) %{_sbindir}/grub-setup
+%endif
 %ifarch ppc
 %{_libdir}/grubof
 %endif
