@@ -2,7 +2,7 @@
 #  - rewrite summary/desc ? GRUB2 has notging to see with GRUB
 #
 
-%define		_snap	270305
+%define		_snap	20050330
 Summary:	GRand Unified Bootloader
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
@@ -13,7 +13,7 @@ Release:	0.%{_snap}.0.1
 License:	GPL v2
 Group:		Base
 Source0:	%{name}-%{_snap}.tar.gz
-# Source0-md5:	4f5b46206d2724a54b1be0744fd03061
+# Source0-md5:	cbeaefb16b4cebfd67cb8198fef3e190
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	libtool
