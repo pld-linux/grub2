@@ -1,8 +1,9 @@
 # TODO:
 #  - rewrite summary/desc ? GRUB2 has nothing to see with GRUB
 #
-%bcond_with	static
-
+# Conditional build:
+%bcond_with	static	# build static binaries
+#
 %define		_snap	20050330
 Summary:	GRand Unified Bootloader
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
@@ -136,7 +137,7 @@ rm -rf $RPM_BUILD_ROOT
 	pkgdatadir="%{_libdir}/%{name}"
 
 %ifarch ppc
-install grubof $RPM_BUILD_ROOT/%{_libdir}/%{name}
+install grubof $RPM_BUILD_ROOT%{_libdir}/%{name}
 %endif
 
 %clean
