@@ -1,6 +1,7 @@
 # TODO:
-#  - rewrite spec ? GRUB2 has notging to see with GRUB
+#  - rewrite summary/desc ? GRUB2 has notging to see with GRUB
 #
+
 %define		_snap	270305
 Summary:	GRand Unified Bootloader
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
@@ -28,6 +29,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
+%ifarch amd64
+%define		amd64
+%define		_host	i386-pld-linux-gnu
+%define		_build	i386-pld-linux-gnu
+%define		_target	i386-pld-linux-gnu
+%endif
+
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -90,8 +98,12 @@ cp -f /usr/share/automake/config.sub .
 #done
 CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 %configure \
-	BUILD_CC="%{__cc} -I%{_includedir}/ncurses" \
+	BUILD_CC="%{__cc} %{?amd64:-m32} -I%{_includedir}/ncurses" \
+%ifarch amd64
+	LD="%{__ld} -melf_i386" \
+%endif
 	BUILD_CFLAGS="$CFLAGS"
+
 %{__make} \
 	BUILD_CFLAGS="$CFLAGS" \
 	pkgdatadir="%{_libdir}/%{name}"
