@@ -112,9 +112,10 @@ CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 
 %{__make} \
 	BUILD_CFLAGS="$CFLAGS" \
-	%if %{with static}
-	BUILD_LDFLAGS="-s -static" \
-	%endif
+%if %{with static}
+	grub_setup_LDFLAGS="-s -static" \
+	grub_mkimage_LDFLAGS="-s -static -llzo" \
+%endif
 	pkgdatadir="%{_libdir}/%{name}"
 
 
