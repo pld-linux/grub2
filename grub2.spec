@@ -24,7 +24,7 @@ Source2:	grub-rebootin.awk
 Source3:	grub_functions.sh
 Source4:	grub-splash.xpm.gz
 # Source4-md5:	2842e2955603e3b6d722690b3cdd48a9
-URL:		http://www.gnu.org/software/grub/grub.en.html
+URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf
 BuildRequires:	libtool
 BuildRequires:	lzo-devel >= 1.0.2
