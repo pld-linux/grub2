@@ -32,7 +32,7 @@ BuildRequires:	ncurses-devel
 # needed for 'cmp' program
 Requires:	diffutils
 Provides:	bootloader
-ExclusiveArch:	%{ix86}
+ExclusiveArch:	%{ix86} amd64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
