@@ -17,9 +17,12 @@ Source0:	%{name}-%{_snap}.tar.gz
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	libtool
+%ifarch %{ix86} amd64
 BuildRequires:	lzo-devel >= 1.0.2
+%endif
 BuildRequires:	ncurses-devel
 #BuildRequires:	ruby >= 1.6
+BuildRequires:	sed >= 4.0
 # needed for 'cmp' program
 Requires:	diffutils
 Provides:	bootloader
@@ -30,12 +33,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
 %ifarch amd64
-%define		amd64
-%define		_host	i386-pld-linux-gnu
-%define		_build	i386-pld-linux-gnu
-%define		_target	i386-pld-linux-gnu
+%define		amd64	1
 %endif
-
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -83,9 +82,10 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n %{name}
-sed 's_grubof_%{_libdir}/grubof_' -i \
-	 util/powerpc/ieee1275/grub-mkimage.c
-rm -rf doc/*info*
+sed 's_grubof_%{_libdir}/grubof_' \
+	-i util/powerpc/ieee1275/grub-mkimage.c
+sed '/i\[\[3456\]\]86)/a  x86_64) host_cpu=i386 ;;' \
+	-i configure.ac
 
 %build
 cp -f /usr/share/automake/config.sub .
