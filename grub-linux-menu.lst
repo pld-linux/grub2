@@ -24,10 +24,12 @@ fallback 1
 title  Linux
 root (hd0,1)
 kernel /boot/vmlinuz root=/dev/hda2
+initrd /boot/initrd
 
 title  Linux (previous kernel)
 root (hd0,1)
 kernel /boot/vmlinuz.old root=/dev/hda2
+initrd /boot/initrd.old
 
 title  Linux X Window System
 root (hd0,1)
