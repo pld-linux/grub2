@@ -26,11 +26,11 @@ BuildRequires:	ncurses-devel
 BuildRequires:	sed >= 4.0
 %if %{with static}
 BuildRequires:	glibc-static
+%ifarch %{ix86} amd64
 BuildRequires:	lzo-static
+%endif
 BuildRequires:	ncurses-static
 %endif
-# needed for 'cmp' program
-Requires:	diffutils
 Provides:	bootloader
 ExclusiveArch:	%{ix86} amd64 ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -113,8 +113,13 @@ CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 %{__make} \
 	BUILD_CFLAGS="$CFLAGS" \
 %if %{with static}
+%ifarch %{ix86} amd64
 	grub_setup_LDFLAGS="-s -static" \
 	grub_mkimage_LDFLAGS="-s -static -llzo" \
+%else
+	grub_mkimage_LDFLAGS="-s -static" \
+%endif
+	grub_emu_LDFLAGS="-s -static -lncurses -ltinfo" \
 %endif
 	pkgdatadir="%{_libdir}/%{name}"
 
