@@ -2,10 +2,13 @@
 # Sample boot menu configuration file
 #
 
-# Change the colors.
-color yellow/blue blue/cyan
+# Show splashscreen
+color 2
+foreground ffffff
+background 000000
+splashimage (hd0,1)/boot/grub/splash.xpm.gz
 
-# Boot automatically after 30 secs.
+# Boot automatically after 15 secs.
 timeout 15
 
 # By default, boot the first entry.
