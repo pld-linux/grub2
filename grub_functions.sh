@@ -7,36 +7,14 @@ GRUB_Root_convert() 	# This function simply converts the normal Linux
 		    	# device name into the form (MajorMinornumber)
 			# it is neccesary becouse the bug in grub.
 {
-	TMP_ROOT_NAME=`basename $1`
-	TMP=`echo $TMP_ROOT_NAME | awk '{gsub(/^hd/,"");print $0}'`
-	if [ "$TMP_ROOT_NAME" != "$TMP" ]; then 
-		ADD=3
-		GROOT=$TMP
-	fi
-	TMP=`echo $TMP_ROOT_NAME | awk '{gsub(/^sd/,"");print $0}'`
-	if [ "$TMP_ROOT_NAME" != "$TMP" ]; then 
-		ADD=8
-		GROOT=$TMP
-	fi
-	DRIVE=`echo $GROOT| awk '{gsub(/[0-9]*/,"");print $0}'`
-	NR=`echo $GROOT| awk '{gsub(/[a-z]*/,"");print $0}'`
-	NDRIVE=""
-	TR=`echo $DRIVE |tr "a-j" "0-9"`
-	[ "${DRIVE}" != "$TR" ] && NDRIVE="$TR"
-	TR=`echo $DRIVE |tr "k-u" "0-9"`
-	[ "${DRIVE}" != "$TR" ] && NDRIVE="1${TR}"
-	TR=`echo $DRIVE |tr "w-z" "0-3"`
-	[ "${DRIVE}" != "$TR" ] && NDRIVE="2${TR}"
-	if [ "${NDRIVE}" = "" ]; then
-		rcboot_message "Error in \"$CONFIG_DIR/images/$NAME\" file improper ROOT option"
-		exit 1
-	fi
-	NDRIVE=`expr $NDRIVE + $ADD`
-	[ $NR -lt 10 ] && NR=0${NR}
-	echo "${NDRIVE}$NR"
-	unset TMP TMP_ROOT_NAME TR NDRIVE GROOT DRIVE ADD NR
+	ls -l $1 | awk '{gsub(/,/,"",$5); printf "%04x", $5*256+$6}'
 }
 
+
+# BIG FAT WARNING: this function ain't very bright... it will fail in variety
+# of situation including (but by no means limited to) having IDE and
+# SCSI drives on the same machine (and BIOS numbers first devices
+# you're not booting from), booting from second hardware RAID, and so on.
 
 GRUB_convert()		# This function converts the normal Linux 
 			# device name into the stupid grub notation 
@@ -44,16 +22,26 @@ GRUB_convert()		# This function converts the normal Linux
 {
 	GROOT=`basename $1`
  
-	GROOT=`echo $GROOT| awk '{gsub(/^hd|^sd/,"");print $0}'` 
-	DRIVE=`echo $GROOT| awk '{gsub(/[0-9]*/,"");print $0}'`
-	NR=`echo $GROOT| awk '{gsub(/[a-z]*/,"");print $0}'`
+	GROOT=`echo $GROOT| awk '{sub(/^hd|^sd|^c[0-9]d/,"");print $0}'` 
+	if echo $GROOT | grep -q '^[0-9][0-9]*$' ; then
+		DRIVE=$GROOT
+	else
+		DRIVE=`echo $GROOT| awk '{sub(/p?[0-9]*$/,"");print $0}'`
+	fi
+	NR=`echo $GROOT| awk '{sub(/^([a-z]*|[0-9]*p?)/,"");print $0}'`
 	NDRIVE=""
-	TR=`echo $DRIVE |tr "a-j" "0-9"`
-	[ "${DRIVE}" != "$TR" ] && NDRIVE="$TR"
-	TR=`echo $DRIVE |tr "k-u" "0-9"`
-	[ "${DRIVE}" != "$TR" ] && NDRIVE="1${TR}"
-	TR=`echo $DRIVE |tr "w-z" "0-3"`
-	[ "${DRIVE}" != "$TR" ] && NDRIVE="2${TR}"
+		
+	if echo $DRIVE | grep -q '^[0-9][0-9]*$' ; then
+		NDRIVE=$DRIVE
+	else
+		TR=`echo $DRIVE |tr "a-j" "0-9"`
+		[ "${DRIVE}" != "$TR" ] && NDRIVE="$TR"
+		TR=`echo $DRIVE |tr "k-u" "0-9"`
+		[ "${DRIVE}" != "$TR" ] && NDRIVE="1${TR}"
+		TR=`echo $DRIVE |tr "w-z" "0-3"`
+		[ "${DRIVE}" != "$TR" ] && NDRIVE="2${TR}"
+	fi
+	
 	if [ "${NDRIVE}" = "" ]; then
 		rcboot_message "Error in \"$CONFIG_DIR/images/$NAME\" file improper ROOT option"
 		exit 1
@@ -66,7 +54,6 @@ GRUB_convert()		# This function converts the normal Linux
 	fi
 	unset TR NR NDRIVE GROOT DRIVE
 }
-
 
 GRUB_COUNTER=0
 GRUB_DEF=0
