@@ -122,6 +122,7 @@ Jest niemal identyczny z tym ze Stage 2, ale uruchamia sieæ oraz
 rm -rf doc/*info*
 
 %build
+cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
 %{__aclocal}
 %{__autoheader}
