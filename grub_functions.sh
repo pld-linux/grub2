@@ -57,6 +57,7 @@ GRUB_convert()		# This function converts the normal Linux
 
 GRUB_COUNTER=0
 GRUB_DEF=0
+GRUB_FALL=1
 
 rc_boot_prep_image () {
 	if [ "$LILO_ONLY" != "" ] && is_yes "$LILO_ONLY" ; then 
@@ -65,12 +66,21 @@ rc_boot_prep_image () {
   
 	if [ "$NAME" = "$DEFAULT" ] ; then
 		GRUB_DEF=$GRUB_COUNTER
-		GRUB_COUNTER=$(($GRUB_COUNTER+1))
 	fi
+
+	if [ "$NAME" = "$FALLBACK" ]; then
+		GRUB_FALL=$GRUB_COUNTER
+	fi
+	
+	GRUB_COUNTER=$(($GRUB_COUNTER+1))
 }
 
 rc_boot_init () {
 	[ "$COLORS" = "" ] && COLORS="white/blue blue/white"
+
+	if [ -z "$FALBACK" ]; then
+		FALLBACK="second";
+	fi
   
 	# This is the main part of the /boot/grub/menu.lst
 	cat <<!EOF!
@@ -78,9 +88,9 @@ rc_boot_init () {
 default $GRUB_DEF
 # Wait $TIMEOUT seconds for booting
 timeout $TIMEOUT
-# Fallback to the second entry.
-fallback 1
-# Dafault colors
+# Fallback to the $FALLBACK entry if default fails
+fallback $GRUB_FALL
+# Default colors
 color $GRUB_COLORS
 !EOF!
 
@@ -119,9 +129,13 @@ rc_boot_image () {
 	if [ "$LILO_ONLY" != "" ] && is_yes "$LILO_ONLY" ; then 
 		return 0
 	fi
-  
+
 	echo "# $TYPE image"
-	echo "title $NAME"
+	if [ "${TITLE}" ]; then
+		echo "title $TITLE"
+	else
+		echo "title $NAME"
+	fi
 	if is_yes "$LOCK" ; then
 		echo "lock"
 	fi
@@ -132,7 +146,6 @@ rc_boot_image () {
 	linux )
 		ROOT="root=$(GRUB_Root_convert $ROOT)"
 		[ "${VGA}" != "" ] && VGA="vga=${VGA}"
-		[ "${APPEND}" != "" ]  && APPEND="append=\"${APPEND}\"" 
 		echo kernel "$KERNEL" "$ROOT" "$VGA" "${APPEND}"
 		[ "$INITRD" != "" ] && echo "initrd $INITRD"
 		;;
