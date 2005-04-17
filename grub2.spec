@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_with	static	# build static binaries
 #
-%define		_snap	20050330
+%define		_snap	20050516
 Summary:	GRand Unified Bootloader
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
@@ -15,7 +15,7 @@ Release:	0.%{_snap}.0.1
 License:	GPL v2
 Group:		Base
 Source0:	%{name}-%{_snap}.tar.gz
-# Source0-md5:	cbeaefb16b4cebfd67cb8198fef3e190
+# Source0-md5:	f5366581cf31ba40fd77fd3ca254ab94
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	libtool
@@ -89,6 +89,7 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n %{name}
+
 sed 's_grubof_%{_libdir}/%{name}/grubof_' \
 	-i util/powerpc/ieee1275/grub-mkimage.c
 sed '/i\[\[3456\]\]86)/a  x86_64) host_cpu=i386 ;;' \
