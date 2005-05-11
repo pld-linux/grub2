@@ -19,7 +19,7 @@ Source0:	%{name}-%{_snap}.tar.gz
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	libtool
-%ifarch %{ix86} amd64
+%ifarch %{ix86} %{x8664}
 BuildRequires:	lzo-devel >= 1.0.2
 %endif
 BuildRequires:	ncurses-devel
@@ -27,19 +27,20 @@ BuildRequires:	ncurses-devel
 BuildRequires:	sed >= 4.0
 %if %{with static}
 BuildRequires:	glibc-static
-%ifarch %{ix86} amd64
+%ifarch %{ix86} %{x8664}
 BuildRequires:	lzo-static
 %endif
 BuildRequires:	ncurses-static
 %endif
+BuildRequires:	rpmbuild(macros) >= 1.213
 Provides:	bootloader
-ExclusiveArch:	%{ix86} amd64 ppc
+ExclusiveArch:	%{ix86} %{x8664} ppc
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
-%ifarch amd64
+%ifarch %{x8664}
 %define		amd64	1
 %endif
 
@@ -111,7 +112,7 @@ cp -f /usr/share/automake/config.sub .
 CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 %configure \
 	BUILD_CC="%{__cc} %{?amd64:-m32} -I%{_includedir}/ncurses" \
-%ifarch amd64
+%ifarch %{x8664}
 	LD="%{__ld} -melf_i386" \
 %endif
 	BUILD_CFLAGS="$CFLAGS"
@@ -119,7 +120,7 @@ CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 %{__make} \
 	BUILD_CFLAGS="$CFLAGS" \
 %if %{with static}
-%ifarch %{ix86} amd64
+%ifarch %{ix86} %{x8664}
 	grub_setup_LDFLAGS="-s -static" \
 	grub_mkimage_LDFLAGS="-s -static -llzo" \
 %else
@@ -150,6 +151,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}
 %attr(754,root,root) %{_sbindir}/grub-emu
 %attr(754,root,root) %{_sbindir}/grub-mkimage
-%ifarch %{ix86} amd64
+%ifarch %{ix86} %{x8664}
 %attr(754,root,root) %{_sbindir}/grub-setup
 %endif
