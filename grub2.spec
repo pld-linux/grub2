@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_with	static	# build static binaries
 #
-%define		_snap	20050516
+%define		_snap	20050630
 Summary:	GRand Unified Bootloader
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
@@ -14,8 +14,8 @@ Version:	1.90
 Release:	0.%{_snap}.0.1
 License:	GPL v2
 Group:		Base
-Source0:	%{name}-%{_snap}.tar.gz
-# Source0-md5:	f5366581cf31ba40fd77fd3ca254ab94
+Source0:	ftp://sparky.homelinux.org/pub/grub2/%{name}-%{_snap}.tar.gz
+# Source0-md5:	e19cfd991164ae6385050ed56e20b095
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	libtool
@@ -109,9 +109,9 @@ cp -f /usr/share/automake/config.sub .
 #for rmk in conf/*.rmk; do
 #  ruby genmk.rb < $rmk > `echo $rmk | sed 's/\.rmk$/.mk/'`
 #done
-CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
+CFLAGS="-Os -I%{_includedir}/ncurses %{?debug:-g}" ; export CFLAGS
 %configure \
-	BUILD_CC="%{__cc} %{?amd64:-m32} -I%{_includedir}/ncurses" \
+	BUILD_CC="%{__cc} %{?amd64:-m32}" \
 %ifarch %{x8664}
 	LD="%{__ld} -melf_i386" \
 %endif
