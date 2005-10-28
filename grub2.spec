@@ -18,6 +18,7 @@ Source0:	http://sparky.homelinux.org/snaps/grub/%{name}-%{_snap}.tar.bz2
 # Source0-md5:	6eb5008d112af2ce2d601076c76d4967
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
+BuildRequires:	automake
 BuildRequires:	libtool
 %ifarch %{ix86} %{x8664}
 BuildRequires:	lzo-devel >= 1.0.2
@@ -152,5 +153,8 @@ rm -rf $RPM_BUILD_ROOT
 %attr(754,root,root) %{_sbindir}/grub-emu
 %attr(754,root,root) %{_sbindir}/grub-mkimage
 %ifarch %{ix86} %{x8664}
+%attr(754,root,root) %{_sbindir}/grub-install
+%attr(754,root,root) %{_sbindir}/grub-mkdevicemap
+%attr(754,root,root) %{_sbindir}/grub-probefs
 %attr(754,root,root) %{_sbindir}/grub-setup
 %endif
