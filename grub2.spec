@@ -41,9 +41,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
-%ifarch %{x8664}
-%define		amd64	1
-%endif
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -110,10 +107,10 @@ cp -f /usr/share/automake/config.sub .
 #for rmk in conf/*.rmk; do
 #  ruby genmk.rb < $rmk > `echo $rmk | sed 's/\.rmk$/.mk/'`
 #done
-CFLAGS="-Os -I%{_includedir}/ncurses %{?debug:-g}" ; export CFLAGS
+CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
 %configure \
-	BUILD_CC="%{__cc} %{?amd64:-m32}" \
 %ifarch %{x8664}
+	CC="%{__cc} -m32" \
 	LD="%{__ld} -melf_i386" \
 %endif
 	BUILD_CFLAGS="$CFLAGS"
