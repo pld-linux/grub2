@@ -97,6 +97,8 @@ sed 's_"/boot/grub"_"%{_libdir}/%{name}"_' \
 	-i util/grub-emu.c \
 	-i util/i386/pc/grub-setup.c \
 	-i kern/i386/pc/startup.S
+sed 's/setjmp\.c/setjmp.S/g' \
+	-i conf/sparc64-ieee1275.mk
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -107,7 +109,7 @@ cp -f /usr/share/automake/config.sub .
 #for rmk in conf/*.rmk; do
 #  ruby genmk.rb < $rmk > `echo $rmk | sed 's/\.rmk$/.mk/'`
 #done
-CFLAGS="-Os %{?debug:-g}" ; export CFLAGS
+CFLAGS="-Os %{?debug:-g}"; export CFLAGS
 %configure \
 %ifarch %{x8664}
 	CC="%{__cc} -m32" \
