@@ -142,6 +142,9 @@ rm -rf $RPM_BUILD_ROOT
 %ifarch ppc
 install grubof $RPM_BUILD_ROOT%{_libdir}/%{name}
 %endif
+%ifarch %{ix86} %{x8664}
+mv -f $RPM_BUILD_ROOT%{_sbindir}/{grub-install,%{name}-install}
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -153,7 +156,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(754,root,root) %{_sbindir}/grub-emu
 %attr(754,root,root) %{_sbindir}/grub-mkimage
 %ifarch %{ix86} %{x8664}
-%attr(754,root,root) %{_sbindir}/grub-install
+%attr(754,root,root) %{_sbindir}/%{name}-install
 %attr(754,root,root) %{_sbindir}/grub-mkdevicemap
 %attr(754,root,root) %{_sbindir}/grub-probefs
 %attr(754,root,root) %{_sbindir}/grub-setup
