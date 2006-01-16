@@ -155,8 +155,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}
 %attr(754,root,root) %{_sbindir}/grub-emu
 %attr(754,root,root) %{_sbindir}/grub-mkimage
-%ifarch %{ix86} %{x8664}
 %attr(754,root,root) %{_sbindir}/%{name}-install
+%ifarch %{ix86} %{x8664}
 %attr(754,root,root) %{_sbindir}/grub-mkdevicemap
 %attr(754,root,root) %{_sbindir}/grub-probefs
 %attr(754,root,root) %{_sbindir}/grub-setup
