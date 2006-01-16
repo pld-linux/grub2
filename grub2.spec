@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_with	static	# build static binaries
 #
-%define		_snap	20051025
+%define		_snap	20060103
 Summary:	GRand Unified Bootloader
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
@@ -15,7 +15,7 @@ Release:	0.%{_snap}.0.1
 License:	GPL v2
 Group:		Base
 Source0:	http://sparky.homelinux.org/snaps/grub/%{name}-%{_snap}.tar.bz2
-# Source0-md5:	6eb5008d112af2ce2d601076c76d4967
+# Source0-md5:	4880185c75388fd0c09596a712a95cdc
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -99,6 +99,7 @@ sed 's_"/boot/grub"_"%{_libdir}/%{name}"_' \
 	-i kern/i386/pc/startup.S
 sed 's/setjmp\.c/setjmp.S/g' \
 	-i conf/sparc64-ieee1275.mk
+chmod +x mkinstalldirs
 
 %build
 cp -f /usr/share/automake/config.sub .
