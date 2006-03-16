@@ -10,7 +10,7 @@ Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
 Summary(de):	GRUB2 - ein Bootloader für x86 und ppc
 Name:		grub2
-Version:	1.90
+Version:	1.93
 Release:	0.%{_snap}.0.1
 License:	GPL v2
 Group:		Base
@@ -89,11 +89,14 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n %{name}
-sed 's_"/boot/grub"_"%{_datadir}"_' \
-	-i util/grub-emu.c \
-	-i util/i386/pc/grub-setup.c \
-	-i kern/i386/pc/startup.S \
-	-i util/i386/pc/grub-install.in
+sed 's_/boot/grub_%{_datadir}_' \
+	-i util/grub-emu.c	\
+	-i util/i386/pc/grub-setup.c	\
+	-i kern/i386/pc/startup.S	\
+	-i util/i386/pc/grub-mkdevicemap.c	\
+	-i util/i386/pc/grub-probefs.c	\
+	-i util/i386/pc/grub-install.in	\
+	-i util/powerpc/ieee1275/grub-install.in
 chmod +x mkinstalldirs
 
 %build
@@ -107,10 +110,6 @@ cp -f /usr/share/automake/config.sub .
 #done
 CFLAGS="-Os %{?debug:-g}"; export CFLAGS
 %configure \
-%ifarch %{x8664}
-	CC="%{__cc} -m32" \
-	LD="%{__ld} -melf_i386" \
-%endif
 	BUILD_CFLAGS="$CFLAGS"
 
 %{__make} \
