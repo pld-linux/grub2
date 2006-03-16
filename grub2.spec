@@ -4,7 +4,7 @@
 # Conditional build:
 %bcond_with	static	# build static binaries
 #
-%define		_snap	20060103
+%define		_snap	20060314
 Summary:	GRand Unified Bootloader
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
@@ -15,7 +15,7 @@ Release:	0.%{_snap}.0.1
 License:	GPL v2
 Group:		Base
 Source0:	http://sparky.homelinux.org/snaps/grub/%{name}-%{_snap}.tar.bz2
-# Source0-md5:	4880185c75388fd0c09596a712a95cdc
+# Source0-md5:	46f0b2708abaf70826f5761a68a0ee09
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -41,6 +41,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
+%define		_datadir	%{_libdir}/%{name}
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -88,17 +89,11 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n %{name}
-
-sed 's_grubof_%{_libdir}/%{name}/grubof_' \
-	-i util/powerpc/ieee1275/grub-mkimage.c
-sed '/i\[\[3456\]\]86)/a  x86_64) host_cpu=i386 ;;' \
-	-i configure.ac
-sed 's_"/boot/grub"_"%{_libdir}/%{name}"_' \
+sed 's_"/boot/grub"_"%{_datadir}"_' \
 	-i util/grub-emu.c \
 	-i util/i386/pc/grub-setup.c \
-	-i kern/i386/pc/startup.S
-sed 's/setjmp\.c/setjmp.S/g' \
-	-i conf/sparc64-ieee1275.mk
+	-i kern/i386/pc/startup.S \
+	-i util/i386/pc/grub-install.in
 chmod +x mkinstalldirs
 
 %build
@@ -155,7 +150,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/%{name}
 %attr(754,root,root) %{_sbindir}/grub-emu
 %attr(754,root,root) %{_sbindir}/grub-mkimage
-%attr(754,root,root) %{_sbindir}/%{name}-install
+%attr(754,root,root) %{_sbindir}/grub-install
 %ifarch %{ix86} %{x8664}
 %attr(754,root,root) %{_sbindir}/grub-mkdevicemap
 %attr(754,root,root) %{_sbindir}/grub-probefs
