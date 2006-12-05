@@ -4,18 +4,17 @@
 # Conditional build:
 %bcond_with	static	# build static binaries
 #
-%define		_snap	20060314
 Summary:	GRand Unified Bootloader
+Summary(de):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
-Summary(de):	GRUB2 - ein Bootloader für x86 und ppc
 Name:		grub2
-Version:	1.93
-Release:	0.%{_snap}.0.1
+Version:	1.95
+Release:	0.1
 License:	GPL v2
 Group:		Base
-Source0:	http://sparky.homelinux.org/snaps/grub/%{name}-%{_snap}.tar.bz2
-# Source0-md5:	46f0b2708abaf70826f5761a68a0ee09
+Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
+# Source0-md5:	4ea234d8fc5d551f61bc65e553e51399
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -88,16 +87,16 @@ O GRUB pode ser uma boa alternativa ao LILO, para usuários mais
 avançados e que querem mais recursos de seu boot loader.
 
 %prep
-%setup -q -n %{name}
-sed 's_/boot/grub_%{_datadir}_' \
-	-i util/grub-emu.c	\
-	-i util/i386/pc/grub-setup.c	\
-	-i kern/i386/pc/startup.S	\
-	-i util/i386/pc/grub-mkdevicemap.c	\
-	-i util/i386/pc/grub-probefs.c	\
-	-i util/i386/pc/grub-install.in	\
-	-i util/powerpc/ieee1275/grub-install.in
-chmod +x mkinstalldirs
+%setup -q -n grub-%{version}
+sed -i -e 's,/boot/grub,%{_datadir},' \
+	kern/i386/efi/startup.S \
+	kern/i386/pc/startup.S \
+	util/grub-emu.c \
+	util/i386/pc/grub-install.in \
+	util/i386/pc/grub-mkdevicemap.c \
+	util/i386/pc/grub-probe.c \
+	util/i386/pc/grub-setup.c \
+	util/powerpc/ieee1275/grub-install.in
 
 %build
 cp -f /usr/share/automake/config.sub .
