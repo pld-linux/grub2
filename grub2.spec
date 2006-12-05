@@ -151,11 +151,11 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %{_libdir}/%{name}
-%attr(754,root,root) %{_sbindir}/grub-emu
-%attr(754,root,root) %{_sbindir}/grub-mkimage
-%attr(754,root,root) %{_sbindir}/grub2-install
+%attr(755,root,root) %{_sbindir}/grub-emu
+%attr(755,root,root) %{_sbindir}/grub-mkimage
+%attr(755,root,root) %{_sbindir}/grub2-install
 %ifarch %{ix86} %{x8664}
-%attr(754,root,root) %{_sbindir}/grub-mkdevicemap
-%attr(754,root,root) %{_sbindir}/grub-probe
-%attr(754,root,root) %{_sbindir}/grub-setup
+%attr(755,root,root) %{_sbindir}/grub-mkdevicemap
+%attr(755,root,root) %{_sbindir}/grub-probe
+%attr(755,root,root) %{_sbindir}/grub-setup
 %endif
