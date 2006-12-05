@@ -10,7 +10,7 @@ Summary(pl):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.95
-Release:	0.1
+Release:	0.2
 License:	GPL v2
 Group:		Base
 Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -23,6 +23,9 @@ BuildRequires:	gawk
 BuildRequires:	libtool
 %ifarch %{ix86} %{x8664}
 BuildRequires:	lzo-devel >= 1.0.2
+%endif
+%ifarch %{x8664}
+BuildRequires:	/usr/lib/libc.so
 %endif
 BuildRequires:	ncurses-devel
 #BuildRequires:	ruby >= 1.6
