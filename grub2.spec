@@ -19,6 +19,7 @@ URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
 BuildRequires:	bison
+BuildRequires:	gawk
 BuildRequires:	libtool
 %ifarch %{ix86} %{x8664}
 BuildRequires:	lzo-devel >= 1.0.2
@@ -109,11 +110,14 @@ cp -f /usr/share/automake/config.sub .
 #for rmk in conf/*.rmk; do
 #  ruby genmk.rb < $rmk > `echo $rmk | sed 's/\.rmk$/.mk/'`
 #done
-CFLAGS="-Os %{?debug:-g}"; export CFLAGS
+export CFLAGS="-Os %{?debug:-g}"
+
+# mawk stalls at ./genmoddep.awk, so force gawk
+AWK=gawk \
 %configure \
 	BUILD_CFLAGS="$CFLAGS"
 
-%{__make} \
+%{__make} -j1 \
 	BUILD_CFLAGS="$CFLAGS" \
 %if %{with static}
 %ifarch %{ix86} %{x8664}
@@ -125,7 +129,6 @@ CFLAGS="-Os %{?debug:-g}"; export CFLAGS
 	grub_emu_LDFLAGS="-s -static -lncurses -ltinfo" \
 %endif
 	pkgdatadir="%{_libdir}/%{name}"
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
