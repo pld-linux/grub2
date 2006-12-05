@@ -18,6 +18,7 @@ Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
+BuildRequires:	bison
 BuildRequires:	libtool
 %ifarch %{ix86} %{x8664}
 BuildRequires:	lzo-devel >= 1.0.2
