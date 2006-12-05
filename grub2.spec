@@ -88,6 +88,7 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n grub-%{version}
+sed -i -e 's#AC_INIT(GRUB,#AC_INIT(GRUB2,#g' configure.ac
 sed -i -e 's,/boot/grub,%{_datadir},' \
 	kern/i386/efi/startup.S \
 	kern/i386/pc/startup.S \
@@ -151,6 +152,6 @@ rm -rf $RPM_BUILD_ROOT
 %attr(754,root,root) %{_sbindir}/grub2-install
 %ifarch %{ix86} %{x8664}
 %attr(754,root,root) %{_sbindir}/grub-mkdevicemap
-%attr(754,root,root) %{_sbindir}/grub-probefs
+%attr(754,root,root) %{_sbindir}/grub-probe
 %attr(754,root,root) %{_sbindir}/grub-setup
 %endif
