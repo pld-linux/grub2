@@ -5,16 +5,26 @@
 %bcond_with	static	# build static binaries
 #
 Summary:	GRand Unified Bootloader
-Summary(de):	GRUB2 - ein Bootloader für x86 und ppc
-Summary(pl):	GRUB2 - bootloader dla x86 i ppc
-Summary(pt_BR):	Gerenciador de inicialização GRUB2
+Summary(de.UTF-8):   GRUB2 - ein Bootloader fÃ¼r x86 und ppc
+Summary(pl.UTF-8):   GRUB2 - bootloader dla x86 i ppc
+Summary(pt_BR.UTF-8):   Gerenciador de inicializaÃ§Ã£o GRUB2
 Name:		grub2
+<<<<<<< grub2.spec
+Version:	1.94
+Release:	0.1
+=======
 Version:	1.95
 Release:	0.2
+>>>>>>> 1.35
 License:	GPL v2
 Group:		Base
+<<<<<<< grub2.spec
+Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
+# Source0-md5:	cd6aa192364442e4afe25327ea98bc47
+=======
 Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	4ea234d8fc5d551f61bc65e553e51399
+>>>>>>> 1.35
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -54,44 +64,56 @@ it implements the Multiboot standard, which allows for flexible
 loading of multiple boot images (needed for modular kernels such as
 the GNU Hurd).
 
-%description -l de
+%description -l de.UTF-8
 GRUB (GRand Unified Boot-loader) ist ein Bootloader, der oft auf
 Rechnern eingesetzt wird, auf denen das freie Betriebssystem Linux
-läuft. GRUB löst den betagten LILO (Linux-Loader) ab.
+lÃ¤uft. GRUB lÃ¶st den betagten LILO (Linux-Loader) ab.
 
 GRUB wurde innerhalb des GNU Hurd-Projektes als Boot-Loader entwickelt
-und wird unter der GPL vertrieben. Aufgrund seiner höheren
-Flexibilität verdrängt GRUB in vielen Linux-Distributionen den
+und wird unter der GPL vertrieben. Aufgrund seiner hÃ¶heren
+FlexibilitÃ¤t verdrÃ¤ngt GRUB in vielen Linux-Distributionen den
 traditionellen Boot-Loader LILO.
 
-%description -l es
-Éste es GRUB - Grand Unified Boot Loader - un administrador de
-inicialización capaz de entrar en la mayoría de los sistemas
+%description -l es.UTF-8
+Ã‰ste es GRUB - Grand Unified Boot Loader - un administrador de
+inicializaciÃ³n capaz de entrar en la mayorÃ­a de los sistemas
 operacionales libres - Linux, FreeBSD, NetBSD, GNU Mach, etc. como
-también en la mayoría de los sistemas operacionales comerciales para
+tambiÃ©n en la mayorÃ­a de los sistemas operacionales comerciales para
 PC.
 
 El administrador GRUB puede ser una buena alternativa a LILO, para
-usuarios conmás experiencia y que deseen obtener más recursos de su
-cargador de inicialización (boot loader).
+usuarios conmÃ¡s experiencia y que deseen obtener mÃ¡s recursos de su
+cargador de inicializaciÃ³n (boot loader).
 
-%description -l pl
-GRUB jest bootloaderem na licencji GNU, maj±cym na celu unifikacjê
-procesu bootowania na systemach x86. Potrafi nie tylko ³adowaæ j±dra
-Linuksa i *BSD: posiada równie¿ implementacje standardu Multiboot,
-który pozwala na elastyczne ³adowanie wielu obrazów bootowalnych
-(czego wymagaj± modu³owe j±dra, takie jak GNU Hurd).
+%description -l pl.UTF-8
+GRUB jest bootloaderem na licencji GNU, majÄ…cym na celu unifikacjÄ™
+procesu bootowania na systemach x86. Potrafi nie tylko Å‚adowaÄ‡ jÄ…dra
+Linuksa i *BSD: posiada rÃ³wnieÅ¼ implementacje standardu Multiboot,
+ktÃ³ry pozwala na elastyczne Å‚adowanie wielu obrazÃ³w bootowalnych
+(czego wymagajÄ… moduÅ‚owe jÄ…dra, takie jak GNU Hurd).
 
-%description -l pt_BR
-Esse é o GRUB - Grand Unified Boot Loader - um gerenciador de boot
+%description -l pt_BR.UTF-8
+Esse Ã© o GRUB - Grand Unified Boot Loader - um gerenciador de boot
 capaz de entrar na maioria dos sistemas operacionais livres - Linux,
 FreeBSD, NetBSD, GNU Mach, etc. assim como na maioria dos sistemas
 operacionais comerciais para PC.
 
-O GRUB pode ser uma boa alternativa ao LILO, para usuários mais
-avançados e que querem mais recursos de seu boot loader.
+O GRUB pode ser uma boa alternativa ao LILO, para usuÃ¡rios mais
+avanÃ§ados e que querem mais recursos de seu boot loader.
 
 %prep
+<<<<<<< grub2.spec
+%setup -q -n grub-%{version}
+sed 's_/boot/grub_%{_datadir}_' \
+	-i util/grub-emu.c	\
+	-i util/i386/pc/grub-setup.c	\
+	-i kern/i386/pc/startup.S	\
+	-i util/i386/pc/grub-mkdevicemap.c	\
+	-i util/i386/pc/grub-probefs.c	\
+	-i util/i386/pc/grub-install.in	\
+	-i util/powerpc/ieee1275/grub-install.in
+chmod +x mkinstalldirs
+=======
 %setup -q -n grub-%{version}
 sed -i -e 's#AC_INIT(GRUB,#AC_INIT(GRUB2,#g' configure.ac
 sed -i -e 's,/boot/grub,%{_datadir},' \
@@ -103,6 +125,7 @@ sed -i -e 's,/boot/grub,%{_datadir},' \
 	util/i386/pc/grub-probe.c \
 	util/i386/pc/grub-setup.c \
 	util/powerpc/ieee1275/grub-install.in
+>>>>>>> 1.35
 
 %build
 cp -f /usr/share/automake/config.sub .
