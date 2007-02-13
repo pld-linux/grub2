@@ -5,9 +5,9 @@
 %bcond_with	static	# build static binaries
 #
 Summary:	GRand Unified Bootloader
-Summary(de.UTF-8):   GRUB2 - ein Bootloader für x86 und ppc
-Summary(pl.UTF-8):   GRUB2 - bootloader dla x86 i ppc
-Summary(pt_BR.UTF-8):   Gerenciador de inicialização GRUB2
+Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
+Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
+Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 <<<<<<< grub2.spec
 Version:	1.94
