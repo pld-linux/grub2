@@ -9,22 +9,12 @@ Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-<<<<<<< grub2.spec
-Version:	1.94
-Release:	0.1
-=======
 Version:	1.95
 Release:	0.2
->>>>>>> 1.35
 License:	GPL v2
 Group:		Base
-<<<<<<< grub2.spec
-Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
-# Source0-md5:	cd6aa192364442e4afe25327ea98bc47
-=======
 Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	4ea234d8fc5d551f61bc65e553e51399
->>>>>>> 1.35
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -102,18 +92,6 @@ O GRUB pode ser uma boa alternativa ao LILO, para usuários mais
 avançados e que querem mais recursos de seu boot loader.
 
 %prep
-<<<<<<< grub2.spec
-%setup -q -n grub-%{version}
-sed 's_/boot/grub_%{_datadir}_' \
-	-i util/grub-emu.c	\
-	-i util/i386/pc/grub-setup.c	\
-	-i kern/i386/pc/startup.S	\
-	-i util/i386/pc/grub-mkdevicemap.c	\
-	-i util/i386/pc/grub-probefs.c	\
-	-i util/i386/pc/grub-install.in	\
-	-i util/powerpc/ieee1275/grub-install.in
-chmod +x mkinstalldirs
-=======
 %setup -q -n grub-%{version}
 sed -i -e 's#AC_INIT(GRUB,#AC_INIT(GRUB2,#g' configure.ac
 sed -i -e 's,/boot/grub,%{_datadir},' \
@@ -125,7 +103,6 @@ sed -i -e 's,/boot/grub,%{_datadir},' \
 	util/i386/pc/grub-probe.c \
 	util/i386/pc/grub-setup.c \
 	util/powerpc/ieee1275/grub-install.in
->>>>>>> 1.35
 
 %build
 cp -f /usr/share/automake/config.sub .
