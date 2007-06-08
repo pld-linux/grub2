@@ -25,6 +25,7 @@ BuildRequires:	libtool
 BuildRequires:	lzo-devel >= 1.0.2
 %endif
 %ifarch %{x8664}
+BuildRequires:	gcc-multilib
 BuildRequires:	/usr/lib/libc.so
 %endif
 BuildRequires:	ncurses-devel
