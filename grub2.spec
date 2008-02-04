@@ -1,5 +1,13 @@
 # TODO:
 #  - rewrite summary/desc ? GRUB2 has nothing to see with GRUB
+#  - package files
+#    /boot/grub/update-grub_lib
+#   /etc/grub.d/00_header
+#   /etc/grub.d/10_hurd
+#   /etc/grub.d/10_linux
+#   /etc/grub.d/README
+#   /sbin/grub-mkrescue
+#   /sbin/update-grub
 #
 # Conditional build:
 %bcond_with	static	# build static binaries
@@ -9,12 +17,12 @@ Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	1.95
-Release:	0.2
+Version:	1.96
+Release:	0.1
 License:	GPL v2
 Group:		Base
 Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
-# Source0-md5:	4ea234d8fc5d551f61bc65e553e51399
+# Source0-md5:	0a40cd2326a4e84d1978060f2e02a956
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -96,14 +104,9 @@ avançados e que querem mais recursos de seu boot loader.
 %setup -q -n grub-%{version}
 sed -i -e 's#AC_INIT(GRUB,#AC_INIT(GRUB2,#g' configure.ac
 sed -i -e 's,/boot/grub,%{_datadir},' \
-	kern/i386/efi/startup.S \
-	kern/i386/pc/startup.S \
-	util/grub-emu.c \
-	util/i386/pc/grub-install.in \
-	util/i386/pc/grub-mkdevicemap.c \
-	util/i386/pc/grub-probe.c \
-	util/i386/pc/grub-setup.c \
-	util/powerpc/ieee1275/grub-install.in
+	./include/grub/util/misc.h ./util/i386/efi/grub-install.in ./util/i386/pc/grub-install.in \
+	./util/i386/pc/grub-mkrescue.in ./util/powerpc/ieee1275/grub-install.in \
+	./util/powerpc/ieee1275/grub-mkrescue.in ./util/update-grub.in ./util/update-grub_lib.in
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -155,7 +158,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %{_libdir}/%{name}
-%attr(755,root,root) %{_sbindir}/grub-emu
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %attr(755,root,root) %{_sbindir}/grub2-install
 %ifarch %{ix86} %{x8664}
