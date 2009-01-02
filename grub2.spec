@@ -1,16 +1,12 @@
 # TODO:
 #  - rewrite summary/desc ? GRUB2 has nothing to see with GRUB
 #  - package files
-#    /boot/grub/update-grub_lib
-#   /etc/grub.d/00_header
-#   /etc/grub.d/10_hurd
-#   /etc/grub.d/10_linux
-#   /etc/grub.d/README
-#   /sbin/grub-mkrescue
-#   /sbin/update-grub
+#    /boot/grub/update-grub_lib - try to move to /boot/grub2/lib/ ?
+#   /etc/grub.d/* - try to move to /boot/grub2/menu.d/ ?
 #
 # Conditional build:
 %bcond_with	static	# build static binaries
+%bcond_without	grubemu	# build grub-emu binary
 #
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
@@ -23,6 +19,7 @@ License:	GPL v2
 Group:		Base
 Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	0a40cd2326a4e84d1978060f2e02a956
+Patch0:		%{name}-parser.patch
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -33,8 +30,8 @@ BuildRequires:	libtool
 BuildRequires:	lzo-devel >= 1.0.2
 %endif
 %ifarch %{x8664}
-BuildRequires:	gcc-multilib
 BuildRequires:	/usr/lib/libc.so
+BuildRequires:	gcc-multilib
 %endif
 BuildRequires:	ncurses-devel
 #BuildRequires:	ruby >= 1.6
@@ -55,6 +52,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
 %define		_datadir	%{_libdir}/%{name}
+%define		_legcdir	%{_libdir}/grub
+%define		_confdir	/etc/grub.d/
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -102,6 +101,7 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n grub-%{version}
+%patch0 -p1
 sed -i -e 's#AC_INIT(GRUB,#AC_INIT(GRUB2,#g' configure.ac
 sed -i -e 's,/boot/grub,%{_datadir},' \
 	./include/grub/util/misc.h ./util/i386/efi/grub-install.in ./util/i386/pc/grub-install.in \
@@ -122,8 +122,8 @@ export CFLAGS="-Os %{?debug:-g}"
 # mawk stalls at ./genmoddep.awk, so force gawk
 AWK=gawk \
 %configure \
+%{!?_without_grubemu:--enable-grub-emu}\
 	BUILD_CFLAGS="$CFLAGS"
-
 %{__make} -j1 \
 	BUILD_CFLAGS="$CFLAGS" \
 %if %{with static}
@@ -135,17 +135,17 @@ AWK=gawk \
 %endif
 	grub_emu_LDFLAGS="-s -static -lncurses -ltinfo" \
 %endif
-	pkgdatadir="%{_libdir}/%{name}"
+pkgdatadir="%{_datadir}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-	pkgdatadir="%{_libdir}/%{name}"
+pkgdatadir="%{_datadir}"
 
 %ifarch ppc
-install grubof $RPM_BUILD_ROOT%{_libdir}/%{name}
+install grubof $RPM_BUILD_ROOT%{_datadir}
 %endif
 %ifarch %{ix86} %{x8664}
 mv -f $RPM_BUILD_ROOT%{_sbindir}/{grub-install,%{name}-install}
@@ -157,9 +157,20 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
-%{_libdir}/%{name}
+%{_datadir}
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %attr(755,root,root) %{_sbindir}/grub2-install
+%attr(755,root,root) %{_sbindir}/grub-mkrescue
+%attr(755,root,root) %{_sbindir}/update-grub
+%if %{with grubemu}
+%attr(755,root,root) %{_sbindir}/grub-emu
+%endif
+%attr(755,root,root) %{_legcdir}/update-grub_lib
+%dir %{_confdir}
+%attr(755,root,root) %{_confdir}/00_header
+%attr(755,root,root) %{_confdir}/10_hurd
+%attr(755,root,root) %{_confdir}/10_linux
+%doc %{_confdir}/README
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkdevicemap
 %attr(755,root,root) %{_sbindir}/grub-probe
