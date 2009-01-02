@@ -1,0 +1,11 @@
+--- grub-1.96/normal/parser.y~	2008-02-03 14:11:32.000000000 +0100
++++ grub-1.96/normal/parser.y	2008-12-14 09:57:02.000000000 +0100
+@@ -55,7 +55,7 @@
+ 
+ %%
+ /* It should be possible to do this in a clean way...  */
+-script_init:	{ state->err = 0} script
++script_init:	{ state->err = 0;} script
+ 		  {
+ 		    state->parsed = $2;
+ 		  }
