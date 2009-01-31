@@ -20,6 +20,7 @@ Group:		Base
 Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	0a40cd2326a4e84d1978060f2e02a956
 Patch0:		%{name}-parser.patch
+Patch1:		%{name}-pld.patch
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
