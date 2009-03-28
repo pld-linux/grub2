@@ -1,26 +1,23 @@
 # TODO:
 #  - rewrite summary/desc ? GRUB2 has nothing to see with GRUB
-#  - package files
-#    /boot/grub/update-grub_lib - try to move to /boot/grub2/lib/ ?
-#   /etc/grub.d/* - try to move to /boot/grub2/menu.d/ ?
 #
 # Conditional build:
 %bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
 #
+%define	snap	20090328
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	1.96
-Release:	0.1
+Version:	1.97
+Release:	0.%{snap}.1
 License:	GPL v2
 Group:		Base
-Source0:	ftp://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
-# Source0-md5:	0a40cd2326a4e84d1978060f2e02a956
-Patch0:		%{name}-parser.patch
-Patch1:		%{name}-pld.patch
+# svn export svn://svn.sv.gnu.org/grub/trunk/grub2
+Source0:	%{name}-%{snap}.tar.bz2
+# Source0-md5:	4078b48449c12cdc7e7d1225249607d4
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -35,7 +32,6 @@ BuildRequires:	/usr/lib/libc.so
 BuildRequires:	gcc-multilib
 %endif
 BuildRequires:	ncurses-devel
-#BuildRequires:	ruby >= 1.6
 BuildRequires:	sed >= 4.0
 %if %{with static}
 BuildRequires:	glibc-static
@@ -46,13 +42,14 @@ BuildRequires:	ncurses-static
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.213
 Provides:	bootloader
+Conflicts:	grub
 ExclusiveArch:	%{ix86} %{x8664} ppc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
-%define		_datadir	%{_libdir}/%{name}
+%define		_datadir	%{_libdir}/grub
 %define		_legcdir	%{_libdir}/grub
 %define		_confdir	/etc/grub.d/
 
@@ -101,13 +98,7 @@ O GRUB pode ser uma boa alternativa ao LILO, para usuários mais
 avançados e que querem mais recursos de seu boot loader.
 
 %prep
-%setup -q -n grub-%{version}
-%patch0 -p1
-sed -i -e 's#AC_INIT(GRUB,#AC_INIT(GRUB2,#g' configure.ac
-sed -i -e 's,/boot/grub,%{_datadir},' \
-	./include/grub/util/misc.h ./util/i386/efi/grub-install.in ./util/i386/pc/grub-install.in \
-	./util/i386/pc/grub-mkrescue.in ./util/powerpc/ieee1275/grub-install.in \
-	./util/powerpc/ieee1275/grub-mkrescue.in ./util/update-grub.in ./util/update-grub_lib.in
+%setup -q -n %{name}
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -148,9 +139,9 @@ pkgdatadir="%{_datadir}"
 %ifarch ppc
 install grubof $RPM_BUILD_ROOT%{_datadir}
 %endif
-%ifarch %{ix86} %{x8664}
-mv -f $RPM_BUILD_ROOT%{_sbindir}/{grub-install,%{name}-install}
-%endif
+
+# create -devel subpackage?
+rm -r $RPM_BUILD_ROOT%{_includedir}/grub $RPM_BUILD_ROOT%{_includedir}/*.h
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -160,20 +151,33 @@ rm -rf $RPM_BUILD_ROOT
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %{_datadir}
 %attr(755,root,root) %{_sbindir}/grub-mkimage
-%attr(755,root,root) %{_sbindir}/grub2-install
+%attr(755,root,root) %{_sbindir}/grub-install
 %attr(755,root,root) %{_sbindir}/grub-mkrescue
-%attr(755,root,root) %{_sbindir}/update-grub
+%attr(755,root,root) %{_sbindir}/grub-editenv
+%attr(755,root,root) %{_sbindir}/grub-mkconfig
+%attr(755,root,root) %{_sbindir}/grub-mkelfimage
+%{_mandir}/man1/grub-mkimage.1*
+%{_mandir}/man8/grub-install.8*
+%{_mandir}/man1/grub-mkrescue.1*
+%{_mandir}/man1/grub-editenv.1*
+%{_mandir}/man8/grub-mkconfig.8*
+%{_mandir}/man1/grub-mkelfimage.1*
 %if %{with grubemu}
 %attr(755,root,root) %{_sbindir}/grub-emu
+%{_mandir}/man8/grub-emu.8*
 %endif
 %attr(755,root,root) %{_legcdir}/update-grub_lib
 %dir %{_confdir}
 %attr(755,root,root) %{_confdir}/00_header
-%attr(755,root,root) %{_confdir}/10_hurd
 %attr(755,root,root) %{_confdir}/10_linux
+%attr(755,root,root) %{_confdir}/30_os-prober
+%attr(755,root,root) %{_confdir}/40_custom
 %doc %{_confdir}/README
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkdevicemap
 %attr(755,root,root) %{_sbindir}/grub-probe
 %attr(755,root,root) %{_sbindir}/grub-setup
+%{_mandir}/man8/grub-mkdevicemap.8*
+%{_mandir}/man8/grub-probe.8*
+%{_mandir}/man8/grub-setup.8*
 %endif
