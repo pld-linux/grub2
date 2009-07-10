@@ -136,6 +136,8 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT \
 pkgdatadir="%{_datadir}"
 
+install docs/grub.cfg $RPM_BUILD_ROOT%{_datadir}
+
 %ifarch ppc
 install grubof $RPM_BUILD_ROOT%{_datadir}
 %endif
@@ -165,6 +167,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
 %endif
+%config(noreplace) %verify(not md5 mtime size) %dir %{_datadir}/grub.cfg
 %dir %{_datadir}
 %{_datadir}/*-pc
 %attr(755,root,root) %{_legcdir}/*_lib
