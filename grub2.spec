@@ -139,10 +139,6 @@ pkgdatadir="%{_datadir}"
 
 install docs/grub.cfg $RPM_BUILD_ROOT%{_datadir}
 
-%ifarch ppc
-install grubof $RPM_BUILD_ROOT%{_datadir}
-%endif
-
 # create -devel subpackage?
 rm -r $RPM_BUILD_ROOT%{_includedir}/grub $RPM_BUILD_ROOT%{_includedir}/*.h
 
@@ -153,14 +149,21 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %attr(755,root,root) %{_sbindir}/grub-dumpbios
-%attr(755,root,root) %{_sbindir}/grub-mkimage
 %attr(755,root,root) %{_sbindir}/grub-install
 %attr(755,root,root) %{_sbindir}/grub-mkrescue
 %attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-mkconfig
 %attr(755,root,root) %{_sbindir}/grub-mkelfimage
-%{_mandir}/man8/grub-dumpbios.8*
+%ifarch %{ix86} %{x8664}
+%attr(755,root,root) %{_sbindir}/grub-mkimage
 %{_mandir}/man1/grub-mkimage.1*
+%else
+%attr(755,root,root) %{_sbindir}/grub-probe
+%attr(755,root,root) %{_sbindir}/grub-mkdevicemap
+%{_mandir}/man8/grub-probe.8*
+%{_mandir}/man8/grub-mkdevicemap.8*
+%endif
+%{_mandir}/man8/grub-dumpbios.8*
 %{_mandir}/man8/grub-install.8*
 %{_mandir}/man1/grub-mkrescue.1*
 %{_mandir}/man1/grub-editenv.1*
@@ -172,9 +175,13 @@ rm -rf $RPM_BUILD_ROOT
 %endif
 %config(noreplace) %verify(not md5 mtime size) %dir %{_datadir}/grub.cfg
 %dir %{_datadir}
-%{_datadir}/*-pc
+%ifarch %{ix86} %{x8664}
+%{_datadir}/i386-pc
+%endif
+%ifarch ppc ppc64
+%{_datadir}/powerpc-*
+%endif
 %attr(755,root,root) %{_legcdir}/*_lib
-%attr(755,root,root) %{_legcdir}/*.*
 %dir %{_confdir}
 %attr(755,root,root) %{_confdir}/00_header
 %attr(755,root,root) %{_confdir}/10_linux
