@@ -5,7 +5,7 @@
 %bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
 #
-%define	snap	20090328
+%define	snap	20090710
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
@@ -17,7 +17,7 @@ License:	GPL v2
 Group:		Base
 # svn export svn://svn.sv.gnu.org/grub/trunk/grub2
 Source0:	%{name}-%{snap}.tar.bz2
-# Source0-md5:	4078b48449c12cdc7e7d1225249607d4
+# Source0-md5:	a9f3f5f4babcac04f3bad6249f31370b
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -105,6 +105,7 @@ cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
 %{__aclocal}
 %{__autoheader}
+echo timestamp > stamp-h.in
 %{__autoconf}
 #for rmk in conf/*.rmk; do
 #  ruby genmk.rb < $rmk > `echo $rmk | sed 's/\.rmk$/.mk/'`
@@ -151,12 +152,14 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
+%attr(755,root,root) %{_sbindir}/grub-dumpbios
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %attr(755,root,root) %{_sbindir}/grub-install
 %attr(755,root,root) %{_sbindir}/grub-mkrescue
 %attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-mkconfig
 %attr(755,root,root) %{_sbindir}/grub-mkelfimage
+%{_mandir}/man8/grub-dumpbios.8*
 %{_mandir}/man1/grub-mkimage.1*
 %{_mandir}/man8/grub-install.8*
 %{_mandir}/man1/grub-mkrescue.1*
