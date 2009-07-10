@@ -149,7 +149,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
-%{_datadir}
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %attr(755,root,root) %{_sbindir}/grub-install
 %attr(755,root,root) %{_sbindir}/grub-mkrescue
@@ -166,7 +165,10 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
 %endif
-%attr(755,root,root) %{_legcdir}/update-grub_lib
+%dir %{_datadir}
+%{_datadir}/*-pc
+%attr(755,root,root) %{_legcdir}/*_lib
+%attr(755,root,root) %{_legcdir}/*.*
 %dir %{_confdir}
 %attr(755,root,root) %{_confdir}/00_header
 %attr(755,root,root) %{_confdir}/10_linux
