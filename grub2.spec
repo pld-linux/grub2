@@ -5,7 +5,7 @@
 %bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
 #
-%define	snap	20090905
+%define	snap	20090923
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
@@ -17,7 +17,7 @@ License:	GPL v2
 Group:		Base
 # svn export svn://svn.sv.gnu.org/grub/trunk/grub2
 Source0:	%{name}-%{snap}.tar.bz2
-# Source0-md5:	f76d740906d4b522b475132b4feee291
+# Source0-md5:	b55284168c01eefd6db218d9497b6cbb
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -145,6 +145,12 @@ rm -r $RPM_BUILD_ROOT%{_includedir}/grub $RPM_BUILD_ROOT%{_includedir}/*.h
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%post
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
+
+%postun
+[ ! -x /usr/sbin/fix-info-dir ] || /usr/sbin/fix-info-dir -c %{_infodir} >/dev/null 2>&1
+
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
@@ -200,3 +206,4 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/grub-probe.8*
 %{_mandir}/man8/grub-setup.8*
 %endif
+%{_infodir}/grub*.info*
