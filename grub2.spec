@@ -5,19 +5,19 @@
 %bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
 #
-%define	snap	20090923
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.97
-Release:	0.%{snap}.1
+Release:	1
 License:	GPL v2
 Group:		Base
 # svn export svn://svn.sv.gnu.org/grub/trunk/grub2
-Source0:	%{name}-%{snap}.tar.bz2
-# Source0-md5:	b55284168c01eefd6db218d9497b6cbb
+#Source0:	%{name}-%{snap}.tar.bz2
+Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
+# Source0-md5:	3700068f871b4f394315ebb8ba324df4
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
@@ -98,7 +98,7 @@ O GRUB pode ser uma boa alternativa ao LILO, para usuários mais
 avançados e que querem mais recursos de seu boot loader.
 
 %prep
-%setup -q -n %{name}
+%setup -q -n grub-%{version}
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -128,19 +128,16 @@ AWK=gawk \
 %endif
 	grub_emu_LDFLAGS="-s -static -lncurses -ltinfo" \
 %endif
-pkgdatadir="%{_datadir}"
+	pkgdatadir="%{_datadir}"
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT \
-pkgdatadir="%{_datadir}"
+	pkgdatadir="%{_datadir}"
 
 install docs/grub.cfg $RPM_BUILD_ROOT%{_datadir}
-
-# create -devel subpackage?
-rm -r $RPM_BUILD_ROOT%{_includedir}/grub $RPM_BUILD_ROOT%{_includedir}/*.h
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -154,7 +151,6 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
-%attr(755,root,root) %{_sbindir}/grub-dumpbios
 %attr(755,root,root) %{_sbindir}/grub-fstest
 %attr(755,root,root) %{_sbindir}/grub-install
 %attr(755,root,root) %{_sbindir}/grub-mkfont
@@ -171,8 +167,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/grub-probe.8*
 %{_mandir}/man8/grub-mkdevicemap.8*
 %endif
-%{_mandir}/man8/grub-dumpbios.8*
-%{_mandir}/man8/grub-install.8*
 %{_mandir}/man1/grub-fstest.1*
 %{_mandir}/man1/grub-mkfont.1*
 %{_mandir}/man1/grub-mkrescue.1*
