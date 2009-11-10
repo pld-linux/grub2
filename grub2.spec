@@ -10,14 +10,14 @@ Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	1.97
+Version:	1.97.1
 Release:	1
 License:	GPL v2
 Group:		Base
 # svn export svn://svn.sv.gnu.org/grub/trunk/grub2
 #Source0:	%{name}-%{snap}.tar.bz2
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
-# Source0-md5:	3700068f871b4f394315ebb8ba324df4
+# Source0-md5:	66fe18cd9318e3d67a34d7b7a8e7b1f6
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake
