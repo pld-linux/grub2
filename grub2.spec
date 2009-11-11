@@ -20,9 +20,11 @@ Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	66fe18cd9318e3d67a34d7b7a8e7b1f6
 Source1:	update-grub
 Source2:	update-grub.8
+Source3:	grub.sysconfig
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 Patch0:		pld-initrd.patch
+Patch1:		pld-sysconfdir.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
@@ -103,6 +105,7 @@ avançados e que querem mais recursos de seu boot loader.
 %prep
 %setup -q -n grub-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -133,14 +136,16 @@ AWK=gawk \
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/etc/sysconfig
 
 %{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT \
-	pkgdatadir="%{_datadir}"
+	pkgdatadir=%{_datadir} \
+	DESTDIR=$RPM_BUILD_ROOT
 
 cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_datadir}
 install -p %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/update-grub
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man8/update-grub.8
+cp -a %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
 rm $RPM_BUILD_ROOT%{_infodir}/dir
 
 %clean
@@ -192,6 +197,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/powerpc-*
 %endif
 %attr(755,root,root) %{_legcdir}/*_lib
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
 %dir %{_confdir}
 %attr(755,root,root) %{_confdir}/00_header
 %attr(755,root,root) %{_confdir}/10_linux
