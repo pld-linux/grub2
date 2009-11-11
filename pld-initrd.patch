@@ -1,0 +1,11 @@
+--- grub-1.97.1/util/grub.d/10_linux.in~	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub.d/10_linux.in	2009-11-11 17:36:26.000000000 +0200
+@@ -77,7 +77,7 @@
+ 
+   initrd=
+   for i in "initrd.img-${version}" "initrd-${version}.img" \
+-	   "initrd-${version}" "initrd.img-${alt_version}" \
++	   "initrd-${version}" "initrd.img-${alt_version}" "initrd-${version}.gz" \
+ 	   "initrd-${alt_version}.img" "initrd-${alt_version}"; do
+     if test -e "${dirname}/${i}" ; then
+       initrd="$i"

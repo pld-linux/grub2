@@ -11,7 +11,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.97.1
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Base
 # svn export svn://svn.sv.gnu.org/grub/trunk/grub2
@@ -20,6 +20,7 @@ Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	66fe18cd9318e3d67a34d7b7a8e7b1f6
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
+Patch0:		pld-initrd.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
@@ -99,6 +100,7 @@ avançados e que querem mais recursos de seu boot loader.
 
 %prep
 %setup -q -n grub-%{version}
+%patch0 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -143,10 +145,10 @@ rm $RPM_BUILD_ROOT%{_infodir}/dir
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post	-p /sbin/postshell
+%post -p %{_sbindir}/postshell
 -/usr/sbin/fix-info-dir -c %{_infodir}
 
-%postun	-p /sbin/postshell
+%postun -p %{_sbindir}/postshell
 -/usr/sbin/fix-info-dir -c %{_infodir}
 
 %files
