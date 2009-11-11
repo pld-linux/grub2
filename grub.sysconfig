@@ -3,7 +3,7 @@
 
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=5
-GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo PLD Linux`
+GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo PLD`
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX=""
 
