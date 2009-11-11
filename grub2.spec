@@ -18,6 +18,8 @@ Group:		Base
 #Source0:	%{name}-%{snap}.tar.bz2
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	66fe18cd9318e3d67a34d7b7a8e7b1f6
+Source1:	update-grub
+Source2:	update-grub.8
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 Patch0:		pld-initrd.patch
@@ -109,15 +111,12 @@ cp -f /usr/share/automake/config.sub .
 %{__autoheader}
 echo timestamp > stamp-h.in
 %{__autoconf}
-#for rmk in conf/*.rmk; do
-#  ruby genmk.rb < $rmk > `echo $rmk | sed 's/\.rmk$/.mk/'`
-#done
 export CFLAGS="-Os %{?debug:-g}"
 
 # mawk stalls at ./genmoddep.awk, so force gawk
 AWK=gawk \
 %configure \
-%{!?_without_grubemu:--enable-grub-emu}\
+%{!?without_grubemu:--enable-grub-emu} \
 	BUILD_CFLAGS="$CFLAGS"
 %{__make} -j1 \
 	BUILD_CFLAGS="$CFLAGS" \
@@ -140,6 +139,8 @@ rm -rf $RPM_BUILD_ROOT
 	pkgdatadir="%{_datadir}"
 
 cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_datadir}
+install -p %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/update-grub
+cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man8/update-grub.8
 rm $RPM_BUILD_ROOT%{_infodir}/dir
 
 %clean
@@ -161,6 +162,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-mkconfig
 %attr(755,root,root) %{_sbindir}/grub-mkelfimage
+%attr(755,root,root) %{_sbindir}/update-grub
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %{_mandir}/man1/grub-mkimage.1*
@@ -176,6 +178,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/grub-editenv.1*
 %{_mandir}/man8/grub-mkconfig.8*
 %{_mandir}/man1/grub-mkelfimage.1*
+%{_mandir}/man8/update-grub.8*
 %if %{with grubemu}
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
