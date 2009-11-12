@@ -55,9 +55,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
-%define		_datadir	%{_libdir}/grub
-%define		_legcdir	%{_libdir}/grub
-%define		_confdir	/etc/grub.d/
+%define		_libexecdir	%{_libdir}/grub
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -134,21 +132,23 @@ AWK=gawk \
 %endif
 	grub_emu_LDFLAGS="-s -static -lncurses -ltinfo" \
 %endif
-	pkgdatadir="%{_datadir}"
+	pkgdatadir=%{_libexecdir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/sysconfig
 
 %{__make} install \
-	pkgdatadir=%{_datadir} \
+	pkgdatadir=%{_libexecdir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
-cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_datadir}
+cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_libexecdir}
 install -p %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/update-grub
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man8/update-grub.8
 cp -a %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
 rm $RPM_BUILD_ROOT%{_infodir}/dir
+# deprecated. we don't need it
+rm $RPM_BUILD_ROOT%{_libexecdir}/update-grub_lib
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -190,22 +190,22 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
 %endif
-%config(noreplace) %verify(not md5 mtime size) %dir %{_datadir}/grub.cfg
-%dir %{_datadir}
+%config(noreplace) %verify(not md5 mtime size) %dir %{_libexecdir}/grub.cfg
+%dir %{_libexecdir}
 %ifarch %{ix86} %{x8664}
-%{_datadir}/i386-pc
+%{_libexecdir}/i386-pc
 %endif
 %ifarch ppc ppc64
-%{_datadir}/powerpc-*
+%{_libexecdir}/powerpc-*
 %endif
-%attr(755,root,root) %{_legcdir}/*_lib
+%attr(755,root,root) %{_libexecdir}/*_lib
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
-%dir %{_confdir}
-%attr(755,root,root) %{_confdir}/00_header
-%attr(755,root,root) %{_confdir}/10_linux
-%attr(755,root,root) %{_confdir}/30_os-prober
-%attr(755,root,root) %{_confdir}/40_custom
-%doc %{_confdir}/README
+%dir %{_sysconfdir}/grub.d
+%doc %{_sysconfdir}/grub.d/README
+%attr(755,root,root) %{_sysconfdir}/grub.d/00_header
+%attr(755,root,root) %{_sysconfdir}/grub.d/10_linux
+%attr(755,root,root) %{_sysconfdir}/grub.d/30_os-prober
+%attr(755,root,root) %{_sysconfdir}/grub.d/40_custom
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkdevicemap
 %attr(755,root,root) %{_sbindir}/grub-probe
