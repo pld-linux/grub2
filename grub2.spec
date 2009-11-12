@@ -190,7 +190,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
 %endif
-%config(noreplace) %verify(not md5 mtime size) %dir %{_libexecdir}/grub.cfg
+%config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
 %dir %{_libexecdir}
 %ifarch %{ix86} %{x8664}
 %{_libexecdir}/i386-pc
