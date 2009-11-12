@@ -25,6 +25,7 @@ URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
+Patch2:		grub-garbage.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
@@ -106,6 +107,7 @@ avançados e que querem mais recursos de seu boot loader.
 %setup -q -n grub-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
