@@ -253,7 +253,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sysconfdir}/grub.d/00_header
 %attr(755,root,root) %{_sysconfdir}/grub.d/10_linux
 %attr(755,root,root) %{_sysconfdir}/grub.d/30_os-prober
-%attr(755,root,root) %{_sysconfdir}/grub.d/40_custom
+%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/grub.d/40_custom
 
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkdevicemap
