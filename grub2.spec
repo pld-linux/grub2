@@ -1,7 +1,8 @@
+#
 # Conditional build:
-%bcond_with		static	# build static binaries
+%bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
-
+#
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
