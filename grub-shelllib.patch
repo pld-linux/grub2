@@ -1,0 +1,137 @@
+--- grub-1.97.1/Makefile.in~	2009-11-09 17:48:15.000000000 +0200
++++ grub-1.97.1/Makefile.in	2009-11-17 12:33:36.678701742 +0200
+@@ -293,12 +293,12 @@
+ 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
+ 	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
+ 	done
+-	$(SHELL) $(mkinstalldirs) $(DESTDIR)$(libdir)/grub
++	$(SHELL) $(mkinstalldirs) $(DESTDIR)/lib
+ 	@list='$(lib_SCRIPTS)'; \
+ 	for file in $$list; do \
+ 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
+ 	  dest="`echo $$file | sed 's,.*/,,'`"; \
+-	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(libdir)/grub/$$dest; \
++	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)/lib/$$dest; \
+ 	done
+ 	$(SHELL) $(mkinstalldirs) $(DESTDIR)$(infodir)
+ 	@list='$(info_INFOS)'; \
+@@ -343,8 +343,8 @@
+ 	@list='$(lib_SCRIPTS)'; \
+ 	for file in $$list; do \
+ 	  dest="`echo $$file | sed 's,.*/,,'`"; \
+-	  echo rm -f $(DESTDIR)$(libdir)/$$dest; \
+-	  rm -f $(DESTDIR)$(libdir)/grub/$$dest; \
++	  echo rm -f $(DESTDIR)/lib/$$dest; \
++	  rm -f $(DESTDIR)/lib/$$dest; \
+ 	done
+ 	@list='$(info_INFOS)'; \
+ 	for file in $$list; do \
+--- grub-1.97.1.shelllib/util/grub.d/00_header.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub.d/00_header.in	2009-11-17 12:34:23.164322142 +0200
+@@ -23,7 +23,7 @@
+ libdir=@libdir@
+ grub_prefix=`echo /boot/grub | sed ${transform}`
+ 
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ # Do this as early as possible, since other commands might depend on it.
+ # (e.g. the `loadfont' command might need lvm or raid modules)
+--- grub-1.97.1.shelllib/util/grub.d/10_freebsd.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub.d/10_freebsd.in	2009-11-17 12:34:23.164322142 +0200
+@@ -19,7 +19,7 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ case "${GRUB_DISTRIBUTOR}" in
+   Debian)	OS="${GRUB_DISTRIBUTOR} GNU/kFreeBSD" ;;
+--- grub-1.97.1.shelllib/util/grub.d/10_hurd.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub.d/10_hurd.in	2009-11-17 12:34:23.160988747 +0200
+@@ -19,7 +19,7 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
+   OS=GNU
+--- grub-1.97.1.shelllib/util/grub.d/10_linux.in	2009-11-17 12:34:05.445365474 +0200
++++ grub-1.97.1/util/grub.d/10_linux.in	2009-11-17 12:34:23.160988747 +0200
+@@ -19,7 +19,7 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ if [ "x${GRUB_DISTRIBUTOR}" = "x" ] ; then
+   OS=GNU/Linux
+--- grub-1.97.1.shelllib/util/grub.d/10_windows.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub.d/10_windows.in	2009-11-17 12:34:23.160988747 +0200
+@@ -19,7 +19,7 @@
+ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ case "`uname 2>/dev/null`" in
+   CYGWIN*)  ;;
+--- grub-1.97.1.shelllib/util/grub.d/30_os-prober.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub.d/30_os-prober.in	2009-11-17 12:34:23.164322142 +0200
+@@ -20,7 +20,7 @@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ 
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ if [ "x${GRUB_DISABLE_OS_PROBER}" = "xtrue" ]; then
+   exit 0
+--- grub-1.97.1.shelllib/util/grub-mkconfig.in	2009-11-17 12:34:05.448699048 +0200
++++ grub-1.97.1/util/grub-mkconfig.in	2009-11-17 12:34:23.167655247 +0200
+@@ -73,7 +73,7 @@
+     esac
+ done
+ 
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ if [ "x$EUID" = "x" ] ; then
+   EUID=`id -u`
+--- grub-1.97.1.shelllib/util/i386/pc/grub-install.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/i386/pc/grub-install.in	2009-11-17 12:34:23.157655729 +0200
+@@ -32,7 +32,7 @@
+ pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
+ 
+ # for make_system_path_relative_to_its_root()
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
+ if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
+--- grub-1.97.1.shelllib/util/sparc64/ieee1275/grub-install.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/sparc64/ieee1275/grub-install.in	2009-11-17 12:34:23.160988747 +0200
+@@ -32,7 +32,7 @@
+ pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
+ 
+ # for make_system_path_relative_to_its_root()
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
+ grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
+--- grub-1.97.1.shelllib/util/update-grub_lib.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/update-grub_lib.in	2009-11-17 12:34:23.157655729 +0200
+@@ -18,6 +18,6 @@
+ exec_prefix=@exec_prefix@
+ libdir=@libdir@
+ 
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ grub_warn "update-grub_lib is deprecated, use grub-mkconfig_lib instead"

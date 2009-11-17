@@ -26,6 +26,7 @@ BuildRequires:	autoconf >= 2.53
 Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
+Patch3:		grub-shelllib.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
@@ -106,6 +107,7 @@ avançados e que querem mais recursos de seu boot loader.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -148,7 +150,11 @@ cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man8/update-grub.8
 cp -a %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
 rm $RPM_BUILD_ROOT%{_infodir}/dir
 # deprecated. we don't need it
-rm $RPM_BUILD_ROOT%{_libexecdir}/update-grub_lib
+rm $RPM_BUILD_ROOT/lib/update-grub_lib
+
+# no junk to /boot/grub (put to -devel?)
+rm $RPM_BUILD_ROOT%{_libexecdir}/*/*.h
+rm $RPM_BUILD_ROOT%{_libexecdir}/*/*.mk
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -198,7 +204,7 @@ rm -rf $RPM_BUILD_ROOT
 %ifarch ppc ppc64
 %{_libexecdir}/powerpc-*
 %endif
-%attr(755,root,root) %{_libexecdir}/*_lib
+/lib/grub-mkconfig_lib
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
 %dir %{_sysconfdir}/grub.d
 %doc %{_sysconfdir}/grub.d/README
