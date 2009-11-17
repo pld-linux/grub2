@@ -235,8 +235,8 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
 %{_libexecdir}/*.lst
 %{_libexecdir}/*.mod
-%ifarch %{ix86} %{x8664}
-%{_libexecdir}/*.o
+%ifarch %{x8664}
+%{_libexecdir}/efiemu*.o
 %endif
 %ifarch %{ix86} %{x8664} sparc sparc64
 %{_libexecdir}/boot.img
