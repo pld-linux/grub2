@@ -30,6 +30,7 @@ BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
 BuildRequires:	libtool
+BuildRequires:	texinfo
 %ifarch %{ix86} %{x8664}
 BuildRequires:	lzo-devel >= 1.0.2
 %endif
