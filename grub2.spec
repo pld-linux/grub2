@@ -1,6 +1,3 @@
-# TODO:
-#  - rewrite summary/desc ? GRUB2 has nothing to see with GRUB
-#
 # Conditional build:
 %bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
@@ -11,7 +8,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.97.1
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Base
 # svn export svn://svn.sv.gnu.org/grub/trunk/grub2
@@ -65,6 +62,30 @@ operating systems. In addition to loading the Linux and *BSD kernels,
 it implements the Multiboot standard, which allows for flexible
 loading of multiple boot images (needed for modular kernels such as
 the GNU Hurd).
+
+GRUB 2 is derived from PUPA which was a research project to
+investigate the next generation of GRUB. GRUB 2 has been rewritten
+from scratch to clean up everything for modularity and portability.
+
+GRUB 2 targets at the following goals:
+- Scripting support, such as conditionals, loops, variables and
+  functions.
+- Graphical interface.
+- Dynamic loading of modules in order to extend itself at the run time
+  rather than at the build time.
+- Portability for various architectures.
+- Internationalization. This includes support for non-ASCII character
+  code, message catalogs like gettext, fonts, graphics console, and so
+  on.
+- Real memory management, to make GNU GRUB more extensible.
+- Modular, hierarchical, object-oriented framework for file systems,
+  files, devices, drives, terminals, commands, partition tables and OS
+  loaders.
+- Cross-platform installation which allows for installing GRUB from a
+  different architecture.
+- Rescue mode saves unbootable cases. Stage 1.5 was eliminated.
+- Fix design mistakes in GRUB Legacy, which could not be solved for
+  backward-compatibility, such as the way of numbering partitions.
 
 %description -l de.UTF-8
 GRUB (GRand Unified Boot-loader) ist ein Bootloader, der oft auf
