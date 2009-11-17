@@ -27,6 +27,7 @@ Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
 Patch3:		grub-shelllib.patch
+Patch4:		grub-install.in.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
@@ -108,6 +109,7 @@ avançados e que querem mais recursos de seu boot loader.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -134,7 +136,8 @@ AWK=gawk \
 %endif
 	grub_emu_LDFLAGS="-s -static -lncurses -ltinfo" \
 %endif
-	pkgdatadir=%{_libexecdir}
+	pkgdatadir=%{_libexecdir} \
+	pkglibdir=%{_libexecdir}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -142,6 +145,7 @@ install -d $RPM_BUILD_ROOT/etc/sysconfig
 
 %{__make} install \
 	pkgdatadir=%{_libexecdir} \
+	pkglibdir=%{_libexecdir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
 cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_libexecdir}
@@ -153,8 +157,8 @@ rm $RPM_BUILD_ROOT%{_infodir}/dir
 rm $RPM_BUILD_ROOT/lib/update-grub_lib
 
 # no junk to /boot/grub (put to -devel?)
-rm $RPM_BUILD_ROOT%{_libexecdir}/*/*.h
-rm $RPM_BUILD_ROOT%{_libexecdir}/*/*.mk
+rm $RPM_BUILD_ROOT%{_libexecdir}/*.h
+rm $RPM_BUILD_ROOT%{_libexecdir}/*.mk
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -168,6 +172,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
+%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
 %attr(755,root,root) %{_sbindir}/grub-fstest
 %attr(755,root,root) %{_sbindir}/grub-install
 %attr(755,root,root) %{_sbindir}/grub-mkfont
@@ -196,22 +201,26 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
 %endif
-%config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
-%dir %{_libexecdir}
-%ifarch %{ix86} %{x8664}
-%{_libexecdir}/i386-pc
-%endif
-%ifarch ppc ppc64
-%{_libexecdir}/powerpc-*
-%endif
 /lib/grub-mkconfig_lib
-%config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
+
+%dir %{_libexecdir}
+%config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
+%{_libexecdir}/*.lst
+%{_libexecdir}/*.mod
+%ifarch %{ix86} %{x8664}
+%{_libexecdir}/*.o
+%endif
+%ifarch %{ix86} %{x8664} sparc sparc64
+%{_libexecdir}/*.img
+%endif
+
 %dir %{_sysconfdir}/grub.d
 %doc %{_sysconfdir}/grub.d/README
 %attr(755,root,root) %{_sysconfdir}/grub.d/00_header
 %attr(755,root,root) %{_sysconfdir}/grub.d/10_linux
 %attr(755,root,root) %{_sysconfdir}/grub.d/30_os-prober
 %attr(755,root,root) %{_sysconfdir}/grub.d/40_custom
+
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkdevicemap
 %attr(755,root,root) %{_sbindir}/grub-probe
@@ -220,4 +229,5 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/grub-probe.8*
 %{_mandir}/man8/grub-setup.8*
 %endif
+
 %{_infodir}/grub*.info*

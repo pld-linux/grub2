@@ -1,0 +1,123 @@
+--- grub-1.97.1/util/i386/pc/grub-install.in~	2009-11-17 12:50:34.000000000 +0200
++++ grub-1.97.1/util/i386/pc/grub-install.in	2009-11-17 12:50:56.247556266 +0200
+@@ -29,7 +29,7 @@
+ PACKAGE_VERSION=@PACKAGE_VERSION@
+ target_cpu=@target_cpu@
+ platform=@platform@
+-pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
++pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
+ 
+ # for make_system_path_relative_to_its_root()
+ . /lib/grub-mkconfig_lib
+@@ -230,23 +230,6 @@
+     exit 1
+ fi
+ 
+-# Copy the GRUB images to the GRUB directory.
+-for file in ${grubdir}/*.mod ${grubdir}/*.lst ${grubdir}/*.img ${grubdir}/efiemu??.o; do
+-    if test -f $file && [ "`basename $file`" != menu.lst ]; then
+-	rm -f $file || exit 1
+-    fi
+-done
+-for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
+-    cp -f $file ${grubdir} || exit 1
+-done
+-if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
+-    for file in ${pkglibdir}/*.img ${pkglibdir}/efiemu??.o; do
+-	if test -f $file; then
+-	    cp -f $file ${grubdir} || exit 1
+-	fi
+-    done
+-fi
+-
+ # Write device to a variable so we don't have to traverse /dev every time.
+ grub_device=`$grub_probe --target=device ${grubdir}`
+ 
+--- grub-1.97.1/util/i386/efi/grub-install.in~	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/i386/efi/grub-install.in	2009-11-17 12:51:29.340886271 +0200
+@@ -29,7 +29,7 @@
+ PACKAGE_VERSION=@PACKAGE_VERSION@
+ target_cpu=@target_cpu@
+ platform=@platform@
+-pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
++pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
+ 
+ grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
+ grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
+@@ -168,16 +168,6 @@
+     exit 1
+ fi
+ 
+-# Copy the GRUB images to the GRUB directory.
+-for file in ${grubdir}/*.mod ${grubdir}/*.lst; do
+-    if test -f $file && [ "`basename $file`" != menu.lst ]; then
+-	rm -f $file || exit 1
+-    fi
+-done
+-for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
+-    cp -f $file ${grubdir} || exit 1
+-done
+-
+ # Create the core image. First, auto-detect the filesystem module.
+ fs_module=`$grub_probe --target=fs --device-map=${device_map} ${grubdir}`
+ if test "x$fs_module" = xfat; then :; else
+--- grub-1.97.1/util/ieee1275/grub-install.in~	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/ieee1275/grub-install.in	2009-11-17 12:51:47.850884103 +0200
+@@ -32,7 +32,7 @@
+ PACKAGE_VERSION=@PACKAGE_VERSION@
+ target_cpu=@target_cpu@
+ platform=@platform@
+-pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
++pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
+ 
+ grub_mkimage=${bindir}/`echo grub-mkelfimage | sed ${transform}`
+ grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
+@@ -153,16 +153,6 @@
+     $grub_mkdevicemap --device-map=$device_map $no_floppy || exit 1
+ fi
+ 
+-# Copy the GRUB images to the GRUB directory.
+-for file in ${grubdir}/*.mod ${grubdir}/*.lst ; do
+-    if test -f $file; then
+-	rm -f $file || exit 1
+-    fi
+-done
+-for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst ; do
+-    cp -f $file ${grubdir} || exit 1
+-done
+-
+ # Create the core image. First, auto-detect the filesystem module.
+ fs_module=`$grub_probe --target=fs --device-map=${device_map} ${grubdir}`
+ if test "x$fs_module" = x -a "x$modules" = x; then
+--- grub-1.97.1/util/sparc64/ieee1275/grub-install.in~	2009-11-17 12:49:04.000000000 +0200
++++ grub-1.97.1/util/sparc64/ieee1275/grub-install.in	2009-11-17 12:52:06.784216442 +0200
+@@ -29,7 +29,7 @@
+ PACKAGE_VERSION=@PACKAGE_VERSION@
+ target_cpu=@target_cpu@
+ platform=@platform@
+-pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
++pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
+ 
+ # for make_system_path_relative_to_its_root()
+ . /lib/grub-mkconfig_lib
+@@ -192,20 +192,6 @@
+     exit 1
+ fi
+ 
+-# Copy the GRUB images to the GRUB directory.
+-for file in ${grubdir}/*.mod ${grubdir}/*.lst ${grubdir}/*.img; do
+-    if test -f $file && [ "`basename $file`" != menu.lst ]; then
+-	rm -f $file || exit 1
+-    fi
+-done
+-for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
+-    cp -f $file ${grubdir} || exit 1
+-done
+-
+-for file in ${pkglibdir}/*.img; do
+-    cp -f $file ${grubdir} || exit 1
+-done
+-
+ # Write device to a variable so we don't have to traverse /dev every time.
+ grub_device=`$grub_probe --target=device ${grubdir}`
+ 
