@@ -1,0 +1,22 @@
+--- grub-1.97.1/util/grub-mkconfig.in~	2009-11-17 17:02:16.626243372 +0200
++++ grub-1.97.1/util/grub-mkconfig.in	2009-11-17 17:02:08.346050859 +0200
+@@ -120,6 +120,19 @@
+ 
+ # Device containing our userland.  Typically used for root= parameter.
+ GRUB_DEVICE="`${grub_probe} --target=device /`"
++
++# Rewrite to sane LVM node (Code from PLD Linux geninitrd):
++# /dev/mapper/sys-rootfs -> /dev/sys/rootfs
++# /dev/mapper/blodnatt-blah--bleh -> /dev/blodnatt/blah-bleh
++case "$GRUB_DEVICE" in
++/dev/mapper/*-*)
++	GRUB_DEVICE=${GRUB_DEVICE#/dev/mapper/}
++	local VG=${GRUB_DEVICE%%-*}
++	local LV=$(echo "${GRUB_DEVICE#$VG-}" | awk '{gsub(/--/, "-"); print}')
++	GRUB_DEVICE=/dev/$VG/$LV
++;;
++esac
++
+ GRUB_DEVICE_UUID="`${grub_probe} --device ${GRUB_DEVICE} --target=fs_uuid 2> /dev/null`" || true
+ 
+ # Device containing our /boot partition.  Usually the same as GRUB_DEVICE.
