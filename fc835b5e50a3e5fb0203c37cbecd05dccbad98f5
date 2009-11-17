@@ -1,0 +1,2 @@
+- up to svn version; use standard /boot/grub place (it's supposed to replace
+  grub.spec package); include man pages; drop obsolete todo
