@@ -1,18 +1,16 @@
 # Conditional build:
-%bcond_with	static	# build static binaries
+%bcond_with		static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
-#
+
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.97.1
-Release:	4
+Release:	5
 License:	GPL v2
 Group:		Base
-# svn export svn://svn.sv.gnu.org/grub/trunk/grub2
-#Source0:	%{name}-%{snap}.tar.bz2
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 # Source0-md5:	66fe18cd9318e3d67a34d7b7a8e7b1f6
 Source1:	update-grub
@@ -36,7 +34,11 @@ BuildRequires:	lzo-devel >= 1.0.2
 %endif
 %ifarch %{x8664}
 BuildRequires:	/usr/lib/libc.so
+%if "%{pld_release}" == "ac"
+BuildRequires:	libgcc32
+%else
 BuildRequires:	gcc-multilib
+%endif
 %endif
 BuildRequires:	ncurses-devel
 BuildRequires:	sed >= 4.0
@@ -47,6 +49,7 @@ BuildRequires:	lzo-static
 %endif
 BuildRequires:	ncurses-static
 %endif
+BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.213
 Provides:	bootloader
 Conflicts:	grub
