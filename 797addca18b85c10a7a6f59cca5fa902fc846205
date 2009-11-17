@@ -1,0 +1,5 @@
+- semicolon added in grub-1.96/normal/parser.y:58 (grub2-parser.patch)
+- added bcond_without grubemu (build grub-emu binary)
+- more files included in package
+- adapterized
+  Based on patch by Daniel Dawid Majewski (Message-ID: <49455C60.8000000@o2.pl>)
