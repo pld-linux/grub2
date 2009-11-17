@@ -176,7 +176,7 @@ cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_libexecdir}
 install -p %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/update-grub
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man8/update-grub.8
 cp -a %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
-rm $RPM_BUILD_ROOT%{_infodir}/dir
+rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 # deprecated. we don't need it
 rm $RPM_BUILD_ROOT/lib/update-grub_lib
 
