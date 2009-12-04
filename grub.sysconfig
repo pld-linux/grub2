@@ -7,7 +7,7 @@ GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo PLD`
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX=""
 
-# Uncomment to disable graphical terminal (grub-pc only)
+# Set to 'console' to disable graphical terminal (grub-pc only)
 #GRUB_TERMINAL=console
 
 # The resolution used on graphical terminal
@@ -15,8 +15,8 @@ GRUB_CMDLINE_LINUX=""
 # you can see them in real GRUB with the command `vbeinfo'
 #GRUB_GFXMODE=640x480
 
-# Uncomment if you don't want GRUB to pass "root=UUID=xxx" parameter to Linux
+# Disable GRUB to pass "root=UUID=xxx" parameter to Linux
 #GRUB_DISABLE_LINUX_UUID=true
 
-# Uncomment to disable generation of recovery mode menu entries
-#GRUB_DISABLE_LINUX_RECOVERY="true"
+# Disable generation of recovery mode menu entries
+GRUB_DISABLE_LINUX_RECOVERY="true"
