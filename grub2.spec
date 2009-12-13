@@ -28,6 +28,7 @@ Patch5:		grub-lvmdevice.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
+BuildRequires:	help2man
 BuildRequires:	libtool
 BuildRequires:	texinfo
 %ifarch %{ix86} %{x8664}
