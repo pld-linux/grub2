@@ -9,7 +9,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.97.1
-Release:	6
+Release:	7
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -17,6 +17,7 @@ Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
+Source4:	grub-custom.cfg
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
 BuildRequires:	autoconf >= 2.53
 Patch0:		pld-initrd.patch
@@ -25,6 +26,7 @@ Patch2:		grub-garbage.patch
 Patch3:		grub-shelllib.patch
 Patch4:		grub-install.in.patch
 Patch5:		grub-lvmdevice.patch
+Patch6:		pld-mkconfigdir.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
@@ -139,6 +141,7 @@ avançados e que querem mais recursos de seu boot loader.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .
@@ -170,7 +173,7 @@ AWK=gawk \
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/etc/sysconfig
+install -d $RPM_BUILD_ROOT{/etc/sysconfig,%{_sysconfdir}/grub.d}
 
 %{__make} install \
 	pkgdatadir=%{_libexecdir} \
@@ -181,7 +184,9 @@ cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_libexecdir}
 install -p %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/update-grub
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man8/update-grub.8
 cp -a %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
+cp -a %{SOURCE4} $RPM_BUILD_ROOT%{_sysconfdir}/grub.d/custom.cfg
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
+
 # deprecated. we don't need it
 rm $RPM_BUILD_ROOT/lib/update-grub_lib
 
@@ -256,12 +261,15 @@ rm -rf $RPM_BUILD_ROOT
 %ghost %{_libexecdir}/device.map
 %ghost %{_libexecdir}/core.img
 
-%dir %{_sysconfdir}/grub.d
-%doc %{_sysconfdir}/grub.d/README
-%attr(755,root,root) %{_sysconfdir}/grub.d/00_header
-%attr(755,root,root) %{_sysconfdir}/grub.d/10_linux
-%attr(755,root,root) %{_sysconfdir}/grub.d/30_os-prober
-%attr(755,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/grub.d/40_custom
+%dir /lib/grub.d
+%doc /lib/grub.d/README
+%attr(755,root,root) /lib/grub.d/00_header
+%attr(755,root,root) /lib/grub.d/10_linux
+%attr(755,root,root) /lib/grub.d/30_os-prober
+%attr(755,root,root) /lib/grub.d/40_custom
+
+%dir %attr(750,root,root) /etc/grub.d
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/grub.d/custom.cfg
 
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkdevicemap

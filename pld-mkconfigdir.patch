@@ -1,0 +1,51 @@
+--- grub-1.97.1/util/grub-mkconfig.in~	2010-01-12 12:14:40.000000000 +0200
++++ grub-1.97.1/util/grub-mkconfig.in	2010-01-12 12:26:24.581982969 +0200
+@@ -29,7 +29,7 @@
+ pkgdatadir=${datadir}/`echo @PACKAGE_TARNAME@ | sed "${transform}"`
+ grub_prefix=`echo /boot/grub | sed ${transform}`
+ grub_cfg=""
+-grub_mkconfig_dir=${sysconfdir}/grub.d
++grub_mkconfig_dir=/lib/grub.d
+ 
+ grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
+ grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
+--- grub-1.97.1/Makefile.in~	2010-01-12 12:14:39.000000000 +0200
++++ grub-1.97.1/Makefile.in	2010-01-12 12:27:38.395326461 +0200
+@@ -282,16 +282,16 @@
+ 	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(sbindir)/$$dest; \
+ 	  $(HELP2MAN) --section=8 -o $(DESTDIR)$(mandir)/man8/$$dest.8 $(builddir)/$$file; \
+ 	done
+-	$(SHELL) $(mkinstalldirs) $(DESTDIR)$(sysconfdir)/grub.d
++	$(SHELL) $(mkinstalldirs) $(DESTDIR)/lib/grub.d
+ 	@list='$(grub-mkconfig_SCRIPTS)'; for file in $$list; do \
+ 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
+ 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
+-	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
++	  $(INSTALL_SCRIPT) $$dir$$file $(DESTDIR)/lib/grub.d/$$dest; \
+ 	done
+ 	@list='$(grub-mkconfig_DATA)'; for file in $$list; do \
+ 	  if test -f "$$file"; then dir=; else dir="$(srcdir)/"; fi; \
+ 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
+-	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
++	  $(INSTALL_DATA) $$dir$$file $(DESTDIR)/lib/grub.d/$$dest; \
+ 	done
+ 	$(SHELL) $(mkinstalldirs) $(DESTDIR)/lib
+ 	@list='$(lib_SCRIPTS)'; \
+@@ -338,7 +338,7 @@
+ 	done
+ 	@list='$(grub-mkconfig_SCRIPTS) $(grub-mkconfig_DATA)'; for file in $$list; do \
+ 	  dest="`echo $$file | sed 's,.*/,,' | sed '$(transform)'`"; \
+-	  rm -f $(DESTDIR)$(sysconfdir)/grub.d/$$dest; \
++	  rm -f $(DESTDIR)/lib/grub.d/$$dest; \
+ 	done
+ 	@list='$(lib_SCRIPTS)'; \
+ 	for file in $$list; do \
+--- grub-1.97.1/util/grub.d/40_custom.in~	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub.d/40_custom.in	2010-01-12 12:37:52.608575356 +0200
+@@ -1,5 +1,2 @@
+ #!/bin/sh
+-exec tail -n +3 $0
+-# This file provides an easy way to add custom menu entries.  Simply type the
+-# menu entries you want to add after this comment.  Be careful not to change
+-# the 'exec tail' line above.
++cat /etc/grub.d/custom.cfg
