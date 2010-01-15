@@ -155,7 +155,7 @@ export CFLAGS="-Os %{?debug:-g}"
 # mawk stalls at ./genmoddep.awk, so force gawk
 AWK=gawk \
 %configure \
-%{!?without_grubemu:--enable-grub-emu} \
+%{?with_grubemu:--enable-grub-emu} \
 	BUILD_CFLAGS="$CFLAGS"
 %{__make} -j1 \
 	BUILD_CFLAGS="$CFLAGS" \
