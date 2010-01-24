@@ -8,12 +8,12 @@ Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	1.97.1
-Release:	7
+Version:	1.97.2
+Release:	1
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
-# Source0-md5:	66fe18cd9318e3d67a34d7b7a8e7b1f6
+# Source0-md5:	db4d23fb8897523a7e484e974ae3d1c9
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
