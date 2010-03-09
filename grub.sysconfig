@@ -1,9 +1,13 @@
-# If you change this file, run 'update-grub' afterwards to update
-# /boot/grub/grub.cfg.
+# Configuration file for grub.
+#
+# If you change this file, run 'update-grub' afterwards to update /boot/grub/grub.cfg.
+#
+# To enable auto generation on kernel package's install, UPDATE_GRUB must be set to "yes".
+#UPDATE_GRUB=yes
 
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=5
-GRUB_DISTRIBUTOR=`lsb_release -i -s 2> /dev/null || echo PLD`
+GRUB_DISTRIBUTOR=$(lsb_release -i -s 2> /dev/null || echo PLD)
 GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX=""
 
