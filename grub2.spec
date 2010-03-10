@@ -9,7 +9,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.97.2
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -27,6 +27,7 @@ Patch3:		grub-shelllib.patch
 Patch4:		grub-install.in.patch
 Patch5:		grub-lvmdevice.patch
 Patch6:		pld-mkconfigdir.patch
+Patch7:		grub-mkconfig-diagnostics.patch
 BuildRequires:	automake
 BuildRequires:	bison
 BuildRequires:	gawk
@@ -142,6 +143,7 @@ avançados e que querem mais recursos de seu boot loader.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 %build
 cp -f /usr/share/automake/config.sub .

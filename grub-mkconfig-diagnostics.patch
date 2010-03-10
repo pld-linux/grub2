@@ -1,0 +1,105 @@
+--- grub-1.97.2/util/grub-mkconfig.in~	2010-03-10 18:09:58.858434588 +0200
++++ grub-1.97.2/util/grub-mkconfig.in	2010-03-10 18:11:34.197928250 +0200
+@@ -243,14 +243,19 @@
+ 
+ if test "x${grub_cfg}" != "x"; then
+   rm -f ${grub_cfg}.new
++  # open fd &3 for diagnostic messages
++  exec 3>&1
+   exec > ${grub_cfg}.new
+ 
+   # Allow this to fail, since /boot/grub/ might need to be fatfs to support some
+   # firmware implementations (e.g. OFW or EFI).
+   chmod 400 ${grub_cfg}.new || grub_warn "Could not make ${grub_cfg}.new readable by only root.\
+   This means that if the generated config contains a password it is readable by everyone"
++else
++  # open fd &3 for diagnostic messages
++  exec 3>&2
+ fi
+-echo "Generating grub.cfg ..." >&2
++echo "Generating grub.cfg ..." >&3
+ 
+ cat << EOF
+ #
+@@ -275,4 +280,7 @@
+   mv -f ${grub_cfg}.new ${grub_cfg}
+ fi
+ 
+-echo "done" >&2
++echo "done" >&3
++
++# close diagnostic stream
++exec 3>&-
+--- grub-1.97.2/util/grub.d/10_linux.in~	2010-03-10 18:09:58.838434522 +0200
++++ grub-1.97.2/util/grub.d/10_linux.in	2010-03-10 18:12:47.478176169 +0200
+@@ -67,7 +67,7 @@
+ 
+ while [ "x$list" != "x" ] ; do
+   linux=`version_find_latest $list`
+-  echo "Found linux image: $linux" >&2
++  echo "Found linux image: $linux" >&3
+   basename=`basename $linux`
+   dirname=`dirname $linux`
+   rel_dirname=`make_system_path_relative_to_its_root $dirname`
+@@ -85,7 +85,7 @@
+     fi
+   done
+   if test -n "${initrd}" ; then
+-    echo "Found initrd image: ${dirname}/${initrd}" >&2
++    echo "Found initrd image: ${dirname}/${initrd}" >&3
+   else
+     # "UUID=" magic is parsed by initrds.  Since there's no initrd, it can't work here.
+     linux_root_device_thisversion=${GRUB_DEVICE}
+--- grub-1.97.2/util/grub.d/30_os-prober.in~	2010-03-10 18:09:58.838434522 +0200
++++ grub-1.97.2/util/grub.d/30_os-prober.in	2010-03-10 18:13:43.784870350 +0200
+@@ -47,7 +47,7 @@
+     LONGNAME="${LABEL}"
+   fi
+ 
+-  echo "Found ${LONGNAME} on ${DEVICE}" >&2
++  echo "Found ${LONGNAME} on ${DEVICE}" >&3
+ 
+   case ${BOOT} in
+     chain)
+--- grub-1.97.2/util/grub.d/10_freebsd.in~	2010-03-10 18:15:07.000000000 +0200
++++ grub-1.97.2/util/grub.d/10_freebsd.in	2010-03-10 18:23:16.077575128 +0200
+@@ -38,7 +38,7 @@
+ fi
+ 
+ if [ "x$kfreebsd" != "x" ] ; then
+-  echo "Found kernel of FreeBSD: $kfreebsd" >&2
++  echo "Found kernel of FreeBSD: $kfreebsd" >&3
+ 
+   kfreebsd_basename=`basename $kfreebsd`
+   kfreebsd_dirname=`dirname $kfreebsd`
+--- grub-1.97.2/util/grub.d/10_hurd.in~	2010-03-10 18:15:07.000000000 +0200
++++ grub-1.97.2/util/grub.d/10_hurd.in	2010-03-10 18:23:36.364190317 +0200
+@@ -37,7 +37,7 @@
+     basename=`basename $i`
+     dirname=`dirname $i`
+     rel_dirname=`make_system_path_relative_to_its_root $dirname`
+-    echo "Found GNU Mach: $i" >&2
++    echo "Found GNU Mach: $i" >&3
+     kernel=${rel_dirname}/${basename}
+     at_least_one=true
+   fi
+@@ -51,7 +51,7 @@
+ 
+ for i in /hurd/${hurd_fs}.static /hurd/exec ; do
+   if test -e "$i" ; then
+-    echo "Found Hurd module: $i" >&2
++    echo "Found Hurd module: $i" >&3
+     at_least_one=true
+   else
+     all_of_them=false
+--- grub-1.97.2/util/grub.d/10_windows.in~	2010-03-10 18:15:07.000000000 +0200
++++ grub-1.97.2/util/grub.d/10_windows.in	2010-03-10 18:24:57.464181349 +0200
+@@ -68,7 +68,7 @@
+   # Get boot /dev/ice.
+   dev=`${grub_probe} -t device "$dir" 2>/dev/null` || continue
+ 
+-  echo "Found $OS on $dir ($dev)" >&2
++  echo "Found $OS on $dir ($dev)" >&3
+   cat << EOF
+ menuentry "$OS" {
+ EOF
