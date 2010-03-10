@@ -20,3 +20,11 @@
  #
  EOF
  
+--- grub-1.97.2/util/grub.d/README~	2010-01-24 20:13:30.000000000 +0200
++++ grub-1.97.2/util/grub.d/README	2010-03-10 18:25:39.418965379 +0200
+@@ -8,4 +8,4 @@
+ The number namespace in-between is configurable by system installer and/or
+ administrator.  For example, you can add an entry to boot another OS as
+ 01_otheros, 11_otheros, etc, depending on the position you want it to occupy in
+-the menu; and then adjust the default setting via /etc/default/grub.
++the menu; and then adjust the default setting via /etc/sysconfig/grub.
