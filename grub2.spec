@@ -1,10 +1,14 @@
 #
+# TODO
+# - subpackages? e.g. modules and utils
+#
 # Conditional build:
 %bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
 #
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
+Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
@@ -106,6 +110,25 @@ GRUB wurde innerhalb des GNU Hurd-Projektes als Boot-Loader entwickelt
 und wird unter der GPL vertrieben. Aufgrund seiner höheren
 Flexibilität verdrängt GRUB in vielen Linux-Distributionen den
 traditionellen Boot-Loader LILO.
+
+%description -l hu.UTF-8
+GRUB egy GPL liszenszű rendszerbetöltő. Linux és *BSD kernelek
+betöltése mellett támogatja a Multiboot standard-ot, amely lehetővé
+teszi boot képek betöltését (moduláris kerneleknek kell, mint pl. a
+GNU Hurd).
+
+GRUB2 céljai a következők:
+- szkriptelés támogatása, úgymint feltételek, ciklusok, változók,
+  függvények.
+- grafikus felület
+- modulok dinamikus betöltése futási időben
+- hordozhatóság több architektúrára
+- többnyelvűség: nem-ASCII karakterek támogatása, üzenetkatalógusok,
+  mint gettext, betűtípusok, grafikus konzolon, és így tovább
+- valós memória kezelés, amellyel még bővíthetőbbé tehetjük
+- moduláris, hierarchikus, objektum-orientált keretrendszer
+  fájlrendszerekhez, fájlokhoz, eszközökhöz, meghajtókhoz,
+  terminálokhoz, parancsokhoz, partíciós táblákhoz és OS betöltőkhöz
 
 %description -l es.UTF-8
 Éste es GRUB - Grand Unified Boot Loader - un administrador de
