@@ -1,15 +1,15 @@
---- grub-1.97.1/util/i386/pc/grub-install.in~	2009-11-17 12:50:34.000000000 +0200
-+++ grub-1.97.1/util/i386/pc/grub-install.in	2009-11-17 12:50:56.247556266 +0200
-@@ -29,7 +29,7 @@
- PACKAGE_VERSION=@PACKAGE_VERSION@
- target_cpu=@target_cpu@
+--- grub-1.98/util/grub-install.in.orig	2010-05-21 22:35:21.921205822 +0200
++++ grub-1.98/util/grub-install.in	2010-05-21 22:42:47.052967731 +0200
+@@ -31,7 +31,7 @@
  platform=@platform@
+ host_os=@host_os@
+ font=@datadir@/@PACKAGE_TARNAME@/ascii.pf2
 -pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
 +pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
  
- # for make_system_path_relative_to_its_root()
- . /lib/grub-mkconfig_lib
-@@ -230,23 +230,6 @@
+ grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
+ if [ "${target_cpu}-${platform}" = "i386-pc" ] || [ "${target_cpu}-${platform}" = "sparc64-ieee1275" ] || [ "${target_cpu}-${platform}" = "mips-yeeloong" ] ; then
+@@ -244,23 +244,6 @@
      exit 1
  fi
  
@@ -22,7 +22,7 @@
 -for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
 -    cp -f $file ${grubdir} || exit 1
 -done
--if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
+-if [ "${target_cpu}-${platform}" = "i386-pc" ] || [ "${target_cpu}-${platform}" = "sparc64-ieee1275" ] ; then
 -    for file in ${pkglibdir}/*.img ${pkglibdir}/efiemu??.o; do
 -	if test -f $file; then
 -	    cp -f $file ${grubdir} || exit 1
@@ -30,21 +30,21 @@
 -    done
 -fi
 -
- # Write device to a variable so we don't have to traverse /dev every time.
- grub_device=`$grub_probe --target=device ${grubdir}`
- 
---- grub-1.97.1/util/i386/efi/grub-install.in~	2009-11-09 17:48:16.000000000 +0200
-+++ grub-1.97.1/util/i386/efi/grub-install.in	2009-11-17 12:51:29.340886271 +0200
-@@ -29,7 +29,7 @@
- PACKAGE_VERSION=@PACKAGE_VERSION@
+ # Copy gettext files
+ mkdir -p ${grubdir}/locale/
+ for file in ${grubdir}/locale/*.mo ${pkglibdir}/locale/*.mo; do
+--- grub-1.98/util/i386/efi/grub-install.in.orig	2010-03-06 21:51:37.000000000 +0100
++++ grub-1.98/util/i386/efi/grub-install.in	2010-05-21 22:49:13.733969750 +0200
+@@ -30,7 +30,7 @@
  target_cpu=@target_cpu@
  platform=@platform@
+ host_os=@host_os@
 -pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
 +pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
  
  grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
  grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
-@@ -168,16 +168,6 @@
+@@ -170,16 +170,6 @@
      exit 1
  fi
  
@@ -58,11 +58,11 @@
 -    cp -f $file ${grubdir} || exit 1
 -done
 -
- # Create the core image. First, auto-detect the filesystem module.
- fs_module=`$grub_probe --target=fs --device-map=${device_map} ${grubdir}`
- if test "x$fs_module" = xfat; then :; else
---- grub-1.97.1/util/ieee1275/grub-install.in~	2009-11-09 17:48:16.000000000 +0200
-+++ grub-1.97.1/util/ieee1275/grub-install.in	2009-11-17 12:51:47.850884103 +0200
+ # Copy gettext files
+ mkdir -p ${grubdir}/locale/
+ for file in ${grubdir}/locale/*.mo ${pkglibdir}/locale/*.mo; do
+--- grub-1.98/util/ieee1275/grub-install.in.orig	2010-03-06 21:51:37.000000000 +0100
++++ grub-1.98/util/ieee1275/grub-install.in	2010-05-21 22:52:06.437969478 +0200
 @@ -32,7 +32,7 @@
  PACKAGE_VERSION=@PACKAGE_VERSION@
  target_cpu=@target_cpu@
@@ -72,7 +72,7 @@
  
  grub_mkimage=${bindir}/`echo grub-mkelfimage | sed ${transform}`
  grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
-@@ -153,16 +153,6 @@
+@@ -154,16 +154,6 @@
      $grub_mkdevicemap --device-map=$device_map $no_floppy || exit 1
  fi
  
@@ -86,38 +86,6 @@
 -    cp -f $file ${grubdir} || exit 1
 -done
 -
- # Create the core image. First, auto-detect the filesystem module.
- fs_module=`$grub_probe --target=fs --device-map=${device_map} ${grubdir}`
- if test "x$fs_module" = x -a "x$modules" = x; then
---- grub-1.97.1/util/sparc64/ieee1275/grub-install.in~	2009-11-17 12:49:04.000000000 +0200
-+++ grub-1.97.1/util/sparc64/ieee1275/grub-install.in	2009-11-17 12:52:06.784216442 +0200
-@@ -29,7 +29,7 @@
- PACKAGE_VERSION=@PACKAGE_VERSION@
- target_cpu=@target_cpu@
- platform=@platform@
--pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
-+pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
- 
- # for make_system_path_relative_to_its_root()
- . /lib/grub-mkconfig_lib
-@@ -192,20 +192,6 @@
-     exit 1
+ if ! test -f ${grubdir}/grubenv; then
+     $grub_editenv ${grubdir}/grubenv create
  fi
- 
--# Copy the GRUB images to the GRUB directory.
--for file in ${grubdir}/*.mod ${grubdir}/*.lst ${grubdir}/*.img; do
--    if test -f $file && [ "`basename $file`" != menu.lst ]; then
--	rm -f $file || exit 1
--    fi
--done
--for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
--    cp -f $file ${grubdir} || exit 1
--done
--
--for file in ${pkglibdir}/*.img; do
--    cp -f $file ${grubdir} || exit 1
--done
--
- # Write device to a variable so we don't have to traverse /dev every time.
- grub_device=`$grub_probe --target=device ${grubdir}`
- 

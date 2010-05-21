@@ -12,12 +12,12 @@ Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	1.97.2
-Release:	2
+Version:	1.98
+Release:	0.1
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
-# Source0-md5:	db4d23fb8897523a7e484e974ae3d1c9
+# Source0-md5:	c0bcf60e524739bb64e3a2d4e3732a59
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
@@ -180,7 +180,11 @@ export CFLAGS="-Os %{?debug:-g}"
 # mawk stalls at ./genmoddep.awk, so force gawk
 AWK=gawk \
 %configure \
-%{?with_grubemu:--enable-grub-emu} \
+%if %{with grubemu}
+	--enable-grub-emu-usb \
+	--enable-grub-emu-sdl \
+	--enable-grub-emu-pci \
+%endif
 	BUILD_CFLAGS="$CFLAGS"
 %{__make} -j1 \
 	BUILD_CFLAGS="$CFLAGS" \
@@ -261,8 +265,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/grub-mkelfimage.1*
 %{_mandir}/man8/update-grub.8*
 %if %{with grubemu}
-%attr(755,root,root) %{_sbindir}/grub-emu
-%{_mandir}/man8/grub-emu.8*
+#%attr(755,root,root) %{_sbindir}/grub-emu
+#%{_mandir}/man8/grub-emu.8*
 %endif
 /lib/grub-mkconfig_lib
 

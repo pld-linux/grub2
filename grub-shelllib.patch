@@ -37,17 +37,6 @@
  
  # Do this as early as possible, since other commands might depend on it.
  # (e.g. the `loadfont' command might need lvm or raid modules)
---- grub-1.97.1.shelllib/util/grub.d/10_freebsd.in	2009-11-09 17:48:16.000000000 +0200
-+++ grub-1.97.1/util/grub.d/10_freebsd.in	2009-11-17 12:34:23.164322142 +0200
-@@ -19,7 +19,7 @@
- prefix=@prefix@
- exec_prefix=@exec_prefix@
- libdir=@libdir@
--. ${libdir}/grub/grub-mkconfig_lib
-+. /lib/grub-mkconfig_lib
- 
- case "${GRUB_DISTRIBUTOR}" in
-   Debian)	OS="${GRUB_DISTRIBUTOR} GNU/kFreeBSD" ;;
 --- grub-1.97.1.shelllib/util/grub.d/10_hurd.in	2009-11-09 17:48:16.000000000 +0200
 +++ grub-1.97.1/util/grub.d/10_hurd.in	2009-11-17 12:34:23.160988747 +0200
 @@ -19,7 +19,7 @@
@@ -103,8 +92,8 @@
  
  if [ "x$EUID" = "x" ] ; then
    EUID=`id -u`
---- grub-1.97.1.shelllib/util/i386/pc/grub-install.in	2009-11-09 17:48:16.000000000 +0200
-+++ grub-1.97.1/util/i386/pc/grub-install.in	2009-11-17 12:34:23.157655729 +0200
+--- grub-1.97.1.shelllib/util/grub-install.in	2009-11-09 17:48:16.000000000 +0200
++++ grub-1.97.1/util/grub-install.in	2009-11-17 12:34:23.157655729 +0200
 @@ -32,7 +32,7 @@
  pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
  
@@ -114,17 +103,6 @@
  
  grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
  if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
---- grub-1.97.1.shelllib/util/sparc64/ieee1275/grub-install.in	2009-11-09 17:48:16.000000000 +0200
-+++ grub-1.97.1/util/sparc64/ieee1275/grub-install.in	2009-11-17 12:34:23.160988747 +0200
-@@ -32,7 +32,7 @@
- pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
- 
- # for make_system_path_relative_to_its_root()
--. ${libdir}/grub/grub-mkconfig_lib
-+. /lib/grub-mkconfig_lib
- 
- grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
- grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
 --- grub-1.97.1.shelllib/util/update-grub_lib.in	2009-11-09 17:48:16.000000000 +0200
 +++ grub-1.97.1/util/update-grub_lib.in	2009-11-17 12:34:23.157655729 +0200
 @@ -18,6 +18,6 @@

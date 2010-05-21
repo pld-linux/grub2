@@ -61,17 +61,6 @@
  
    case ${BOOT} in
      chain)
---- grub-1.97.2/util/grub.d/10_freebsd.in~	2010-03-10 18:15:07.000000000 +0200
-+++ grub-1.97.2/util/grub.d/10_freebsd.in	2010-03-10 18:23:16.077575128 +0200
-@@ -38,7 +38,7 @@
- fi
- 
- if [ "x$kfreebsd" != "x" ] ; then
--  echo "Found kernel of FreeBSD: $kfreebsd" >&2
-+  echo "Found kernel of FreeBSD: $kfreebsd" >&3
- 
-   kfreebsd_basename=`basename $kfreebsd`
-   kfreebsd_dirname=`dirname $kfreebsd`
 --- grub-1.97.2/util/grub.d/10_hurd.in~	2010-03-10 18:15:07.000000000 +0200
 +++ grub-1.97.2/util/grub.d/10_hurd.in	2010-03-10 18:23:36.364190317 +0200
 @@ -37,7 +37,7 @@
