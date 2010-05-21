@@ -13,7 +13,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.98
-Release:	0.1
+Release:	0.2
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -244,6 +244,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) %{_sbindir}/grub-install
 %attr(755,root,root) %{_sbindir}/grub-mkfont
 %attr(755,root,root) %{_sbindir}/grub-mkrescue
+%attr(755,root,root) %{_sbindir}/grub-mkrelpath
 %attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-mkconfig
 %attr(755,root,root) %{_sbindir}/grub-mkelfimage
@@ -260,6 +261,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man1/grub-fstest.1*
 %{_mandir}/man1/grub-mkfont.1*
 %{_mandir}/man1/grub-mkrescue.1*
+%{_mandir}/man1/grub-mkrelpath.1*
 %{_mandir}/man1/grub-editenv.1*
 %{_mandir}/man8/grub-mkconfig.8*
 %{_mandir}/man1/grub-mkelfimage.1*
