@@ -1,0 +1,48 @@
+#
+# Sample boot menu configuration file
+#
+
+# Change the colors.
+color yellow/blue blue/cyan
+
+# Show splashscreen
+#color 2
+#foreground ffffff
+#background 000000
+#splashimage (hd0,1)/boot/grub/splash.xpm.gz
+
+# Boot automatically after 15 secs.
+timeout 15
+
+# By default, boot the first entry.
+default 0
+
+# Fallback to the second entry.
+fallback 1
+
+# For booting Linux
+title  Linux
+root (hd0,1)
+kernel /boot/vmlinuz root=/dev/hda2
+initrd /boot/initrd
+
+title  Linux (previous kernel)
+root (hd0,1)
+kernel /boot/vmlinuz.old root=/dev/hda2
+initrd /boot/initrd.old
+
+title  Linux X Window System
+root (hd0,1)
+kernel /boot/vmlinuz root=/dev/hda2 5
+
+# # For booting Windows NT or Windows95
+# title DOS / Windows 98 boot menu
+# rootnoverify (hd1,0)
+# map (hd0) (hd1)
+# map (hd1) (hd0)
+# chainloader +1
+
+# For installing GRUB into the hard disk
+title Install GRUB into the hard disk
+root    (hd0,1)
+setup   (hd0)
