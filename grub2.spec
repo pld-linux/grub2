@@ -168,6 +168,11 @@ avançados e que querem mais recursos de seu boot loader.
 %patch6 -p1
 %patch7 -p1
 
+%if "%{cc_version}" < "3.4"
+grep -rl -- -Wno-missing-field-initializers . | xargs sed -i -e 's,-Wno-missing-field-initializers,,'
+sed -i -e '/video_mod_CFLAGS/s/$/ -Wno-error/' conf/common.rmk
+%endif
+
 %build
 cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
@@ -240,14 +245,20 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
+%attr(755,root,root) %{_sbindir}/grub-bin2h
+%attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-fstest
 %attr(755,root,root) %{_sbindir}/grub-install
-%attr(755,root,root) %{_sbindir}/grub-mkfont
-%attr(755,root,root) %{_sbindir}/grub-mkrescue
-%attr(755,root,root) %{_sbindir}/grub-mkrelpath
-%attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-mkconfig
 %attr(755,root,root) %{_sbindir}/grub-mkelfimage
+%attr(755,root,root) %{_sbindir}/grub-mkfont
+%attr(755,root,root) %{_sbindir}/grub-mkisofs
+%attr(755,root,root) %{_sbindir}/grub-mkpasswd-pbkdf2
+%attr(755,root,root) %{_sbindir}/grub-mkrelpath
+%attr(755,root,root) %{_sbindir}/grub-mkrescue
+%attr(755,root,root) %{_sbindir}/grub-reboot
+%attr(755,root,root) %{_sbindir}/grub-script-check
+%attr(755,root,root) %{_sbindir}/grub-set-default
 %attr(755,root,root) %{_sbindir}/update-grub
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkimage
@@ -258,13 +269,20 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/grub-probe.8*
 %{_mandir}/man8/grub-mkdevicemap.8*
 %endif
-%{_mandir}/man1/grub-fstest.1*
-%{_mandir}/man1/grub-mkfont.1*
-%{_mandir}/man1/grub-mkrescue.1*
-%{_mandir}/man1/grub-mkrelpath.1*
+%{_mandir}/man1/grub-bin2h.1*
 %{_mandir}/man1/grub-editenv.1*
-%{_mandir}/man8/grub-mkconfig.8*
+%{_mandir}/man1/grub-fstest.1*
 %{_mandir}/man1/grub-mkelfimage.1*
+%{_mandir}/man1/grub-mkfont.1*
+%{_mandir}/man1/grub-mkisofs.1*
+%{_mandir}/man1/grub-mkpasswd-pbkdf2.1*
+%{_mandir}/man1/grub-mkrelpath.1*
+%{_mandir}/man1/grub-mkrescue.1*
+%{_mandir}/man1/grub-script-check.1*
+%{_mandir}/man8/grub-install.8*
+%{_mandir}/man8/grub-mkconfig.8*
+%{_mandir}/man8/grub-reboot.8*
+%{_mandir}/man8/grub-set-default.8*
 %{_mandir}/man8/update-grub.8*
 %if %{with grubemu}
 #%attr(755,root,root) %{_sbindir}/grub-emu
@@ -299,7 +317,7 @@ rm -rf $RPM_BUILD_ROOT
 %attr(755,root,root) /lib/grub.d/30_os-prober
 %attr(755,root,root) /lib/grub.d/40_custom
 
-%dir %attr(750,root,root) /etc/grub.d
+%dir %attr(750,root,root) %{_sysconfdir}/grub.d
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/grub.d/custom.cfg
 
 %ifarch %{ix86} %{x8664}
