@@ -23,7 +23,6 @@ Source2:	update-grub.8
 Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
 URL:		http://www.gnu.org/software/grub/grub-2.en.html
-BuildRequires:	autoconf >= 2.53
 Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
@@ -32,7 +31,8 @@ Patch4:		grub-install.in.patch
 Patch5:		grub-lvmdevice.patch
 Patch6:		pld-mkconfigdir.patch
 Patch7:		grub-mkconfig-diagnostics.patch
-BuildRequires:	automake
+BuildRequires:	autoconf >= 2.53
+BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
 BuildRequires:	gawk
 BuildRequires:	help2man
