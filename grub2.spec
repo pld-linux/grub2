@@ -1,10 +1,13 @@
-#
 # TODO
 # - subpackages? e.g. modules and utils
+# - grubemu notes
+#   --enable-grub-emu-usb conflicts with --enable-grub-emu-pci, emu-pci seems experimental
+#   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
+#   - put grub-emu to subpackage if it is fixed
 #
 # Conditional build:
 %bcond_with	static	# build static binaries
-%bcond_without	grubemu	# build grub-emu binary
+%bcond_with		grubemu	# build grub-emu debugging utility
 %bcond_without	efiemu	# build efiemu runtimes
 
 %if "%{cc_version}" < "3.4"
@@ -295,8 +298,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_mandir}/man8/grub-set-default.8*
 %{_mandir}/man8/update-grub.8*
 %if %{with grubemu}
-#%attr(755,root,root) %{_sbindir}/grub-emu
-#%{_mandir}/man8/grub-emu.8*
+%attr(755,root,root) %{_sbindir}/grub-emu
+%{_mandir}/man8/grub-emu.8*
 %endif
 /lib/grub-mkconfig_lib
 
