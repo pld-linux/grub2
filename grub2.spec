@@ -38,6 +38,7 @@ Patch4:		grub-install.in.patch
 Patch5:		grub-lvmdevice.patch
 Patch6:		pld-mkconfigdir.patch
 Patch7:		grub-mkconfig-diagnostics.patch
+Patch8:		ppc.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
@@ -174,6 +175,7 @@ avançados e que querem mais recursos de seu boot loader.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs sed -i -e 's,-Wno-missing-field-initializers,,'
@@ -307,11 +309,11 @@ rm -rf $RPM_BUILD_ROOT
 %{_libexecdir}/efiemu*.o
 %endif
 %endif
+%{_libexecdir}/kernel.img
 %ifarch %{ix86} %{x8664} sparc sparc64
 %{_libexecdir}/boot.img
 %{_libexecdir}/cdboot.img
 %{_libexecdir}/diskboot.img
-%{_libexecdir}/kernel.img
 %{_libexecdir}/lnxboot.img
 %{_libexecdir}/pxeboot.img
 %endif
