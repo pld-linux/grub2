@@ -5,7 +5,14 @@
 # Conditional build:
 %bcond_with	static	# build static binaries
 %bcond_without	grubemu	# build grub-emu binary
-#
+%bcond_without	efiemu	# build efiemu runtimes
+
+%if "%{cc_version}" < "3.4"
+# cc does not support:
+# cc1: sorry, unimplemented: code model `large' not supported yet
+%undefine	with_efiemu
+%endif
+
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
@@ -190,6 +197,7 @@ AWK=gawk \
 	--enable-grub-emu-sdl \
 	--enable-grub-emu-pci \
 %endif
+	--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu \
 	BUILD_CFLAGS="$CFLAGS"
 %{__make} -j1 \
 	BUILD_CFLAGS="$CFLAGS" \
@@ -294,8 +302,10 @@ rm -rf $RPM_BUILD_ROOT
 %config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
 %{_libexecdir}/*.lst
 %{_libexecdir}/*.mod
+%if %{with efiemu}
 %ifarch %{x8664}
 %{_libexecdir}/efiemu*.o
+%endif
 %endif
 %ifarch %{ix86} %{x8664} sparc sparc64
 %{_libexecdir}/boot.img
