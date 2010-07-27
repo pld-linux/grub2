@@ -50,8 +50,8 @@
    else
      # "UUID=" magic is parsed by initrds.  Since there's no initrd, it can't work here.
      linux_root_device_thisversion=${GRUB_DEVICE}
---- grub-1.97.2/util/grub.d/30_os-prober.in~	2010-03-10 18:09:58.838434522 +0200
-+++ grub-1.97.2/util/grub.d/30_os-prober.in	2010-03-10 18:13:43.784870350 +0200
+--- grub-1.97.2/util/grub.d/30_os-prober.in	2010-03-10 18:13:43.784870350 +0200
++++ grub-1.98/util/grub.d/30_os-prober.in	2010-07-27 22:42:57.317305712 +0300
 @@ -47,7 +47,7 @@
      LONGNAME="${LABEL}"
    fi
@@ -61,6 +61,15 @@
  
    case ${BOOT} in
      chain)
+@@ -197,7 +197,7 @@
+ EOF
+     ;;
+     *)
+-      echo "  ${LONGNAME} is not yet supported by grub-mkconfig." >&2
++      echo "  ${LONGNAME} is not yet supported by grub-mkconfig." >&3
+     ;;
+   esac
+ done
 --- grub-1.97.2/util/grub.d/10_hurd.in~	2010-03-10 18:15:07.000000000 +0200
 +++ grub-1.97.2/util/grub.d/10_hurd.in	2010-03-10 18:23:36.364190317 +0200
 @@ -37,7 +37,7 @@
@@ -92,3 +101,34 @@
    cat << EOF
  menuentry "$OS" {
  EOF
+--- grub-1.98/util/grub.d/00_header.in~	2010-07-20 01:42:22.000000000 +0300
++++ grub-1.98/util/grub.d/00_header.in	2010-07-27 22:41:33.246481300 +0300
+@@ -106,7 +106,7 @@
+ EOF
+ if [ x$GRUB_THEME != x ] && [ -f $GRUB_THEME ] \
+ 	&& is_path_readable_by_grub $GRUB_THEME; then
+-    echo "Found theme: $GRUB_THEME" >&2
++    echo "Found theme: $GRUB_THEME" >&3
+     prepare_grub_to_access_device `${grub_probe} --target=device $GRUB_THEME` | sed -e "s/^/  /"
+     cat << EOF
+   insmod gfxmenu
+--- grub-1.98/util/grub.d/10_kfreebsd.in~	2010-03-06 22:51:37.000000000 +0200
++++ grub-1.98/util/grub.d/10_kfreebsd.in	2010-07-27 22:42:27.877517513 +0300
+@@ -82,7 +82,7 @@
+ 
+ while [ "x$list" != "x" ] ; do
+   kfreebsd=`version_find_latest $list`
+-  echo "Found kernel of FreeBSD: $kfreebsd" >&2
++  echo "Found kernel of FreeBSD: $kfreebsd" >&3
+   basename=`basename $kfreebsd`
+   dirname=`dirname $kfreebsd`
+   rel_dirname=`make_system_path_relative_to_its_root $dirname`
+@@ -111,7 +111,7 @@
+     fi
+   done
+   if test -n "${acpi_ko}" ; then
+-    echo "Found ACPI module: ${acpi_ko}" >&2
++    echo "Found ACPI module: ${acpi_ko}" >&3
+     acpi_ko_basename=`basename ${acpi_ko}`
+     acpi_ko_dirname=`dirname ${acpi_ko}`
+     acpi_ko_rel_dirname=`make_system_path_relative_to_its_root $acpi_ko_dirname`
