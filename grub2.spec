@@ -1,5 +1,6 @@
 # TODO
 # - subpackages? e.g. modules and utils
+# - subpackage for /sbin/grub-mkfont (pulls freetype lib dep)
 # - grubemu notes
 #   --enable-grub-emu-usb conflicts with --enable-grub-emu-pci, emu-pci seems experimental
 #   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
