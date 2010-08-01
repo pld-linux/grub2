@@ -1,6 +1,7 @@
 # TODO
 # - subpackages? e.g. modules and utils
 # - subpackage for /sbin/grub-mkfont (pulls freetype lib dep)
+# - check where is that locale path: /boot/grub/locale and fix it or change it
 # - grubemu notes
 #   --enable-grub-emu-usb conflicts with --enable-grub-emu-pci, emu-pci seems experimental
 #   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
@@ -24,7 +25,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.98
-Release:	0.2
+Release:	0.3
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -228,6 +229,9 @@ install -d $RPM_BUILD_ROOT{/etc/sysconfig,%{_sysconfdir}/grub.d}
 	pkglibdir=%{_libexecdir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
+# this must be after 'make install'
+install -d $RPM_BUILD_ROOT%{_libexecdir}/locale
+
 cp -a docs/grub.cfg $RPM_BUILD_ROOT%{_libexecdir}
 install -p %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/update-grub
 cp -a %{SOURCE2} $RPM_BUILD_ROOT%{_mandir}/man8/update-grub.8
@@ -305,6 +309,8 @@ rm -rf $RPM_BUILD_ROOT
 /lib/grub-mkconfig_lib
 
 %dir %{_libexecdir}
+# XXX: check this locale dir location and if it is neccesaary to exist on /boot
+%dir %{_libexecdir}/locale
 %config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
 %{_libexecdir}/*.lst
 %{_libexecdir}/*.mod
