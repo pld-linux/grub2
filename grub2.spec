@@ -1,4 +1,5 @@
 # TODO
+# - reap out which in probe scripts and drop R: which
 # - subpackages? e.g. modules and utils
 # - subpackage for /sbin/grub-mkfont (pulls freetype lib dep)
 # - check where is that locale path: /boot/grub/locale and fix it or change it
@@ -25,7 +26,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.98
-Release:	0.3
+Release:	0.4
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -73,6 +74,7 @@ BuildRequires:	ncurses-static
 %endif
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.213
+Requires:	which
 Provides:	bootloader
 Conflicts:	grub
 ExclusiveArch:	%{ix86} %{x8664} ppc sparc64
