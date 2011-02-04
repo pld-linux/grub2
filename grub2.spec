@@ -80,6 +80,7 @@ BuildRequires:	ncurses-static
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.213
 Requires:	which
+Suggests:	cdrkit-mkisofs
 Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
