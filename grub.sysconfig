@@ -2,7 +2,8 @@
 #
 # If you change this file, run 'update-grub' afterwards to update /boot/grub/grub.cfg.
 #
-# To enable auto generation on kernel package's install, UPDATE_GRUB must be set to "yes".
+# To enable auto generation of /boot/grub/grub.conf on kernel package's
+# install, UPDATE_GRUB must be set to "yes".
 #UPDATE_GRUB=yes
 
 GRUB_DEFAULT=0
@@ -24,3 +25,6 @@ GRUB_CMDLINE_LINUX=""
 
 # Disable generation of recovery mode menu entries
 GRUB_DISABLE_LINUX_RECOVERY="true"
+
+# Uncomment to get a beep at grub start
+#GRUB_INIT_TUNE="480 440 1"
