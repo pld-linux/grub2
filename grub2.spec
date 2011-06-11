@@ -53,6 +53,7 @@ Patch8:		ppc.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
+BuildRequires:	freetype-devel
 BuildRequires:	gawk
 BuildRequires:	gettext-devel
 BuildRequires:	help2man
