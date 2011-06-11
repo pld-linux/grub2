@@ -54,6 +54,7 @@ BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
 BuildRequires:	gawk
+BuildRequires:	gettext-devel
 BuildRequires:	help2man
 BuildRequires:	libtool
 BuildRequires:	texinfo
