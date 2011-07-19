@@ -40,7 +40,7 @@ Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
-URL:		http://www.gnu.org/software/grub/grub-2.en.html
+URL:		http://www.gnu.org/software/grub/
 Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
