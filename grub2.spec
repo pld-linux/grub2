@@ -7,6 +7,7 @@
 #   --enable-grub-emu-usb conflicts with --enable-grub-emu-pci, emu-pci seems experimental
 #   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
 #   - put grub-emu to subpackage if it is fixed
+# - grub2-1.97.2-2.x86_64 affected: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=544577 recheck with current ver
 #
 # Conditional build:
 %bcond_with	static	# build static binaries
