@@ -7,8 +7,6 @@
 #   --enable-grub-emu-usb conflicts with --enable-grub-emu-pci, emu-pci seems experimental
 #   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
 #   - put grub-emu to subpackage if it is fixed
-# - grub2-1.97.2-2.x86_64, grub2-1.98-0.5.x86_64 affected: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=544577
-#   i.e "grub-probe /" would fail if rootfs is on lvm and /dev/mapper/foo-rootfs is symlink
 #
 # Conditional build:
 %bcond_with	static	# build static binaries
@@ -33,7 +31,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.98
-Release:	0.5
+Release:	1
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -52,6 +50,7 @@ Patch5:		grub-lvmdevice.patch
 Patch6:		pld-mkconfigdir.patch
 Patch7:		grub-mkconfig-diagnostics.patch
 Patch8:		ppc.patch
+Patch9:		grub-1.98-follow-dev-mapper-symlinks.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
@@ -194,6 +193,7 @@ avançados e que querem mais recursos de seu boot loader.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch9 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs sed -i -e 's,-Wno-missing-field-initializers,,'
