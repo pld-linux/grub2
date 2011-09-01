@@ -31,7 +31,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.98
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Base
 Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}.tar.gz
@@ -212,6 +212,7 @@ export CFLAGS="-Os %{?debug:-g}"
 # mawk stalls at ./genmoddep.awk, so force gawk
 AWK=gawk \
 %configure \
+	--disable-werror \
 %if %{with grubemu}
 	--enable-grub-emu-usb \
 	--enable-grub-emu-sdl \
