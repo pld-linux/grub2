@@ -29,14 +29,13 @@ Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
-%define	rcver	rc2
 Name:		grub2
 Version:	1.99
-Release:	0.%{rcver}.1
+Release:	0.1
 License:	GPL v2
 Group:		Base
-Source0:	http://alpha.gnu.org/gnu/grub/grub-%{version}~%{rcver}.tar.gz
-# Source0-md5:	bfdc87ece4fd9ec1c4104e97e5094382
+Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
+# Source0-md5:	27e360b951f006c464299d06bbd63442
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
@@ -183,11 +182,11 @@ O GRUB pode ser uma boa alternativa ao LILO, para usuários mais
 avançados e que querem mais recursos de seu boot loader.
 
 %prep
-%setup -q -n grub-%{version}~%{rcver}
+%setup -q -n grub-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-#%patch3 -p1
+%patch3 -p1
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
@@ -242,6 +241,8 @@ install -d $RPM_BUILD_ROOT{/etc/sysconfig,%{_sysconfdir}/grub.d}
 	pkglibdir=%{_libexecdir} \
 	DESTDIR=$RPM_BUILD_ROOT
 
+%find_lang grub
+
 # this must be after 'make install'
 install -d $RPM_BUILD_ROOT%{_libexecdir}/locale
 
@@ -281,7 +282,7 @@ fi
 echo "Grub was upgraded, trying to setup it to boot sector"
 /sbin/grub-install '(hd0)' || :
 
-%files
+%files -f grub.lang
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
