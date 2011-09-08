@@ -30,58 +30,55 @@
 +
 +# close diagnostic stream
 +exec 3>&-
---- grub-1.97.2/util/grub.d/10_linux.in~	2010-03-10 18:09:58.838434522 +0200
-+++ grub-1.97.2/util/grub.d/10_linux.in	2010-03-10 18:12:47.478176169 +0200
-@@ -67,7 +67,7 @@
+diff -ur grub-1.99~rc2/util/grub.d.org/00_header.in grub-1.99~rc2/util/grub.d/00_header.in
+--- grub-1.99~rc2/util/grub.d.org/00_header.in	2011-04-06 13:14:27.000000000 +0200
++++ grub-1.99~rc2/util/grub.d/00_header.in	2011-09-06 22:29:51.721223357 +0200
+@@ -113,7 +113,7 @@
  
- while [ "x$list" != "x" ] ; do
-   linux=`version_find_latest $list`
--  echo "Found linux image: $linux" >&2
-+  echo "Found linux image: $linux" >&3
-   basename=`basename $linux`
-   dirname=`dirname $linux`
-   rel_dirname=`make_system_path_relative_to_its_root $dirname`
-@@ -85,7 +85,7 @@
+ if [ "x$serial" = x1 ]; then
+     if ! test -e ${GRUB_PREFIX}/serial.mod ; then
+-	echo "Serial terminal not available on this platform." >&2 ; exit 1
++	echo "Serial terminal not available on this platform." >&3 ; exit 1
      fi
-   done
-   if test -n "${initrd}" ; then
--    echo "Found initrd image: ${dirname}/${initrd}" >&2
-+    echo "Found initrd image: ${dirname}/${initrd}" >&3
-   else
-     # "UUID=" magic is parsed by initrds.  Since there's no initrd, it can't work here.
-     linux_root_device_thisversion=${GRUB_DEVICE}
---- grub-1.97.2/util/grub.d/30_os-prober.in	2010-03-10 18:13:43.784870350 +0200
-+++ grub-1.98/util/grub.d/30_os-prober.in	2010-07-27 22:42:57.317305712 +0300
-@@ -47,7 +47,7 @@
-     LONGNAME="${LABEL}"
-   fi
  
--  echo "Found ${LONGNAME} on ${DEVICE}" >&2
-+  echo "Found ${LONGNAME} on ${DEVICE}" >&3
- 
-   case ${BOOT} in
-     chain)
-@@ -197,7 +197,7 @@
+     if [ "x${GRUB_SERIAL_COMMAND}" = "x" ] ; then
+@@ -174,7 +174,7 @@
+ if [ "x$gfxterm" = x1 ]; then
+     if [ "x$GRUB_THEME" != x ] && [ -f "$GRUB_THEME" ] \
+ 	&& is_path_readable_by_grub "$GRUB_THEME"; then
+-	echo "Found theme: $GRUB_THEME" >&2
++	echo "Found theme: $GRUB_THEME" >&3
+ 	prepare_grub_to_access_device `${grub_probe} --target=device "$GRUB_THEME"`
+ 	cat << EOF
+ insmod gfxmenu
+@@ -208,12 +208,12 @@
  EOF
-     ;;
-     *)
--      echo "  ${LONGNAME} is not yet supported by grub-mkconfig." >&2
-+      echo "  ${LONGNAME} is not yet supported by grub-mkconfig." >&3
-     ;;
-   esac
- done
---- grub-1.97.2/util/grub.d/10_hurd.in~	2010-03-10 18:15:07.000000000 +0200
-+++ grub-1.97.2/util/grub.d/10_hurd.in	2010-03-10 18:23:36.364190317 +0200
-@@ -37,7 +37,7 @@
+     elif [ "x$GRUB_BACKGROUND" != x ] && [ -f "$GRUB_BACKGROUND" ] \
+ 	    && is_path_readable_by_grub "$GRUB_BACKGROUND"; then
+-	echo "Found background: $GRUB_BACKGROUND" >&2
++	echo "Found background: $GRUB_BACKGROUND" >&3
+ 	case "$GRUB_BACKGROUND" in 
+ 	    *.png)         reader=png ;;
+ 	    *.tga)         reader=tga ;;
+ 	    *.jpg|*.jpeg)  reader=jpeg ;;
+-	    *)             echo "Unsupported image format" >&2; exit 1 ;;
++	    *)             echo "Unsupported image format" >&3; exit 1 ;;
+ 	esac
+ 	prepare_grub_to_access_device `${grub_probe} --target=device "$GRUB_BACKGROUND"`
+ 	cat << EOF
+diff -ur grub-1.99~rc2/util/grub.d.org/10_hurd.in grub-1.99~rc2/util/grub.d/10_hurd.in
+--- grub-1.99~rc2/util/grub.d.org/10_hurd.in	2011-02-12 07:55:26.000000000 +0100
++++ grub-1.99~rc2/util/grub.d/10_hurd.in	2011-09-06 22:29:51.721223357 +0200
+@@ -41,7 +41,7 @@
      basename=`basename $i`
      dirname=`dirname $i`
      rel_dirname=`make_system_path_relative_to_its_root $dirname`
 -    echo "Found GNU Mach: $i" >&2
 +    echo "Found GNU Mach: $i" >&3
-     kernel=${rel_dirname}/${basename}
+     kernels="${kernels} ${rel_dirname}/${basename}"
      at_least_one=true
    fi
-@@ -51,7 +51,7 @@
+@@ -55,7 +55,7 @@
  
  for i in /hurd/${hurd_fs}.static /hurd/exec ; do
    if test -e "$i" ; then
@@ -90,31 +87,19 @@
      at_least_one=true
    else
      all_of_them=false
---- grub-1.97.2/util/grub.d/10_windows.in~	2010-03-10 18:15:07.000000000 +0200
-+++ grub-1.97.2/util/grub.d/10_windows.in	2010-03-10 18:24:57.464181349 +0200
 @@ -68,7 +68,7 @@
-   # Get boot /dev/ice.
-   dev=`${grub_probe} -t device "$dir" 2>/dev/null` || continue
+ fi
  
--  echo "Found $OS on $dir ($dev)" >&2
-+  echo "Found $OS on $dir ($dev)" >&3
-   cat << EOF
- menuentry "$OS" {
- EOF
---- grub-1.98/util/grub.d/00_header.in~	2010-07-20 01:42:22.000000000 +0300
-+++ grub-1.98/util/grub.d/00_header.in	2010-07-27 22:41:33.246481300 +0300
-@@ -106,7 +106,7 @@
- EOF
- if [ x$GRUB_THEME != x ] && [ -f $GRUB_THEME ] \
- 	&& is_path_readable_by_grub $GRUB_THEME; then
--    echo "Found theme: $GRUB_THEME" >&2
-+    echo "Found theme: $GRUB_THEME" >&3
-     prepare_grub_to_access_device `${grub_probe} --target=device $GRUB_THEME` | sed -e "s/^/  /"
-     cat << EOF
-   insmod gfxmenu
---- grub-1.98/util/grub.d/10_kfreebsd.in~	2010-03-06 22:51:37.000000000 +0200
-+++ grub-1.98/util/grub.d/10_kfreebsd.in	2010-07-27 22:42:27.877517513 +0300
-@@ -82,7 +82,7 @@
+ if ${all_of_them} && test -e /lib/ld.so.1 ; then : ; else
+-  echo "Some Hurd stuff found, but not enough to boot." >&2
++  echo "Some Hurd stuff found, but not enough to boot." >&3
+   exit 1
+ fi
+ 
+diff -ur grub-1.99~rc2/util/grub.d.org/10_kfreebsd.in grub-1.99~rc2/util/grub.d/10_kfreebsd.in
+--- grub-1.99~rc2/util/grub.d.org/10_kfreebsd.in	2011-03-29 02:56:38.000000000 +0200
++++ grub-1.99~rc2/util/grub.d/10_kfreebsd.in	2011-09-06 22:29:51.721223357 +0200
+@@ -130,7 +130,7 @@
  
  while [ "x$list" != "x" ] ; do
    kfreebsd=`version_find_latest $list`
@@ -123,12 +108,99 @@
    basename=`basename $kfreebsd`
    dirname=`dirname $kfreebsd`
    rel_dirname=`make_system_path_relative_to_its_root $dirname`
-@@ -111,7 +111,7 @@
+@@ -179,7 +179,7 @@
      fi
    done
-   if test -n "${acpi_ko}" ; then
--    echo "Found ACPI module: ${acpi_ko}" >&2
-+    echo "Found ACPI module: ${acpi_ko}" >&3
-     acpi_ko_basename=`basename ${acpi_ko}`
-     acpi_ko_dirname=`dirname ${acpi_ko}`
-     acpi_ko_rel_dirname=`make_system_path_relative_to_its_root $acpi_ko_dirname`
+   if test -n "${module_dir}" ; then
+-    echo "Found kernel module directory: ${module_dir}" >&2
++    echo "Found kernel module directory: ${module_dir}" >&3
+     module_dir_rel=$(make_system_path_relative_to_its_root $module_dir)
+   fi
+ 
+diff -ur grub-1.99~rc2/util/grub.d.org/10_linux.in grub-1.99~rc2/util/grub.d/10_linux.in
+--- grub-1.99~rc2/util/grub.d.org/10_linux.in	2011-09-06 22:29:38.914236841 +0200
++++ grub-1.99~rc2/util/grub.d/10_linux.in	2011-09-06 22:29:51.721223357 +0200
+@@ -134,7 +134,7 @@
+ 
+ while [ "x$list" != "x" ] ; do
+   linux=`version_find_latest $list`
+-  echo "Found linux image: $linux" >&2
++  echo "Found linux image: $linux" >&3
+   basename=`basename $linux`
+   dirname=`dirname $linux`
+   rel_dirname=`make_system_path_relative_to_its_root $dirname`
+@@ -169,7 +169,7 @@
+   fi
+ 
+   if test -n "${initrd}" ; then
+-    echo "Found initrd image: ${dirname}/${initrd}" >&2
++    echo "Found initrd image: ${dirname}/${initrd}" >&3
+   elif test -z "${initramfs}" ; then
+     # "UUID=" magic is parsed by initrd or initramfs.  Since there's
+     # no initrd or builtin initramfs, it can't work here.
+diff -ur grub-1.99~rc2/util/grub.d.org/10_netbsd.in grub-1.99~rc2/util/grub.d/10_netbsd.in
+--- grub-1.99~rc2/util/grub.d.org/10_netbsd.in	2011-01-10 17:25:52.000000000 +0100
++++ grub-1.99~rc2/util/grub.d/10_netbsd.in	2011-09-06 22:29:51.721223357 +0200
+@@ -133,7 +133,7 @@
+     continue
+   fi
+ 
+-  echo "Found NetBSD kernel: $k" >&2
++  echo "Found NetBSD kernel: $k" >&3
+   netbsd_entry "knetbsd"   "$k" false "${GRUB_CMDLINE_NETBSD_DEFAULT}"
+   netbsd_entry "multiboot" "$k" false "${GRUB_CMDLINE_NETBSD_DEFAULT}"
+   if [ "x${GRUB_DISABLE_RECOVERY}" != "xtrue" ]; then
+diff -ur grub-1.99~rc2/util/grub.d.org/10_windows.in grub-1.99~rc2/util/grub.d/10_windows.in
+--- grub-1.99~rc2/util/grub.d.org/10_windows.in	2010-12-01 15:45:43.000000000 +0100
++++ grub-1.99~rc2/util/grub.d/10_windows.in	2011-09-06 22:29:51.721223357 +0200
+@@ -76,7 +76,7 @@
+   # Get boot /dev/ice.
+   dev=`${grub_probe} -t device "$dir" 2>/dev/null` || continue
+ 
+-  echo "Found $OS on $drv ($dev)" >&2
++  echo "Found $OS on $drv ($dev)" >&3
+   cat << EOF
+ menuentry "$OS" {
+ EOF
+diff -ur grub-1.99~rc2/util/grub.d.org/20_linux_xen.in grub-1.99~rc2/util/grub.d/20_linux_xen.in
+--- grub-1.99~rc2/util/grub.d.org/20_linux_xen.in	2011-04-13 21:20:29.000000000 +0200
++++ grub-1.99~rc2/util/grub.d/20_linux_xen.in	2011-09-06 22:29:51.721223357 +0200
+@@ -134,7 +134,7 @@
+     echo "submenu \"Xen ${xen_version}\" {"
+     while [ "x$list" != "x" ] ; do
+ 	linux=`version_find_latest $list`
+-	echo "Found linux image: $linux" >&2
++	echo "Found linux image: $linux" >&3
+ 	basename=`basename $linux`
+ 	dirname=`dirname $linux`
+ 	rel_dirname=`make_system_path_relative_to_its_root $dirname`
+@@ -154,7 +154,7 @@
+ 	    fi
+ 	done
+ 	if test -n "${initrd}" ; then
+-	    echo "Found initrd image: ${dirname}/${initrd}" >&2
++	    echo "Found initrd image: ${dirname}/${initrd}" >&3
+ 	else
+     # "UUID=" magic is parsed by initrds.  Since there's no initrd, it can't work here.
+ 	    linux_root_device_thisversion=${GRUB_DEVICE}
+diff -ur grub-1.99~rc2/util/grub.d.org/30_os-prober.in grub-1.99~rc2/util/grub.d/30_os-prober.in
+--- grub-1.99~rc2/util/grub.d.org/30_os-prober.in	2010-12-25 18:13:57.000000000 +0100
++++ grub-1.99~rc2/util/grub.d/30_os-prober.in	2011-09-06 22:29:51.721223357 +0200
+@@ -99,7 +99,7 @@
+     LONGNAME="${LABEL}"
+   fi
+ 
+-  echo "Found ${LONGNAME} on ${DEVICE}" >&2
++  echo "Found ${LONGNAME} on ${DEVICE}" >&3
+ 
+   case ${BOOT} in
+     chain)
+@@ -198,7 +198,7 @@
+ EOF
+     ;;
+     *)
+-      echo "  ${LONGNAME} is not yet supported by grub-mkconfig." >&2
++      echo "  ${LONGNAME} is not yet supported by grub-mkconfig." >&3
+     ;;
+   esac
+ done

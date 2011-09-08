@@ -1,50 +1,12 @@
-http://lists.gnu.org/archive/html/grub-devel/2008-04/msg00079.html
-
-Self-explainable. Make update-grub ignore rpm leftover files and VIM
-swap files.
-
-2008-04-15  Lubomir Kundrak  <lkundrak@redhat.com>
-
-        * util/update-grub.in: replace the junk file switch with
-        unconditional call to grub_file_is_not_garbage
-        * util/update-grub_lib.in (grub_file_is_not_garbage): ignore
-        also rpm leftover files and editor backup files
-
---- grub-1.97.1/util/grub-mkconfig.in~	2009-11-11 22:14:09.000000000 +0200
-+++ grub-1.97.1/util/grub-mkconfig.in	2009-11-12 09:50:15.902686831 +0200
-@@ -247,18 +247,12 @@
- EOF
- 
- for i in ${grub_mkconfig_dir}/* ; do
--  case "$i" in
--    # emacsen backup files. FIXME: support other editors
--    *~) ;;
--    *)
--      if grub_file_is_not_garbage "$i" && test -x "$i" ; then
--        echo
--        echo "### BEGIN $i ###"
--        "$i"
--        echo "### END $i ###"
--      fi
--    ;;
--  esac
-+  if grub_file_is_not_garbage "$i" && test -x "$i" ; then
-+    echo
-+    echo "### BEGIN $i ###"
-+    "$i"
-+    echo "### END $i ###"
-+  fi
- done
- 
- if test "x${grub_cfg}" != "x" ; then
---- grub-1.97.1/util/grub-mkconfig_lib.in~	2009-11-09 17:48:16.000000000 +0200
-+++ grub-1.97.1/util/grub-mkconfig_lib.in	2009-11-12 09:52:32.845160944 +0200
-@@ -158,6 +158,8 @@
+--- grub-1.99~rc2/util/grub-mkconfig_lib.in~	2011-04-10 15:29:35.000000000 +0200
++++ grub-1.99~rc2/util/grub-mkconfig_lib.in	2011-09-06 22:14:55.086131157 +0200
+@@ -139,6 +139,8 @@
    if test -f "$1" ; then
      case "$1" in
        *.dpkg-*) return 1 ;; # debian dpkg
 +      *.rpmnew|*.rpmsave) return 1 ;; # Fedora rpm
 +      *.bak|*~|.*.swp) return 1 ;;    # backup and swap files from editors
+       README*)  return 1 ;; # documentation
      esac
    else
-     return 1
+

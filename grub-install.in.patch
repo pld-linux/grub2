@@ -1,91 +1,47 @@
---- grub-1.98/util/grub-install.in.orig	2010-05-21 22:35:21.921205822 +0200
-+++ grub-1.98/util/grub-install.in	2010-05-21 22:42:47.052967731 +0200
+--- grub-1.99~rc2/conf/Makefile.common~	2011-09-08 12:39:42.000000000 +0200
++++ grub-1.99~rc2/conf/Makefile.common	2011-09-08 13:12:11.194868113 +0200
+@@ -100,7 +100,7 @@
+ 
+ grubconfdir = /lib/grub.d
+ grubdatadir = $(datadir)/`echo @PACKAGE_TARNAME@ | sed '$(transform)'`
+-platformdir = $(pkglibrootdir)/$(target_cpu)-$(platform)
++platformdir = $(pkglibrootdir)
+ 
+ CFLAGS_GCRY = -Wno-error -Wno-missing-field-initializers
+ CPPFLAGS_GCRY = -I$(top_srcdir)/grub-core/lib/libgcrypt_wrap
+--- grub-1.99~rc2/util/grub-install.in~	2011-04-03 15:36:21.000000000 +0200
++++ grub-1.99~rc2/util/grub-install.in	2011-09-06 22:18:41.574849650 +0200
 @@ -31,7 +31,7 @@
+ target_cpu=@target_cpu@
  platform=@platform@
  host_os=@host_os@
- font=@datadir@/@PACKAGE_TARNAME@/ascii.pf2
--pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
-+pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
+-pkglibdir="${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`"
++pkglibdir="${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`"
+ localedir="@datadir@/locale"
  
- grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
- if [ "${target_cpu}-${platform}" = "i386-pc" ] || [ "${target_cpu}-${platform}" = "sparc64-ieee1275" ] || [ "${target_cpu}-${platform}" = "mips-yeeloong" ] ; then
-@@ -244,23 +244,6 @@
+ self="`basename $0`"
+@@ -431,23 +431,6 @@
      exit 1
  fi
  
 -# Copy the GRUB images to the GRUB directory.
--for file in ${grubdir}/*.mod ${grubdir}/*.lst ${grubdir}/*.img ${grubdir}/efiemu??.o; do
--    if test -f $file && [ "`basename $file`" != menu.lst ]; then
--	rm -f $file || exit 1
+-for file in "${grubdir}"/*.mod "${grubdir}"/*.lst "${grubdir}"/*.img "${grubdir}"/efiemu??.o; do
+-    if test -f "$file" && [ "`basename $file`" != menu.lst ]; then
+-	rm -f "$file" || exit 1
 -    fi
 -done
--for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
--    cp -f $file ${grubdir} || exit 1
+-for file in "${pkglibdir}"/*.mod "${pkglibdir}"/*.lst; do
+-    cp -f "$file" "${grubdir}" || exit 1
 -done
 -if [ "${target_cpu}-${platform}" = "i386-pc" ] || [ "${target_cpu}-${platform}" = "sparc64-ieee1275" ] ; then
--    for file in ${pkglibdir}/*.img ${pkglibdir}/efiemu??.o; do
--	if test -f $file; then
--	    cp -f $file ${grubdir} || exit 1
+-    for file in "${pkglibdir}"/*.img "${pkglibdir}"/efiemu??.o; do
+-	if test -f "$file"; then
+-	    cp -f "$file" "${grubdir}" || exit 1
 -	fi
 -    done
 -fi
 -
  # Copy gettext files
- mkdir -p ${grubdir}/locale/
- for file in ${grubdir}/locale/*.mo ${pkglibdir}/locale/*.mo; do
---- grub-1.98/util/i386/efi/grub-install.in.orig	2010-03-06 21:51:37.000000000 +0100
-+++ grub-1.98/util/i386/efi/grub-install.in	2010-05-21 22:49:13.733969750 +0200
-@@ -30,7 +30,7 @@
- target_cpu=@target_cpu@
- platform=@platform@
- host_os=@host_os@
--pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
-+pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
- 
- grub_mkimage=${bindir}/`echo grub-mkimage | sed ${transform}`
- grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
-@@ -170,16 +170,6 @@
-     exit 1
- fi
- 
--# Copy the GRUB images to the GRUB directory.
--for file in ${grubdir}/*.mod ${grubdir}/*.lst; do
--    if test -f $file && [ "`basename $file`" != menu.lst ]; then
--	rm -f $file || exit 1
--    fi
--done
--for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst; do
--    cp -f $file ${grubdir} || exit 1
--done
--
- # Copy gettext files
- mkdir -p ${grubdir}/locale/
- for file in ${grubdir}/locale/*.mo ${pkglibdir}/locale/*.mo; do
---- grub-1.98/util/ieee1275/grub-install.in.orig	2010-03-06 21:51:37.000000000 +0100
-+++ grub-1.98/util/ieee1275/grub-install.in	2010-05-21 22:52:06.437969478 +0200
-@@ -32,7 +32,7 @@
- PACKAGE_VERSION=@PACKAGE_VERSION@
- target_cpu=@target_cpu@
- platform=@platform@
--pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
-+pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`
- 
- grub_mkimage=${bindir}/`echo grub-mkelfimage | sed ${transform}`
- grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
-@@ -154,16 +154,6 @@
-     $grub_mkdevicemap --device-map=$device_map $no_floppy || exit 1
- fi
- 
--# Copy the GRUB images to the GRUB directory.
--for file in ${grubdir}/*.mod ${grubdir}/*.lst ; do
--    if test -f $file; then
--	rm -f $file || exit 1
--    fi
--done
--for file in ${pkglibdir}/*.mod ${pkglibdir}/*.lst ; do
--    cp -f $file ${grubdir} || exit 1
--done
--
- if ! test -f ${grubdir}/grubenv; then
-     $grub_editenv ${grubdir}/grubenv create
- fi
+ mkdir -p "${grubdir}"/locale/
+ for dir in "${localedir}"/*; do
+
