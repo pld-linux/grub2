@@ -1,3 +1,15 @@
+--- grub-1.99/Makefile.am~	2011-04-16 15:29:09.000000000 +0200
++++ grub-1.99/Makefile.am	2011-09-08 15:18:49.286379677 +0200
+@@ -101,7 +101,8 @@
+ # Install config.h into platformdir
+ platform_HEADERS = config.h
+ 
+-pkglib_DATA += grub-mkconfig_lib
++ulibdir = /lib
++ulib_DATA = grub-mkconfig_lib
+ pkglib_DATA += update-grub_lib
+ 
+ 
 --- grub-1.97.1.shelllib/util/grub.d/00_header.in	2009-11-09 17:48:16.000000000 +0200
 +++ grub-1.97.1/util/grub.d/00_header.in	2009-11-17 12:34:23.164322142 +0200
 @@ -23,7 +23,7 @@
@@ -64,17 +76,6 @@
  
  if [ "x$EUID" = "x" ] ; then
    EUID=`id -u`
---- grub-1.97.1.shelllib/util/grub-install.in	2009-11-09 17:48:16.000000000 +0200
-+++ grub-1.97.1/util/grub-install.in	2009-11-17 12:34:23.157655729 +0200
-@@ -32,7 +32,7 @@
- pkglibdir=${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`
- 
- # for make_system_path_relative_to_its_root()
--. ${libdir}/grub/grub-mkconfig_lib
-+. /lib/grub-mkconfig_lib
- 
- grub_setup=${sbindir}/`echo grub-setup | sed ${transform}`
- if [ "${target_cpu}-${platform}" = "i386-pc" ] ; then
 --- grub-1.97.1.shelllib/util/update-grub_lib.in	2009-11-09 17:48:16.000000000 +0200
 +++ grub-1.97.1/util/update-grub_lib.in	2009-11-17 12:34:23.157655729 +0200
 @@ -18,6 +18,6 @@
@@ -85,3 +86,14 @@
 +. /lib/grub-mkconfig_lib
  
  grub_warn "update-grub_lib is deprecated, use grub-mkconfig_lib instead"
+--- grub-1.99/20_linux_xen~	2011-09-08 15:24:37.000000000 +0200
++++ grub-1.99/20_linux_xen	2011-09-08 15:27:36.171492233 +0200
+@@ -21,7 +21,7 @@
+ exec_prefix=/usr
+ bindir=/sbin
+ libdir=/boot
+-. ${libdir}/grub/grub-mkconfig_lib
++. /lib/grub-mkconfig_lib
+ 
+ export TEXTDOMAIN=grub
+ export TEXTDOMAINDIR=${prefix}/share/locale

@@ -332,9 +332,9 @@ echo "Grub was upgraded, trying to setup it to boot sector"
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
 %endif
+/lib/grub-mkconfig_lib
 
 %dir %{_libexecdir}
-%{_libexecdir}/grub-mkconfig_lib
 # XXX: check this locale dir location and if it is neccesaary to exist on /boot
 %dir %{_libexecdir}/locale
 %config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
