@@ -86,14 +86,15 @@
 +. /lib/grub-mkconfig_lib
  
  grub_warn "update-grub_lib is deprecated, use grub-mkconfig_lib instead"
---- grub-1.99/20_linux_xen~	2011-09-08 15:24:37.000000000 +0200
-+++ grub-1.99/20_linux_xen	2011-09-08 15:27:36.171492233 +0200
+--- grub-1.99/util/grub.d/20_linux_xen.in~	2011-04-13 21:20:29.000000000 +0200
++++ grub-1.99/util/grub.d/20_linux_xen.in	2011-09-08 17:52:27.113229582 +0200
 @@ -21,7 +21,7 @@
- exec_prefix=/usr
- bindir=/sbin
- libdir=/boot
+ exec_prefix=@exec_prefix@
+ bindir=@bindir@
+ libdir=@libdir@
 -. ${libdir}/grub/grub-mkconfig_lib
 +. /lib/grub-mkconfig_lib
  
- export TEXTDOMAIN=grub
- export TEXTDOMAINDIR=${prefix}/share/locale
+ export TEXTDOMAIN=@PACKAGE@
+ export TEXTDOMAINDIR=@localedir@
+
