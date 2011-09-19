@@ -7,6 +7,9 @@
 #   --enable-grub-emu-usb conflicts with --enable-grub-emu-pci, emu-pci seems experimental
 #   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
 #   - put grub-emu to subpackage if it is fixed
+# - warning: Installed (but unpackaged) file(s) found:
+#   /boot/grub/config.h
+#   /etc/bash_completion.d/grub
 #
 # Conditional build:
 %bcond_with	static	# build static binaries
@@ -31,7 +34,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.99
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -93,6 +96,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_bindir		%{_sbindir}
 %define		_libdir		/boot
 %define		_libexecdir	%{_libdir}/grub
+
+# needs real fix
+#%%define		filterout_ld	-Wl,--no-copy-dt-needed-entries
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
