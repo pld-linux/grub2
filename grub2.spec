@@ -12,7 +12,6 @@
 #   /etc/bash_completion.d/grub
 #
 # Conditional build:
-%bcond_with	static	# build static binaries
 %bcond_with		grubemu	# build grub-emu debugging utility
 %bcond_without	efiemu	# build efiemu runtimes
 
@@ -34,7 +33,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.99
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -62,9 +61,6 @@ BuildRequires:	gettext-devel
 BuildRequires:	help2man
 BuildRequires:	libtool
 BuildRequires:	texinfo
-%ifarch %{ix86} %{x8664}
-BuildRequires:	lzo-devel >= 1.0.2
-%endif
 %ifarch %{x8664}
 BuildRequires:	/usr/lib/libc.so
 %if "%{pld_release}" == "ac"
@@ -72,16 +68,9 @@ BuildRequires:	libgcc32
 %else
 BuildRequires:	gcc-multilib
 %endif
-%endif
 BuildRequires:	ncurses-devel
 BuildRequires:	sed >= 4.0
-%if %{with static}
 BuildRequires:	glibc-static
-%ifarch %{ix86} %{x8664}
-BuildRequires:	lzo-static
-%endif
-BuildRequires:	ncurses-static
-%endif
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.213
 Requires:	which
@@ -211,7 +200,7 @@ cp -f /usr/share/automake/config.sub .
 %{__autoheader}
 echo timestamp > stamp-h.in
 %{__autoconf}
-export CFLAGS="-Os %{?debug:-g}"
+export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
 
 # mawk stalls at ./genmoddep.awk, so force gawk
 AWK=gawk \
@@ -223,20 +212,9 @@ AWK=gawk \
 	--enable-grub-emu-pci \
 %endif
 	--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu \
-	BUILD_CFLAGS="$CFLAGS"
-%{__make} -j1 \
-	BUILD_CFLAGS="$CFLAGS" \
-%if %{with static}
-%ifarch %{ix86} %{x8664}
-	grub_setup_LDFLAGS="-s -static" \
-	grub_mkimage_LDFLAGS="-s -static -llzo" \
-%else
-	grub_mkimage_LDFLAGS="-s -static" \
-%endif
-	grub_emu_LDFLAGS="-s -static -lncurses -ltinfo" \
-%endif
-	pkgdatadir=%{_libexecdir} \
-	pkglibdir=%{_libexecdir}
+	TARGET_LDFLAGS=-static
+
+%{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
