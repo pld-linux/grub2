@@ -64,6 +64,7 @@ BuildRequires:	libtool
 BuildRequires:	texinfo
 %ifarch %{x8664}
 BuildRequires:	/usr/lib/libc.so
+%endif
 %if "%{pld_release}" == "ac"
 BuildRequires:	libgcc32
 %else
