@@ -64,11 +64,11 @@ BuildRequires:	libtool
 BuildRequires:	texinfo
 %ifarch %{x8664}
 BuildRequires:	/usr/lib/libc.so
-%endif
 %if "%{pld_release}" == "ac"
 BuildRequires:	libgcc32
 %else
 BuildRequires:	gcc-multilib
+%endif
 %endif
 BuildRequires:	ncurses-devel
 BuildRequires:	sed >= 4.0
