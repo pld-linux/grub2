@@ -88,9 +88,6 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_libdir		/boot
 %define		_libexecdir	%{_libdir}/grub
 
-# needs real fix
-#%%define		filterout_ld	-Wl,--no-copy-dt-needed-entries
-
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
 operating systems. In addition to loading the Linux and *BSD kernels,
