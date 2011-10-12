@@ -33,7 +33,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.99
-Release:	4
+Release:	5
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -194,6 +194,11 @@ sed -i -e '/video_mod_CFLAGS/s/$/ -Wno-error/' conf/common.rmk
 %endif
 
 %build
+# if gold is used then grub doesn't even boot
+install -d our-ld
+ln -s /usr/bin/ld.bfd our-ld/ld
+export PATH=$(pwd)/our-ld:$PATH
+
 cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
 %{__aclocal} -I m4
