@@ -1,0 +1,9 @@
+--- grub-1.99/util/grub-mkconfig.in.wiget	2011-10-13 17:43:32.333505299 +0200
++++ grub-1.99/util/grub-mkconfig.in	2011-10-13 17:43:45.513070998 +0200
+@@ -1,5 +1,6 @@
+ #! /bin/sh
+ set -e
++set -o posix
+ 
+ # Generate grub.cfg by inspecting /boot contents.
+ # Copyright (C) 2006,2007,2008,2009,2010 Free Software Foundation, Inc.

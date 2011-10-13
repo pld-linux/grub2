@@ -33,7 +33,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.99
-Release:	5
+Release:	6
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -53,6 +53,7 @@ Patch6:		pld-mkconfigdir.patch
 Patch7:		grub-mkconfig-diagnostics.patch
 Patch8:		ppc.patch
 Patch9:		%{name}-awk.patch
+Patch10:	posix.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
@@ -187,6 +188,7 @@ avançados e que querem mais recursos de seu boot loader.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs sed -i -e 's,-Wno-missing-field-initializers,,'
