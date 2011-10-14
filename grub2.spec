@@ -33,7 +33,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.99
-Release:	6
+Release:	7
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -264,8 +264,8 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p %{_sbindir}/postshell
 -/usr/sbin/fix-info-dir -c %{_infodir}
 
-# Note this on version upgrade
 %triggerpostun -- %{name} < %{version}-0
+# Note this trigger on version upgrade
 # don't do anything on --downgrade
 if [ $1 -le 1 ]; then
 	exit 0
