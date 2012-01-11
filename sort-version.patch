@@ -1,0 +1,29 @@
+grub-mkconfig does not get it right when sorting "recent kernel first":
+
+sort kernel versions correctly:
+
+Wrong:
+        echo    'Loading Linux 3.0.8-1 ...'
+        echo    'Loading Linux 3.0.4-2 ...'
+        echo    'Loading Linux 3.0.13-1 ...'
+        echo    'Loading Linux 3.0.12-2 ...'
+        echo    'Loading Linux 2.6.38.8-1 ...'
+
+Correct:
+        echo    'Loading Linux 3.0.13-1 ...'
+        echo    'Loading Linux 3.0.12-2 ...'
+        echo    'Loading Linux 3.0.8-1 ...'
+        echo    'Loading Linux 3.0.4-2 ...'
+        echo    'Loading Linux 2.6.38.8-1 ...'
+
+--- grub-1.99/util/grub-mkconfig_lib.in~	2012-01-12 00:47:28.626740879 +0200
++++ grub-1.99/util/grub-mkconfig_lib.in	2012-01-12 00:53:49.554292436 +0200
+@@ -165,7 +165,7 @@
+     a="$b"
+     b="$c"
+   fi
+-  if (echo "$a" ; echo "$b") | sort -n | head -n 1 | grep -qx "$b" ; then
++  if (echo "$a" ; echo "$b") | sort -V | head -n 1 | grep -qx "$b" ; then
+     return 0
+   else
+     return 1

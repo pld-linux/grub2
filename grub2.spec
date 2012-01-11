@@ -33,7 +33,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	1.99
-Release:	8
+Release:	9
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -54,6 +54,7 @@ Patch7:		grub-mkconfig-diagnostics.patch
 Patch8:		ppc.patch
 Patch9:		%{name}-awk.patch
 Patch10:	posix.patch
+Patch11:	sort-version.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
@@ -201,10 +202,11 @@ Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
+%patch11 -p1
 
 %if "%{cc_version}" < "3.4"
-grep -rl -- -Wno-missing-field-initializers . | xargs sed -i -e 's,-Wno-missing-field-initializers,,'
-sed -i -e '/video_mod_CFLAGS/s/$/ -Wno-error/' conf/common.rmk
+grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
+%{__sed} -i -e '/video_mod_CFLAGS/s/$/ -Wno-error/' conf/common.rmk
 %endif
 
 %build
