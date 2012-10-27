@@ -1,12 +1,11 @@
---- grub-1.99~rc2/util/grub.d/10_linux.in~	2011-04-18 23:18:49.000000000 +0200
-+++ grub-1.99~rc2/util/grub.d/10_linux.in	2011-09-06 22:11:40.394828573 +0200
-@@ -148,7 +148,7 @@
- 	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
+diff -dur grub-2.00.orig/util/grub.d/10_linux.in grub-2.00/util/grub.d/10_linux.in
+--- grub-2.00.orig/util/grub.d/10_linux.in	2012-04-18 23:24:38.000000000 +0200
++++ grub-2.00/util/grub.d/10_linux.in	2012-10-27 14:36:58.131180820 +0200
+@@ -197,6 +197,7 @@
  	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
  	   "initramfs-genkernel-${version}" \
--	   "initramfs-genkernel-${alt_version}"; do
-+	   "initramfs-genkernel-${alt_version}" "initrd-${version}.gz"; do
+ 	   "initramfs-genkernel-${alt_version}" \
++	   "initrd-${version}.gz" \
+ 	   "initramfs-genkernel-${GENKERNEL_ARCH}-${version}" \
+ 	   "initramfs-genkernel-${GENKERNEL_ARCH}-${alt_version}"; do
      if test -e "${dirname}/${i}" ; then
-       initrd="$i"
-       break
-

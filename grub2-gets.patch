@@ -1,0 +1,11 @@
+diff -dur grub-2.00.orig/grub-core/gnulib/stdio.in.h grub-2.00/grub-core/gnulib/stdio.in.h
+--- grub-2.00.orig/grub-core/gnulib/stdio.in.h	2010-12-01 15:45:43.000000000 +0100
++++ grub-2.00/grub-core/gnulib/stdio.in.h	2012-10-27 15:43:17.539201562 +0200
+@@ -141,7 +141,6 @@
+    so any use of gets warrants an unconditional warning.  Assume it is
+    always declared, since it is required by C89.  */
+ #undef gets
+-_GL_WARN_ON_USE (gets, "gets is a security hole - use fgets instead");
+ 
+ #if @GNULIB_FOPEN@
+ # if @REPLACE_FOPEN@

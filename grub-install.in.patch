@@ -1,42 +1,35 @@
---- grub-1.99~rc2/conf/Makefile.common~	2011-09-08 12:39:42.000000000 +0200
-+++ grub-1.99~rc2/conf/Makefile.common	2011-09-08 13:12:11.194868113 +0200
-@@ -100,7 +100,7 @@
+diff -dur grub-2.00.orig/conf/Makefile.common grub-2.00/conf/Makefile.common
+--- grub-2.00.orig/conf/Makefile.common	2012-05-27 18:16:05.000000000 +0200
++++ grub-2.00/conf/Makefile.common	2012-10-27 15:00:48.537431538 +0200
+@@ -99,7 +99,7 @@
+ # Other variables
  
- grubconfdir = /lib/grub.d
- grubdatadir = $(datadir)/`echo @PACKAGE_TARNAME@ | sed '$(transform)'`
--platformdir = $(pkglibrootdir)/$(target_cpu)-$(platform)
-+platformdir = $(pkglibrootdir)
+ grubconfdir = $(sysconfdir)/grub.d
+-platformdir = $(pkglibdir)/$(target_cpu)-$(platform)
++platformdir = $(pkglibdir)
+ starfielddir = $(pkgdatadir)/themes/starfield
  
  CFLAGS_GCRY = -Wno-error -Wno-missing-field-initializers
- CPPFLAGS_GCRY = -I$(top_srcdir)/grub-core/lib/libgcrypt_wrap
---- grub-1.99~rc2/util/grub-install.in~	2011-04-03 15:36:21.000000000 +0200
-+++ grub-1.99~rc2/util/grub-install.in	2011-09-06 22:18:41.574849650 +0200
-@@ -31,7 +31,7 @@
- target_cpu=@target_cpu@
- platform=@platform@
- host_os=@host_os@
--pkglibdir="${libdir}/`echo ${PACKAGE_TARNAME}/${target_cpu}-${platform} | sed ${transform}`"
-+pkglibdir="${libdir}/`echo ${PACKAGE_TARNAME} | sed ${transform}`"
- localedir="@datadir@/locale"
- 
- self="`basename $0`"
-@@ -431,23 +431,6 @@
-     exit 1
+diff -dur grub-2.00.orig/util/grub-install.in grub-2.00/util/grub-install.in
+--- grub-2.00.orig/util/grub-install.in	2012-06-26 23:31:03.000000000 +0200
++++ grub-2.00/util/grub-install.in	2012-10-27 15:03:21.133028965 +0200
+@@ -522,23 +522,6 @@
+     device_map=
  fi
  
 -# Copy the GRUB images to the GRUB directory.
--for file in "${grubdir}"/*.mod "${grubdir}"/*.lst "${grubdir}"/*.img "${grubdir}"/efiemu??.o; do
+-for file in "${grubdir}"/*.mod "${grubdir}"/*.lst "${grubdir}"/*.img "${grubdir}"/efiemu??.o "${grubdir}"/${grub_modinfo_target_cpu}-$grub_modinfo_platform/*.mod "${grubdir}"/${grub_modinfo_target_cpu}-$grub_modinfo_platform/*.lst "${grubdir}"/${grub_modinfo_target_cpu}-$grub_modinfo_platform/*.img "${grubdir}"/${grub_modinfo_target_cpu}-$grub_modinfo_platform/efiemu??.o; do
 -    if test -f "$file" && [ "`basename $file`" != menu.lst ]; then
 -	rm -f "$file" || exit 1
 -    fi
 -done
--for file in "${pkglibdir}"/*.mod "${pkglibdir}"/*.lst; do
--    cp -f "$file" "${grubdir}" || exit 1
+-for file in "${source_dir}"/*.mod "${source_dir}"/*.lst; do
+-    cp -f "$file" "${grubdir}/${grub_modinfo_target_cpu}-$grub_modinfo_platform" || exit 1
 -done
--if [ "${target_cpu}-${platform}" = "i386-pc" ] || [ "${target_cpu}-${platform}" = "sparc64-ieee1275" ] ; then
--    for file in "${pkglibdir}"/*.img "${pkglibdir}"/efiemu??.o; do
+-if [ "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" = "i386-pc" ] || [ "${grub_modinfo_target_cpu}-${grub_modinfo_platform}" = "sparc64-ieee1275" ] ; then
+-    for file in "${source_dir}"/*.img "${source_dir}"/efiemu??.o; do
 -	if test -f "$file"; then
--	    cp -f "$file" "${grubdir}" || exit 1
+-	    cp -f "$file" "${grubdir}/${grub_modinfo_target_cpu}-$grub_modinfo_platform" || exit 1
 -	fi
 -    done
 -fi
@@ -44,4 +37,3 @@
  # Copy gettext files
  mkdir -p "${grubdir}"/locale/
  for dir in "${localedir}"/*; do
-

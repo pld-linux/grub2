@@ -1,22 +1,24 @@
---- grub-1.97.1/util/grub-mkconfig.in~	2010-01-12 12:14:40.000000000 +0200
-+++ grub-1.97.1/util/grub-mkconfig.in	2010-01-12 12:26:24.581982969 +0200
-@@ -29,7 +29,7 @@
- pkgdatadir=${datadir}/`echo @PACKAGE_TARNAME@ | sed "${transform}"`
- grub_prefix=`echo /boot/grub | sed ${transform}`
- grub_cfg=""
--grub_mkconfig_dir=${sysconfdir}/grub.d
-+grub_mkconfig_dir=/lib/grub.d
- 
- grub_mkdevicemap=${sbindir}/`echo grub-mkdevicemap | sed ${transform}`
- grub_probe=${sbindir}/`echo grub-probe | sed ${transform}`
---- grub-1.99~rc2/conf/Makefile.common~	2011-04-08 13:45:13.000000000 +0200
-+++ grub-1.99~rc2/conf/Makefile.common	2011-09-06 22:41:28.748549197 +0200
+diff -dur grub-2.00.orig/conf/Makefile.common grub-2.00/conf/Makefile.common
+--- grub-2.00.orig/conf/Makefile.common	2012-10-27 15:05:15.000000000 +0200
++++ grub-2.00/conf/Makefile.common	2012-10-27 15:06:09.135719113 +0200
 @@ -98,7 +98,7 @@
  
  # Other variables
  
 -grubconfdir = $(sysconfdir)/grub.d
 +grubconfdir = /lib/grub.d
- grubdatadir = $(datadir)/`echo @PACKAGE_TARNAME@ | sed '$(transform)'`
- platformdir = $(pkglibrootdir)/$(target_cpu)-$(platform)
+ platformdir = $(pkglibdir)
+ starfielddir = $(pkgdatadir)/themes/starfield
+ 
+diff -dur grub-2.00.orig/util/grub-mkconfig.in grub-2.00/util/grub-mkconfig.in
+--- grub-2.00.orig/util/grub-mkconfig.in	2012-10-27 15:05:15.000000000 +0200
++++ grub-2.00/util/grub-mkconfig.in	2012-10-27 15:06:40.696227008 +0200
+@@ -35,7 +35,7 @@
+     pkgdatadir="${datadir}/@PACKAGE@"
+ fi
+ grub_cfg=""
+-grub_mkconfig_dir="${sysconfdir}"/grub.d
++grub_mkconfig_dir=/lib/grub.d
+ 
+ self=`basename $0`
  
