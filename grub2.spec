@@ -111,6 +111,10 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_libexecdir	%{_libdir}/grub
 %define		_grubdir	/boot/grub
 
+# part of grub code is not relocable (these are not Linux libs)
+# stack protector also breaks non-Linux binaries
+%define 	filterout_c	-fPIC -fstack-protector
+
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
 operating systems. In addition to loading the Linux and *BSD kernels,
@@ -269,6 +273,13 @@ export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
 for platform in %{platforms} ; do
 	install -d build-%{target_cpu}-${platform}
 	cd build-%{target_cpu}-${platform}
+
+	if [ "$platform" != "efi" ] ; then
+		platform_opts="--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu"
+	else
+		platform_opts=""
+	fi
+
 	ln -s ../configure .
 	# mawk stalls at ./genmoddep.awk, so force gawk
 	AWK=gawk \
@@ -280,7 +291,7 @@ for platform in %{platforms} ; do
 		--enable-grub-emu-sdl \
 		--enable-grub-emu-pci \
 	%endif
-		--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu \
+		$platform_opts \
 		TARGET_LDFLAGS=-static
 
 	%{__make}
@@ -481,11 +492,6 @@ fi
 %{_libexecdir}/*-efi/config.h
 %{_libexecdir}/*-efi/gdb_grub
 %{_libexecdir}/*-efi/gmodule.pl
-%if %{with efiemu}
-%ifarch %{x8664}
-%{_libexecdir}/*-efi/efiemu*.o
-%endif
-%endif
 %{_libexecdir}/*-efi/kernel.img
 %endif
 
