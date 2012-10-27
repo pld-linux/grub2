@@ -58,6 +58,7 @@ Patch11:	sort-version.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
+BuildRequires:	device-mapper-devel
 BuildRequires:	freetype-devel
 BuildRequires:	gawk
 BuildRequires:	gettext-devel
