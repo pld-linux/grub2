@@ -107,6 +107,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
 %define		_libdir		/lib
+%define		_datadir	%{_libdir}
 %define		_libexecdir	%{_libdir}/grub
 %define		_grubdir	/boot/grub
 
@@ -419,7 +420,7 @@ fi
 %attr(755,root,root) %{_sbindir}/grub-emu
 %{_mandir}/man8/grub-emu.8*
 %endif
-/lib/grub-mkconfig_lib
+%{_libexecdir}/grub-mkconfig_lib
 
 %dir %{_grubdir}
 %dir %{_libexecdir}
