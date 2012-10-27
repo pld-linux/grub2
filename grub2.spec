@@ -1,7 +1,4 @@
 # TODO
-# - grub-install: source_dir doesn't exist. Please specify --target or --directory
-# - multiple targets. This functionality is reaped by our patches,
-#   but is needed e.g. for reasonable EFI support
 # - reap out which in probe scripts and drop R: which
 # - subpackages? e.g. modules and utils
 # - check where is that locale path: /boot/grub/locale and fix it or change it
@@ -10,6 +7,9 @@
 #   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
 #   - put grub-emu to subpackage if it is fixed
 # - warning: Installed (but unpackaged) file(s) found:
+#   /sbin/grub-sparc64-setup
+#   /usr/share/man/man8/grub-sparc64-setup.8.gz
+
 #   /boot/grub/config.h
 #   /etc/bash_completion.d/grub
 #   /sbin/grub-sparc64-setup
@@ -18,8 +18,10 @@
 #   /sbin/grub-sparc64-setup
 #
 # Conditional build:
-%bcond_with		grubemu	# build grub-emu debugging utility
+%bcond_with	grubemu	# build grub-emu debugging utility
 %bcond_without	efiemu	# build efiemu runtimes
+%bcond_without	pc	# do not build for PC BIOS platform
+%bcond_without	efi	# do not build for EFI platform
 
 %if "%{cc_version}" < "3.4"
 # cc does not support:
@@ -31,6 +33,16 @@
 # non-x86_64 arch doesn't support this
 %undefine	with_efiemu
 %endif
+
+%ifarch %{ix86}
+%define		target_cpu i386
+%endif
+%ifarch %{x8664}
+%define		target_cpu x86_64
+%endif
+
+# the 'most natural' platform should go last
+%define		platforms %{?with_efi:efi} %{?with_pc:pc}
 
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
@@ -53,14 +65,13 @@ Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
 Patch3:		grub-shelllib.patch
-Patch4:		grub-install.in.patch
-Patch5:		grub-lvmdevice.patch
-Patch6:		pld-mkconfigdir.patch
-Patch7:		grub-mkconfig-diagnostics.patch
-Patch8:		ppc.patch
-Patch9:		%{name}-awk.patch
-Patch10:	posix.patch
-Patch11:	%{name}-gets.patch
+Patch4:		grub-lvmdevice.patch
+Patch5:		pld-mkconfigdir.patch
+Patch6:		grub-mkconfig-diagnostics.patch
+Patch7:		ppc.patch
+Patch8:		%{name}-awk.patch
+Patch9:		posix.patch
+Patch10:	%{name}-gets.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
@@ -89,13 +100,16 @@ Suggests:	cdrkit-mkisofs
 Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
+Suggests:	%{name}-pc
+Suggests:	%{name}-efi
 ExclusiveArch:	%{ix86} %{x8664} ppc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
 %define		_bindir		%{_sbindir}
-%define		_libdir		/boot
+%define		_libdir		/lib
 %define		_libexecdir	%{_libdir}/grub
+%define		_grubdir	/boot/grub
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -196,6 +210,22 @@ This package provides bash-completion for GRUB.
 %description -n bash-completion-%{name} -l pl.UTF-8
 Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB.
 
+%package pc
+Summary:	PC BIOS platform support for GRUB
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+
+%description pc
+PC BIOS platform support for GRUB.
+
+%package efi
+Summary:	(U)EFI platform support for GRUB
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+
+%description efi
+(U)EFI platform support for GRUB.
+
 %package mkfont
 Summary:	GRUB font files converter
 Group:		Base
@@ -216,7 +246,6 @@ Converts common font file formats into PF2.
 %patch8 -p1
 %patch9 -p1
 %patch10 -p1
-%patch11 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
@@ -237,27 +266,38 @@ echo timestamp > stamp-h.in
 %{__autoconf}
 export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
 
-# mawk stalls at ./genmoddep.awk, so force gawk
-AWK=gawk \
-%configure \
-	--disable-werror \
-%if %{with grubemu}
-	--enable-grub-emu-usb \
-	--enable-grub-emu-sdl \
-	--enable-grub-emu-pci \
-%endif
-	--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu \
-	TARGET_LDFLAGS=-static
+for platform in %{platforms} ; do
+	install -d build-%{target_cpu}-${platform}
+	cd build-%{target_cpu}-${platform}
+	ln -s ../configure .
+	# mawk stalls at ./genmoddep.awk, so force gawk
+	AWK=gawk \
+	%configure \
+		--with-platform=${platform} \
+		--disable-werror \
+	%if %{with grubemu}
+		--enable-grub-emu-usb \
+		--enable-grub-emu-sdl \
+		--enable-grub-emu-pci \
+	%endif
+		--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu \
+		TARGET_LDFLAGS=-static
 
-%{__make}
+	%{__make}
+	cd ..
+done
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	pkgdatadir=%{_libexecdir} \
-	pkglibdir=%{_libexecdir} \
-	DESTDIR=$RPM_BUILD_ROOT
+for platform in %{platforms} ; do
+	cd build-%{target_cpu}-${platform}
+	%{__make} install \
+		pkgdatadir=%{_libexecdir} \
+		pkglibdir=%{_libexecdir} \
+		DESTDIR=$RPM_BUILD_ROOT
+	cd ..
+done
 
 # not in Th (?)
 %{__rm} -r $RPM_BUILD_ROOT%{_localedir}/de@hebrew
@@ -268,9 +308,11 @@ rm -rf $RPM_BUILD_ROOT
 # this must be after 'make install'
 install -d $RPM_BUILD_ROOT%{_libexecdir}/locale
 
-cp -p docs/grub.cfg $RPM_BUILD_ROOT%{_libexecdir}
+install -d $RPM_BUILD_ROOT%{_grubdir}
+cp -p docs/grub.cfg $RPM_BUILD_ROOT%{_grubdir}
+
 # grub.d/41_custom
-cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_libexecdir}/custom.cfg
+cp -p %{SOURCE4} $RPM_BUILD_ROOT%{_grubdir}/custom.cfg
 %{__rm} $RPM_BUILD_ROOT/lib/grub.d/40_custom
 
 install -p %{SOURCE1} $RPM_BUILD_ROOT%{_sbindir}/update-grub
@@ -283,12 +325,12 @@ cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 # core.img - bootable image generated by grub-mkimage(1) via grub-install(1)
-touch $RPM_BUILD_ROOT%{_libexecdir}/core.img
-touch $RPM_BUILD_ROOT%{_libexecdir}/device.map
+touch $RPM_BUILD_ROOT%{_grubdir}/core.img
+touch $RPM_BUILD_ROOT%{_grubdir}/device.map
 
 # needs to be exactly 1KiB
 # but we're ghosting it. so whom are we kidding here? :P (maybe %config it in future?)
-dd bs=1024 if=/dev/zero count=1 of=$RPM_BUILD_ROOT%{_libexecdir}/grubenv
+dd bs=1024 if=/dev/zero count=1 of=$RPM_BUILD_ROOT%{_grubdir}/grubenv
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -311,8 +353,8 @@ echo "Grub was upgraded, trying to setup it to boot sector"
 %triggerpostun -- %{name} < 1.99-7.3
 # migrate /etc/grub.d/custom.cfg.rpmsave  -> /boot/grub/custom.cfg
 if [ -f %{_sysconfdir}/grub.d/custom.cfg.rpmsave ]; then
-	cp -f %{_libexecdir}/custom.cfg{,.rpmnew}
-	mv -f  %{_sysconfdir}/grub.d/custom.cfg.rpmsave %{_libexecdir}/custom.cfg
+	cp -f %{_grubdir}/custom.cfg{,.rpmnew}
+	mv -f  %{_sysconfdir}/grub.d/custom.cfg.rpmsave %{_grubdir}/custom.cfg
 fi
 
 %files -f grub.lang
@@ -370,37 +412,18 @@ fi
 %endif
 /lib/grub-mkconfig_lib
 
+%dir %{_grubdir}
 %dir %{_libexecdir}
 # XXX: check this locale dir location and if it is neccesaary to exist on /boot
 
 %dir %{_libexecdir}/locale
-%config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/grub.cfg
-%config(noreplace) %verify(not md5 mtime size) %{_libexecdir}/custom.cfg
-%{_libexecdir}/modinfo.sh
-%{_libexecdir}/*.exec
-%{_libexecdir}/*.image
-%{_libexecdir}/*.lst
-%{_libexecdir}/*.mod
-%{_libexecdir}/*.module
-%{_libexecdir}/lzma_decompress.img
-%if %{with efiemu}
-%ifarch %{x8664}
-%{_libexecdir}/efiemu*.o
-%endif
-%endif
-%{_libexecdir}/kernel.img
-%ifarch %{ix86} %{x8664} sparc sparc64
-%{_libexecdir}/boot.img
-%{_libexecdir}/cdboot.img
-%{_libexecdir}/diskboot.img
-%{_libexecdir}/lnxboot.img
-%{_libexecdir}/pxeboot.img
-%endif
+%config(noreplace) %verify(not md5 mtime size) %{_grubdir}/grub.cfg
+%config(noreplace) %verify(not md5 mtime size) %{_grubdir}/custom.cfg
 
 # generated by grub at runtime
-%ghost %{_libexecdir}/device.map
-%ghost %{_libexecdir}/core.img
-%ghost %{_libexecdir}/grubenv
+%ghost %{_grubdir}/device.map
+%ghost %{_grubdir}/core.img
+%ghost %{_grubdir}/grubenv
 
 %dir /lib/grub.d
 %doc /lib/grub.d/README
@@ -416,6 +439,55 @@ fi
 %endif
 
 %{_infodir}/grub*.info*
+
+%if %{with pc}
+%files pc
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/*-pc
+%{_libexecdir}/*-pc/modinfo.sh
+%{_libexecdir}/*-pc/*.exec
+%{_libexecdir}/*-pc/*.image
+%{_libexecdir}/*-pc/*.lst
+%{_libexecdir}/*-pc/*.mod
+%{_libexecdir}/*-pc/*.module
+%{_libexecdir}/*-pc/lzma_decompress.img
+%{_libexecdir}/*-pc/config.h
+%{_libexecdir}/*-pc/gdb_grub
+%{_libexecdir}/*-pc/gmodule.pl
+%if %{with efiemu}
+%ifarch %{x8664}
+%{_libexecdir}/*-pc/efiemu*.o
+%endif
+%endif
+%{_libexecdir}/*-pc/kernel.img
+%ifarch %{ix86} %{x8664} sparc sparc64
+%{_libexecdir}/*-pc/boot.img
+%{_libexecdir}/*-pc/cdboot.img
+%{_libexecdir}/*-pc/diskboot.img
+%{_libexecdir}/*-pc/lnxboot.img
+%{_libexecdir}/*-pc/pxeboot.img
+%endif
+%endif
+
+%if %{with efi}
+%files efi
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/*-efi
+%{_libexecdir}/*-efi/modinfo.sh
+%{_libexecdir}/*-efi/*.exec
+%{_libexecdir}/*-efi/*.lst
+%{_libexecdir}/*-efi/*.mod
+%{_libexecdir}/*-efi/*.module
+%{_libexecdir}/*-efi/config.h
+%{_libexecdir}/*-efi/gdb_grub
+%{_libexecdir}/*-efi/gmodule.pl
+%if %{with efiemu}
+%ifarch %{x8664}
+%{_libexecdir}/*-efi/efiemu*.o
+%endif
+%endif
+%{_libexecdir}/*-efi/kernel.img
+%endif
 
 %files mkfont
 %defattr(644,root,root,755)

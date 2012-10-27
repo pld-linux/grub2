@@ -7,7 +7,7 @@ diff -dur grub-2.00.orig/conf/Makefile.common grub-2.00/conf/Makefile.common
  
 -grubconfdir = $(sysconfdir)/grub.d
 +grubconfdir = /lib/grub.d
- platformdir = $(pkglibdir)
+ platformdir = $(pkglibdir)/$(target_cpu)-$(platform)
  starfielddir = $(pkgdatadir)/themes/starfield
  
 diff -dur grub-2.00.orig/util/grub-mkconfig.in grub-2.00/util/grub-mkconfig.in
