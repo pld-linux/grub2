@@ -64,14 +64,13 @@ URL:		http://www.gnu.org/software/grub/
 Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
-Patch3:		grub-shelllib.patch
-Patch4:		grub-lvmdevice.patch
-Patch5:		pld-mkconfigdir.patch
-Patch6:		grub-mkconfig-diagnostics.patch
-Patch7:		ppc.patch
-Patch8:		%{name}-awk.patch
-Patch9:		posix.patch
-Patch10:	%{name}-gets.patch
+Patch3:		grub-lvmdevice.patch
+Patch4:		pld-mkconfigdir.patch
+Patch5:		grub-mkconfig-diagnostics.patch
+Patch6:		ppc.patch
+Patch7:		%{name}-awk.patch
+Patch8:		posix.patch
+Patch9:		%{name}-gets.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
@@ -249,7 +248,6 @@ Converts common font file formats into PF2.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
-%patch10 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
