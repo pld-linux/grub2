@@ -95,8 +95,7 @@ Suggests:	cdrkit-mkisofs
 Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
-Suggests:	%{name}-pc
-Suggests:	%{name}-efi
+Requires:	%{name}-platform = %{version}-%{release}
 ExclusiveArch:	%{ix86} %{x8664} ppc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -211,20 +210,20 @@ This package provides bash-completion for GRUB.
 %description -n bash-completion-%{name} -l pl.UTF-8
 Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB.
 
-%package pc
+%package platform-pc
 Summary:	PC BIOS platform support for GRUB
 Group:		Base
-Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
 
-%description pc
+%description platform-pc
 PC BIOS platform support for GRUB.
 
-%package efi
+%package platform-efi
 Summary:	(U)EFI platform support for GRUB
 Group:		Base
-Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
 
-%description efi
+%description platform-efi
 (U)EFI platform support for GRUB.
 
 %package mkfont
@@ -459,7 +458,7 @@ fi
 %dir %{_datadir}/grub/themes
 
 %if %{with pc}
-%files pc
+%files platform-pc
 %defattr(644,root,root,755)
 %dir %{_libexecdir}/*-pc
 %{_libexecdir}/*-pc/modinfo.sh
@@ -488,7 +487,7 @@ fi
 %endif
 
 %if %{with efi}
-%files efi
+%files platform-efi
 %defattr(644,root,root,755)
 %dir %{_libexecdir}/*-efi
 %{_libexecdir}/*-efi/modinfo.sh
