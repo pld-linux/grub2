@@ -212,12 +212,12 @@ This package provides bash-completion for GRUB.
 Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB.
 
 %package pc
-summary:	pc bios platform support for grub
-group:		base
-requires:	%{name} = %{version}-%{release}
+Summary:	PC BIOS platform support for GRUB
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
 
 %description pc
-pc bios platform support for grub.
+PC BIOS platform support for GRUB.
 
 %package efi
 Summary:	(U)EFI platform support for GRUB
