@@ -105,6 +105,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_datadir	%{_libdir}
 %define		_libexecdir	%{_libdir}/grub
 %define		_grubdir	/boot/grub
+%define		_localedir	/usr/share/locale
 
 # part of grub code is not relocable (these are not Linux libs)
 # stack protector also breaks non-Linux binaries
