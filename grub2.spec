@@ -71,10 +71,12 @@ Patch6:		ppc.patch
 Patch7:		%{name}-awk.patch
 Patch8:		posix.patch
 Patch9:		%{name}-gets.patch
+Patch10:	%{name}-fonts_path.patch
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
 BuildRequires:	device-mapper-devel
+BuildRequires:	fonts-TTF-DejaVu
 BuildRequires:	freetype-devel
 BuildRequires:	gawk
 BuildRequires:	gettext-devel
@@ -249,6 +251,7 @@ Converts common font file formats into PF2.
 %patch7 -p1
 %patch8 -p1
 %patch9 -p1
+%patch10 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
