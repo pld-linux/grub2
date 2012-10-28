@@ -34,13 +34,6 @@
 %undefine	with_efiemu
 %endif
 
-%ifarch %{ix86}
-%define		target_cpu i386
-%endif
-%ifarch %{x8664}
-%define		target_cpu x86_64
-%endif
-
 # the 'most natural' platform should go last
 %define		platforms %{?with_efi:efi} %{?with_pc:pc}
 
@@ -273,8 +266,8 @@ echo timestamp > stamp-h.in
 export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
 
 for platform in %{platforms} ; do
-	install -d build-%{target_cpu}-${platform}
-	cd build-%{target_cpu}-${platform}
+	install -d build-${platform}
+	cd build-${platform}
 
 	if [ "$platform" != "efi" ] ; then
 		platform_opts="--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu"
@@ -304,7 +297,7 @@ done
 rm -rf $RPM_BUILD_ROOT
 
 for platform in %{platforms} ; do
-	cd build-%{target_cpu}-${platform}
+	cd build-${platform}
 	%{__make} install \
 		pkgdatadir=%{_libexecdir} \
 		pkglibdir=%{_libexecdir} \
