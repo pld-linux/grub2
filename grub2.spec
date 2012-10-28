@@ -211,12 +211,12 @@ This package provides bash-completion for GRUB.
 Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB.
 
 %package pc
-Summary:	PC BIOS platform support for GRUB
-Group:		Base
-Requires:	%{name} = %{version}-%{release}
+summary:	pc bios platform support for grub
+group:		base
+requires:	%{name} = %{version}-%{release}
 
 %description pc
-PC BIOS platform support for GRUB.
+pc bios platform support for grub.
 
 %package efi
 Summary:	(U)EFI platform support for GRUB
@@ -232,6 +232,13 @@ Group:		Base
 
 %description mkfont
 Converts common font file formats into PF2.
+
+%package theme-starfield
+Summary:	starfield theme for GRUB
+Group:		Base
+
+%description theme-starfield
+starfield theme for GRUB.
 
 %prep
 %setup -q -n grub-%{version}
@@ -447,6 +454,8 @@ fi
 
 %{_infodir}/grub*.info*
 
+%dir %{_datadir}/grub/themes
+
 %if %{with pc}
 %files pc
 %defattr(644,root,root,755)
@@ -495,6 +504,10 @@ fi
 %defattr(644,root,root,755)
 %{_mandir}/man1/grub-mkfont.1*
 %attr(755,root,root) %{_sbindir}/grub-mkfont
+
+%files theme-starfield
+%defattr(644,root,root,755)
+%{_datadir}/grub/themes/starfield
 
 %files -n bash-completion-%{name}
 %defattr(644,root,root,755)
