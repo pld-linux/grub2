@@ -75,6 +75,7 @@ BuildRequires:	freetype-devel
 BuildRequires:	gawk
 BuildRequires:	gettext-devel
 BuildRequires:	help2man
+BuildRequires:	libfuse-devel
 BuildRequires:	libtool
 BuildRequires:	texinfo
 %ifarch %{x8664}
