@@ -109,7 +109,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # part of grub code is not relocable (these are not Linux libs)
 # stack protector also breaks non-Linux binaries
-%define 	filterout_c	-fPIC -fstack-protector
+%define 	filterout_c	-fPIC
+%undefine	_ssp_cflags
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
