@@ -97,6 +97,7 @@ Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
 Requires:	%{name}-platform = %{version}-%{release}
+Suggests:	%{name}-platform-pc
 ExclusiveArch:	%{ix86} %{x8664} ppc sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
