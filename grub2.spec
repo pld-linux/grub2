@@ -359,8 +359,10 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p %{_sbindir}/postshell
 -/usr/sbin/fix-info-dir -c %{_infodir}
 
-%triggerpostun -- %{name} < %{version}-0
+%triggerpostun -- %{name} < 2.00-0.1
 # Note this trigger on version upgrade
+# needed only for upgrade from old grub2 packages
+# which contained modules in /boot/grub
 # don't do anything on --downgrade
 if [ $1 -le 1 ]; then
 	exit 0
