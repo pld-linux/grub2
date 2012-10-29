@@ -224,6 +224,7 @@ PC BIOS platform support for GRUB.
 %package platform-efi
 Summary:	(U)EFI platform support for GRUB
 Group:		Base
+Suggests:	efibootmgr
 Provides:	%{name}-platform = %{version}-%{release}
 
 %description platform-efi
