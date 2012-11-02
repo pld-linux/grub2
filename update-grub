@@ -1,2 +1,26 @@
 #!/bin/sh
+# Setup locale from system config,
+# otherwise it would be inherited from running terminal
+
+if [ -f /etc/sysconfig/i18n ]; then
+	. /etc/sysconfig/i18n
+
+	[ "$LANG" ] && export LANG || unset LANG
+	[ "$LC_ADDRESS" ] && export LC_ADDRESS || unset LC_ADDRESS
+	[ "$LC_COLLATE" ] && export LC_COLLATE || unset LC_COLLATE
+	[ "$LC_CTYPE" ] && export LC_CTYPE || unset LC_CTYPE
+	[ "$LC_IDENTIFICATION" ] && export LC_IDENTIFICATION || unset LC_IDENTIFICATION
+	[ "$LC_MEASUREMENT" ] && export LC_MEASUREMENT || unset LC_MEASUREMENT
+	[ "$LC_MESSAGES" ] && export LC_MESSAGES || unset LC_MESSAGES
+	[ "$LC_MONETARY" ] && export LC_MONETARY || unset LC_MONETARY
+	[ "$LC_NAME" ] && export LC_NAME || unset LC_NAME
+	[ "$LC_NUMERIC" ] && export LC_NUMERIC || unset LC_NUMERIC
+	[ "$LC_PAPER" ] && export LC_PAPER || unset LC_PAPER
+	[ "$LC_TELEPHONE" ] && export LC_TELEPHONE || unset LC_TELEPHONE
+	[ "$LC_TIME" ] && export LC_TIME || unset LC_TIME
+	[ "$LC_ALL" ] && export LC_ALL || unset LC_ALL
+	[ "$LANGUAGE" ] && export LANGUAGE || unset LANGUAGE
+	[ "$LINGUAS" ] && export LINGUAS || unset LINGUAS
+fi
+
 exec grub-mkconfig -o /boot/grub/grub.cfg "$@"
