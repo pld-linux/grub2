@@ -6,16 +6,6 @@
 #   --enable-grub-emu-usb conflicts with --enable-grub-emu-pci, emu-pci seems experimental
 #   - to build and install the `grub-emu' debugging utility we need to re-run build with --target=emu
 #   - put grub-emu to subpackage if it is fixed
-# - warning: Installed (but unpackaged) file(s) found:
-#   /sbin/grub-sparc64-setup
-#   /usr/share/man/man8/grub-sparc64-setup.8.gz
-
-#   /boot/grub/config.h
-#   /etc/bash_completion.d/grub
-#   /sbin/grub-sparc64-setup
-#   /boot/grub/gdb_grub
-#   /boot/grub/gmodule.pl
-#   /sbin/grub-sparc64-setup
 #
 # Conditional build:
 %bcond_with	grubemu	# build grub-emu debugging utility
@@ -29,13 +19,31 @@
 %undefine	with_efiemu
 %endif
 
+%ifnarch %{ix86} %{x8664}
+%undefine	with_pc
+%endif
+%ifnarch %{ix86} %{x8664} ia64
+%undefine	with_efi
+%endif
+
 %ifnarch %{x8664}
 # non-x86_64 arch doesn't support this
 %undefine	with_efiemu
 %endif
 
 # the 'most natural' platform should go last
+%ifarch %{ix86} %{x8664} ia64
 %define		platforms %{?with_efi:efi} %{?with_pc:pc}
+%endif
+%ifarch ppc ppc64 sparc64
+%define		platforms ieee1275
+%endif
+%ifarch mips
+%define		platforms arc
+%endif
+%ifarch mipsel
+%define		platforms loongson
+%endif
 
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
@@ -53,7 +61,6 @@ Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
-URL:		http://www.gnu.org/software/grub/
 Patch0:		pld-initrd.patch
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
@@ -66,18 +73,28 @@ Patch8:		posix.patch
 Patch9:		%{name}-gets.patch
 Patch10:	%{name}-fonts_path.patch
 Patch11:	%{name}-tftp_fix.patch
+URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
 BuildRequires:	device-mapper-devel
+BuildRequires:	flex >= 2.5.35
 BuildRequires:	fonts-TTF-DejaVu
-BuildRequires:	freetype-devel
+BuildRequires:	freetype-devel >= 2
 BuildRequires:	gawk
 BuildRequires:	gettext-devel
+BuildRequires:	glibc-static
 BuildRequires:	help2man
 BuildRequires:	libfuse-devel
 BuildRequires:	libtool
+BuildRequires:	ncurses-devel
+BuildRequires:	rpm >= 4.4.9-56
+BuildRequires:	rpmbuild(macros) >= 1.213
+BuildRequires:	sed >= 4.0
+BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo
+BuildRequires:	xz
+BuildRequires:	xz-devel
 %ifarch %{x8664}
 BuildRequires:	/usr/lib/libc.so
 %if "%{pld_release}" == "ac"
@@ -86,19 +103,16 @@ BuildRequires:	libgcc32
 BuildRequires:	gcc-multilib
 %endif
 %endif
-BuildRequires:	glibc-static
-BuildRequires:	ncurses-devel
-BuildRequires:	rpm >= 4.4.9-56
-BuildRequires:	rpmbuild(macros) >= 1.213
-BuildRequires:	sed >= 4.0
+Requires:	%{name}-platform = %{version}-%{release}
 Requires:	which
+%ifarch %{ix86} %{x8664}
+Suggests:	%{name}-platform-pc
+%endif
 Suggests:	cdrkit-mkisofs
 Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
-Requires:	%{name}-platform = %{version}-%{release}
-Suggests:	%{name}-platform-pc
-ExclusiveArch:	%{ix86} %{x8664} ppc sparc64
+ExclusiveArch:	%{ix86} %{x8664} ia64 mips mipsel ppc ppc64 sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
@@ -186,9 +200,9 @@ usuarios conmás experiencia y que deseen obtener más recursos de su
 cargador de inicialización (boot loader).
 
 %description -l pl.UTF-8
-GRUB jest bootloaderem na licencji GNU, mającym na celu unifikację
+GRUB jest bootloaderem na licencji GNU GPL, mającym na celu unifikację
 procesu bootowania na systemach x86. Potrafi nie tylko ładować jądra
-Linuksa i *BSD: posiada również implementacje standardu Multiboot,
+Linuksa i *BSD: posiada również implementację standardu Multiboot,
 który pozwala na elastyczne ładowanie wielu obrazów bootowalnych
 (czego wymagają modułowe jądra, takie jak GNU Hurd).
 
@@ -203,7 +217,7 @@ avançados e que querem mais recursos de seu boot loader.
 
 %package -n bash-completion-%{name}
 Summary:	bash-completion for GRUB
-Summary(pl.UTF-8):	bashowe uzupełnianie nazw dla GRUB
+Summary(pl.UTF-8):	Bashowe uzupełnianie nazw dla GRUB-a
 Group:		Applications/Shells
 Requires:	bash-completion
 
@@ -211,18 +225,23 @@ Requires:	bash-completion
 This package provides bash-completion for GRUB.
 
 %description -n bash-completion-%{name} -l pl.UTF-8
-Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB.
+Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB-a.
 
 %package platform-pc
 Summary:	PC BIOS platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy PC BIOS dla GRUB-a
 Group:		Base
 Provides:	%{name}-platform = %{version}-%{release}
 
 %description platform-pc
 PC BIOS platform support for GRUB.
 
+%description platform-pc -l pl.UTF-8
+Obsługa platformy PC BIOS dla GRUB-a.
+
 %package platform-efi
 Summary:	(U)EFI platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy (U)EFI dla GRUB-a
 Group:		Base
 Suggests:	efibootmgr
 Provides:	%{name}-platform = %{version}-%{release}
@@ -230,19 +249,30 @@ Provides:	%{name}-platform = %{version}-%{release}
 %description platform-efi
 (U)EFI platform support for GRUB.
 
+%description platform-efi -l pl.UTF-8
+Obsługa platformy (U)EFI dla GRUB-a.
+
 %package mkfont
 Summary:	GRUB font files converter
+Summary(pl.UTF-8):	Konwerter plików fontów GRUB-a
 Group:		Base
 
 %description mkfont
 Converts common font file formats into PF2.
 
+%description mkfont -l pl.UTF-8
+Program do konwersji popularnych formatów plików fontów do PF2.
+
 %package theme-starfield
 Summary:	starfield theme for GRUB
+Summary(pl.UTF-8):	Motyw starfield dla GRUB-a
 Group:		Base
 
 %description theme-starfield
 starfield theme for GRUB.
+
+%description theme-starfield -l pl.UTF-8
+Motyw starfield dla GRUB-a.
 
 %prep
 %setup -q -n grub-%{version}
@@ -283,7 +313,7 @@ for platform in %{platforms} ; do
 	cd build-${platform}
 
 	if [ "$platform" != "efi" ] ; then
-		platform_opts="--%{!?with_efiemu:dis}%{?with_efiemu:en}able-efiemu"
+		platform_opts="--enable-efiemu%{!?with_efiemu:=no}"
 	else
 		platform_opts=""
 	fi
@@ -343,6 +373,14 @@ cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
 # rm -f, because it sometimes exists, sometimes not, depending which texlive you have installed
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
+# platform specific, unnecessarily always installed
+%ifnarch %{ix86} %{x8664}
+%{__rm} $RPM_BUILD_ROOT{%{_sbindir}/grub-bios-setup,%{_mandir}/man8/grub-bios-setup.8}
+%endif
+%ifnarch sparc64
+%{__rm} $RPM_BUILD_ROOT{%{_sbindir}/grub-sparc64-setup,%{_mandir}/man8/grub-sparc64-setup.8}
+%endif
+
 # core.img - bootable image generated by grub-mkimage(1) via grub-install(1)
 touch $RPM_BUILD_ROOT%{_grubdir}/core.img
 touch $RPM_BUILD_ROOT%{_grubdir}/device.map
@@ -382,7 +420,6 @@ fi
 %defattr(644,root,root,755)
 %doc AUTHORS ChangeLog NEWS README THANKS TODO
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
-%attr(755,root,root) %{_sbindir}/grub-bios-setup
 %attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-fstest
 %attr(755,root,root) %{_sbindir}/grub-kbdcomp
@@ -402,11 +439,19 @@ fi
 %attr(755,root,root) %{_sbindir}/grub-set-default
 %attr(755,root,root) %{_sbindir}/update-grub
 %ifarch %{ix86} %{x8664}
+%attr(755,root,root) %{_sbindir}/grub-bios-setup
+%{_mandir}/man8/grub-bios-setup.8*
+%endif
+%ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %{_mandir}/man1/grub-mkimage.1*
 %else
 %attr(755,root,root) %{_sbindir}/grub-probe
 %{_mandir}/man8/grub-probe.8*
+%endif
+%ifarch sparc64
+%attr(755,root,root) %{_sbindir}/grub-sparc64-setup
+%{_mandir}/man8/grub-sparc64-setup.8*
 %endif
 %{_mandir}/man1/grub-editenv.1*
 %{_mandir}/man1/grub-fstest.1*
@@ -419,7 +464,6 @@ fi
 %{_mandir}/man1/grub-mkstandalone.1*
 %{_mandir}/man1/grub-mount.1*
 %{_mandir}/man1/grub-script-check.1*
-%{_mandir}/man8/grub-bios-setup.8*
 %{_mandir}/man8/grub-install.8*
 %{_mandir}/man8/grub-mkconfig.8*
 %{_mandir}/man8/grub-mknetdir.8*
@@ -478,9 +522,7 @@ fi
 %{_libexecdir}/*-pc/gdb_grub
 %{_libexecdir}/*-pc/gmodule.pl
 %if %{with efiemu}
-%ifarch %{x8664}
 %{_libexecdir}/*-pc/efiemu*.o
-%endif
 %endif
 %{_libexecdir}/*-pc/kernel.img
 %ifarch %{ix86} %{x8664} sparc sparc64
@@ -509,8 +551,8 @@ fi
 
 %files mkfont
 %defattr(644,root,root,755)
-%{_mandir}/man1/grub-mkfont.1*
 %attr(755,root,root) %{_sbindir}/grub-mkfont
+%{_mandir}/man1/grub-mkfont.1*
 
 %files theme-starfield
 %defattr(644,root,root,755)
