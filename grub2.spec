@@ -306,6 +306,7 @@ cp -f /usr/share/automake/config.sub .
 %{__autoheader}
 echo timestamp > stamp-h.in
 %{__autoconf}
+%{__automake}
 export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
 
 for platform in %{platforms} ; do
