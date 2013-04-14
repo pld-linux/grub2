@@ -1,0 +1,37 @@
+--- grub-2.00/util/grub-mkconfig.in~	2013-04-15 00:03:09.162253769 +0200
++++ grub-2.00/util/grub-mkconfig.in	2013-04-15 01:39:22.112705322 +0200
+@@ -233,7 +233,8 @@
+   GRUB_SAVEDEFAULT \
+   GRUB_ENABLE_CRYPTODISK \
+   GRUB_BADRAM \
+-  GRUB_DISABLE_SUBMENU
++  GRUB_DISABLE_SUBMENU \
++  GRUB_PREFER_DRACUT
+ 
+ if test "x${grub_cfg}" != "x"; then
+   rm -f "${grub_cfg}.new"
+--- grub-2.00/util/grub.d/10_linux.in~	2013-04-15 00:03:09.162253769 +0200
++++ grub-2.00/util/grub.d/10_linux.in	2013-04-15 01:38:26.992181771 +0200
+@@ -191,10 +191,18 @@
+   linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
+ 
+   initrd=
+-  for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
+-	   "initrd-${version}" "initramfs-${version}.img" \
+-	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
+-	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
++  if [ x"${GRUB_PREFER_DRACUT}" = "x" ]; then
++	  initrd_search_list="initrd.img-${version} initrd-${version}.img initrd-${version}.gz" \
++		  "initrd-${version} initramfs-${version}.img" \
++		  "initrd.img-${alt_version} initrd-${alt_version}.img" \
++		  "initrd-${alt_version} initramfs-${alt_version}.img" \
++  else
++	  initrd_search_list="initramfs-${version}.img initrd.img-${version} initrd-${version}.img" \
++		  "initrd-${version}.gz initrd-${version}  initramfs-${alt_version}.img" \
++		  "initrd.img-${alt_version} initrd-${alt_version}.img" \
++		  "initrd-${alt_version}"
++  fi
++  for i in $initrd_search_list \
+ 	   "initramfs-genkernel-${version}" \
+ 	   "initramfs-genkernel-${alt_version}" \
+ 	   "initramfs-genkernel-${GENKERNEL_ARCH}-${version}" \

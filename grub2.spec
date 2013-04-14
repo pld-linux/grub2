@@ -81,6 +81,7 @@ Patch17:	fix-http-crash.patch
 Patch18:	Issue-separate-DNS-queries-for-ipv4-and-ipv6.patch
 Patch19:	search-for-specific-config-file-for-netboot.patch
 Patch20:	ignore-kernel-symlinks.patch
+Patch21:	choose-preferred-initrd.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -304,6 +305,7 @@ Motyw starfield dla GRUB-a.
 %patch18 -p1
 %patch19 -p1
 %patch20 -p1
+%patch21 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'

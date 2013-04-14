@@ -42,5 +42,10 @@ GRUB_DISABLE_RECOVERY="true"
 # Disable creating "advanced" submenus, just use flat list
 GRUB_DISABLE_SUBMENU="true"
 
+# Control which initial ramdisk should grub-mkconfig prefer when searching
+# default is initrd-*.gz created by geninitrd, uncomment to make it prefer
+# initramfs-*.img created by dracut
+#GRUB_PREFER_DRACUT="true"
+
 # Uncomment to get a beep at grub start
 #GRUB_INIT_TUNE="480 440 1"
