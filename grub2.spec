@@ -52,7 +52,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.00
-Release:	0.6
+Release:	0.7
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -81,6 +81,7 @@ Patch16:	dhcp-client-id-and-uuid-options-added.patch
 Patch17:	fix-http-crash.patch
 Patch18:	Issue-separate-DNS-queries-for-ipv4-and-ipv6.patch
 Patch19:	search-for-specific-config-file-for-netboot.patch
+Patch20:	ignore-kernel-symlinks.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -133,7 +134,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # part of grub code is not relocable (these are not Linux libs)
 # stack protector also breaks non-Linux binaries
-%define 	filterout_c	-fPIC
+%define		filterout_c	-fPIC
 %undefine	_ssp_cflags
 
 %description
@@ -304,6 +305,7 @@ Motyw starfield dla GRUB-a.
 %patch17 -p1
 %patch18 -p1
 %patch19 -p1
+%patch20 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
