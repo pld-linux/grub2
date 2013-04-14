@@ -1,0 +1,121 @@
+From d63a0b7fd665fae1dd34d3e86127b93dd87b8114 Mon Sep 17 00:00:00 2001
+From: Paulo Flabiano Smorigo <pfsmorigo@br.ibm.com>
+Date: Tue, 27 Nov 2012 17:18:53 -0200
+Subject: [PATCH 2/3] DHCP client ID and UUID options added.
+
+---
+ grub-core/net/bootp.c |   56 +++++++++++++++++++++++++++++++++++++++++--------
+ include/grub/net.h    |    2 ++
+ 2 files changed, 49 insertions(+), 9 deletions(-)
+
+diff --git a/grub-core/net/bootp.c b/grub-core/net/bootp.c
+index bc07d53..3b4130d 100644
+--- a/grub-core/net/bootp.c
++++ b/grub-core/net/bootp.c
+@@ -51,6 +51,14 @@ set_env_limn_ro (const char *intername, const char *suffix,
+   grub_register_variable_hook (varname, 0, grub_env_write_readonly);
+ }
+ 
++static char
++hexdigit (grub_uint8_t val)
++{
++  if (val < 10)
++    return val + '0';
++  return val + 'a' - 10;
++}
++
+ static void
+ parse_dhcp_vendor (const char *name, void *vend, int limit, int *mask)
+ {
+@@ -81,6 +89,9 @@ parse_dhcp_vendor (const char *name, void *vend, int limit, int *mask)
+ 
+       taglength = *ptr++;
+ 
++      grub_dprintf("net", "DHCP option %u (0x%02x) found with length %u.\n",
++                   tagtype, tagtype, taglength);
++
+       switch (tagtype)
+ 	{
+ 	case GRUB_NET_BOOTP_NETMASK:
+@@ -121,7 +132,9 @@ parse_dhcp_vendor (const char *name, void *vend, int limit, int *mask)
+ 		grub_net_add_dns_server (&s);
+ 		ptr += 4;
+ 	      }
+-	  }
++            /* Skip adittional increment */
++            continue;
++          }
+ 	  break;
+ 	case GRUB_NET_BOOTP_HOSTNAME:
+ 	  set_env_limn_ro (name, "hostname", (char *) ptr, taglength);
+@@ -139,6 +152,39 @@ parse_dhcp_vendor (const char *name, void *vend, int limit, int *mask)
+ 	  set_env_limn_ro (name, "extensionspath", (char *) ptr, taglength);
+ 	  break;
+ 
++        case GRUB_NET_BOOTP_CLIENT_ID:
++	  set_env_limn_ro (name, "clientid", (char *) ptr, taglength);
++          break;
++
++        case GRUB_NET_BOOTP_CLIENT_UUID:
++            {
++              if (taglength != 17)
++                break;
++
++              /* The format is 9cfe245e-d0c8-bd45-a79f-54ea5fbd3d97 */
++
++              ptr += 1;
++              taglength -= 1;
++
++              char *val = grub_malloc (2 * taglength + 4 + 1);
++              int i = 0;
++              int j = 0;
++              for (i = 0; i < taglength; i++)
++                {
++                  val[2 * i + j] = hexdigit (ptr[i] >> 4);
++                  val[2 * i + 1 + j] = hexdigit (ptr[i] & 0xf);
++
++                  if ((i == 3) || (i == 5) || (i == 7) || (i == 9))
++                    {
++                      j++;
++                      val[2 * i + 1+ j] = '-';
++                    }
++                }
++
++              set_env_limn_ro (name, "clientuuid", (char *) val, 2 * taglength + 4);
++            }
++          break;
++
+ 	  /* If you need any other options please contact GRUB
+ 	     developpement team.  */
+ 	}
+@@ -299,14 +345,6 @@ grub_net_process_dhcp (struct grub_net_buff *nb,
+     }
+ }
+ 
+-static char
+-hexdigit (grub_uint8_t val)
+-{
+-  if (val < 10)
+-    return val + '0';
+-  return val + 'a' - 10;
+-}
+-
+ static grub_err_t
+ grub_cmd_dhcpopt (struct grub_command *cmd __attribute__ ((unused)),
+ 		  int argc, char **args)
+diff --git a/include/grub/net.h b/include/grub/net.h
+index a7e5b2c..45348dd 100644
+--- a/include/grub/net.h
++++ b/include/grub/net.h
+@@ -423,6 +423,8 @@ enum
+     GRUB_NET_BOOTP_DOMAIN = 0x0f,
+     GRUB_NET_BOOTP_ROOT_PATH = 0x11,
+     GRUB_NET_BOOTP_EXTENSIONS_PATH = 0x12,
++    GRUB_NET_BOOTP_CLIENT_ID = 0x3d,
++    GRUB_NET_BOOTP_CLIENT_UUID = 0x61,
+     GRUB_NET_BOOTP_END = 0xff
+   };
+ 
+-- 
+1.7.10.4
+

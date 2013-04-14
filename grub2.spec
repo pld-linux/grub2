@@ -73,6 +73,14 @@ Patch8:		posix.patch
 Patch9:		%{name}-gets.patch
 Patch10:	%{name}-fonts_path.patch
 Patch11:	%{name}-tftp_fix.patch
+Patch12:	add-vlan-tag-support.patch
+Patch13:	just-say-linux.patch
+Patch14:	add-GRUB-DISABLE-SUBMENU-option.patch
+Patch15:	add-X-option-to-printf-functions.patch
+Patch16:	dhcp-client-id-and-uuid-options-added.patch
+Patch17:	fix-http-crash.patch
+Patch18:	Issue-separate-DNS-queries-for-ipv4-and-ipv6.patch
+Patch19:	search-for-specific-config-file-for-netboot.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -288,6 +296,14 @@ Motyw starfield dla GRUB-a.
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
+%patch12 -p1
+%patch13 -p1
+%patch14 -p1
+%patch15 -p1
+%patch16 -p1
+%patch17 -p1
+%patch18 -p1
+%patch19 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
