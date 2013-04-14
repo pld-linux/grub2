@@ -13,7 +13,7 @@ GRUB_DEFAULT=0
 # save_default_entry
 #GRUB_SAVEDEFAULT=true
 
-GRUB_TIMEOUT=5
+GRUB_TIMEOUT=15
 
 # Unless `GRUB_DISABLE_RECOVERY' is set to `true', two menu entries
 # will be generated for each Linux kernel: one default entry and one
