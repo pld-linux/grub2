@@ -15,8 +15,6 @@ GRUB_DEFAULT=0
 
 GRUB_TIMEOUT=5
 
-GRUB_DISTRIBUTOR=$(lsb_release -i -s 2> /dev/null || echo PLD)
-
 # Unless `GRUB_DISABLE_RECOVERY' is set to `true', two menu entries
 # will be generated for each Linux kernel: one default entry and one
 # entry for recovery mode. This option lists command-line arguments
