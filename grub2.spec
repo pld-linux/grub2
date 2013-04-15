@@ -45,8 +45,6 @@
 %define		platforms loongson
 %endif
 
-%define		_enable_debug_packages	0
-
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
@@ -54,7 +52,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.00
-Release:	1.2
+Release:	1.3
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -317,9 +315,9 @@ grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-mis
 
 %build
 # if gold is used then grub doesn't even boot
-#install -d our-ld
-#ln -s /usr/bin/ld.bfd our-ld/ld
-#export PATH=$(pwd)/our-ld:$PATH
+install -d our-ld
+ln -s /usr/bin/ld.bfd our-ld/ld
+export PATH=$(pwd)/our-ld:$PATH
 
 cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
