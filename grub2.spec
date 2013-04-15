@@ -134,6 +134,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # part of grub code is not relocable (these are not Linux libs)
 # stack protector also breaks non-Linux binaries
+# any kind of forced optimizations makes grub2 unreliable (random
+# reboots and hangs on boot menu screen)
 %define		filterout_c	-fPIC -O.
 %undefine	_ssp_cflags
 %undefine	_fortify_cflags
@@ -326,7 +328,6 @@ cp -f /usr/share/automake/config.sub .
 echo timestamp > stamp-h.in
 %{__autoconf}
 %{__automake}
-export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
 
 for platform in %{platforms} ; do
 	install -d build-${platform}
@@ -418,10 +419,10 @@ rm -rf $RPM_BUILD_ROOT
 %postun -p %{_sbindir}/postshell
 -/usr/sbin/fix-info-dir -c %{_infodir}
 
-%triggerpostun -- %{name} < 2.00-0.1
-# Note this trigger on version upgrade
-# needed only for upgrade from old grub2 packages
-# which contained modules in /boot/grub
+%triggerpostun -- %{name} < 2.00-2
+# Note this trigger on version upgrade needed only for upgrade from
+# old grub2 packages which contained modules in /boot/grub
+# or were built with optimizations enabled
 # don't do anything on --downgrade
 if [ $1 -le 1 ]; then
 	exit 0
