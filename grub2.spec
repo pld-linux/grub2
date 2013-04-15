@@ -13,12 +13,6 @@
 %bcond_without	pc	# do not build for PC BIOS platform
 %bcond_without	efi	# do not build for EFI platform
 
-%if "%{cc_version}" < "3.4"
-# cc does not support:
-# cc1: sorry, unimplemented: code model `large' not supported yet
-%undefine	with_efiemu
-%endif
-
 %ifnarch %{ix86} %{x8664}
 %undefine	with_pc
 %endif
@@ -309,11 +303,6 @@ Motyw starfield dla GRUB-a.
 %patch19 -p1
 %patch20 -p1
 %patch21 -p1
-
-%if "%{cc_version}" < "3.4"
-grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
-%{__sed} -i -e '/video_mod_CFLAGS/s/$/ -Wno-error/' conf/common.rmk
-%endif
 
 %build
 # if gold is used then grub doesn't even boot
