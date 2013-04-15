@@ -52,7 +52,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.00
-Release:	1.3
+Release:	1.4
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -326,7 +326,7 @@ cp -f /usr/share/automake/config.sub .
 echo timestamp > stamp-h.in
 %{__autoconf}
 %{__automake}
-#export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
+export CFLAGS="%{rpmcflags} -Os %{?debug:-g}"
 
 for platform in %{platforms} ; do
 	install -d build-${platform}
