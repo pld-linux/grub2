@@ -305,7 +305,7 @@ Motyw starfield dla GRUB-a.
 %patch18 -p1
 %patch19 -p1
 %patch20 -p1
-#%patch21 -p1
+%patch21 -p1
 
 %if "%{cc_version}" < "3.4"
 grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-missing-field-initializers,,'
