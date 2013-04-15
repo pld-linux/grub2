@@ -41,7 +41,7 @@ index e2b8ab3..9427a39 100644
 -  if [ "x$is_first_entry" = xtrue ]; then
 -    linux_entry "${OS}" "${version}" simple \
 -    "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
-+  if [ "x${GRUB_DISABLE_SUBMENU}" = x ]; then
++  if [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
 +    if [ "x$is_first_entry" = xtrue ]; then
 +      linux_entry "${OS}" "${version}" simple \
 +      "${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}"
@@ -68,7 +68,7 @@ index e2b8ab3..9427a39 100644
  # add a closing '}' for the submenu command.
 -if [ x"$is_first_entry" != xtrue ]; then
 -  echo '}'
-+if [ "x${GRUB_DISABLE_SUBMENU}" = x ]; then
++if [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
 +  if [ x"$is_first_entry" != xtrue ]; then
 +    echo '}'
 +  fi
@@ -82,7 +82,7 @@ index e2b8ab3..9427a39 100644
  	fi
  
 -	if [ "x$is_first_entry" = xtrue ]; then
-+        if [ "x${GRUB_DISABLE_SUBMENU}" = x ]; then
++        if [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
 +	  if [ "x$is_first_entry" = xtrue ]; then
  	    linux_entry "${OS}" "${version}" "${xen_version}" simple \
  		"${GRUB_CMDLINE_LINUX} ${GRUB_CMDLINE_LINUX_DEFAULT}" "${GRUB_CMDLINE_XEN} ${GRUB_CMDLINE_XEN_DEFAULT}"
@@ -105,7 +105,7 @@ index e2b8ab3..9427a39 100644
  	list=`echo $list | tr ' ' '\n' | grep -vx $linux | tr '\n' ' '`
      done
 -    if [ x"$is_first_entry" != xtrue ]; then
-+    if [ "x${GRUB_DISABLE_SUBMENU}" = x ]; then
++    if [ "x${GRUB_DISABLE_SUBMENU}" != xtrue ]; then
 +      if [ x"$is_first_entry" != xtrue ]; then
  	echo '	}'
 +      fi
