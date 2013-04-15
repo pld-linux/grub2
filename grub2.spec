@@ -134,8 +134,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 # part of grub code is not relocable (these are not Linux libs)
 # stack protector also breaks non-Linux binaries
-%define		filterout_c	-fPIC
+%define		filterout_c	-fPIC -O.
 %undefine	_ssp_cflags
+%undefine	_fortify_cflags
 
 %description
 GRUB is a GPLed bootloader intended to unify bootloading across x86
@@ -314,9 +315,9 @@ grep -rl -- -Wno-missing-field-initializers . | xargs %{__sed} -i -e 's,-Wno-mis
 
 %build
 # if gold is used then grub doesn't even boot
-install -d our-ld
-ln -s /usr/bin/ld.bfd our-ld/ld
-export PATH=$(pwd)/our-ld:$PATH
+#install -d our-ld
+#ln -s /usr/bin/ld.bfd our-ld/ld
+#export PATH=$(pwd)/our-ld:$PATH
 
 cp -f /usr/share/automake/config.sub .
 %{__libtoolize}
