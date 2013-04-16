@@ -306,6 +306,8 @@ Motyw starfield dla GRUB-a.
 
 %build
 # if gold is used then grub doesn't even boot
+# https://savannah.gnu.org/bugs/?34539
+# http://sourceware.org/bugzilla/show_bug.cgi?id=14196
 install -d our-ld
 ln -s /usr/bin/ld.bfd our-ld/ld
 export PATH=$(pwd)/our-ld:$PATH
