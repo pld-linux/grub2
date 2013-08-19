@@ -107,6 +107,7 @@ BuildRequires:	gcc-multilib
 %endif
 %endif
 Requires:	%{name}-platform = %{version}-%{release}
+Requires:	pld-release
 Requires:	which
 %ifarch %{ix86} %{x8664}
 Suggests:	%{name}-platform-pc
