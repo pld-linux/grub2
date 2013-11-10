@@ -1,0 +1,13 @@
+--- docs/grub.cfg.orig	2013-11-10 19:25:04.959888566 +0000
++++ docs/grub.cfg	2013-11-10 19:25:10.260104712 +0000
+@@ -14,8 +14,8 @@
+ # For booting GNU/Linux
+ menuentry "GNU/Linux" --id gnulinux {
+ 	set root=(hd0,msdos1)
+-	linux /vmlinuz root=/dev/sda1
+-	initrd /initrd.img
++	linux /boot/vmlinuz root=/dev/sda1
++	initrd /boot/initrd
+ }
+ 
+ # For booting GNU/Hurd

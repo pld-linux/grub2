@@ -46,7 +46,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.00
-Release:	2
+Release:	3
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -76,6 +76,7 @@ Patch18:	Issue-separate-DNS-queries-for-ipv4-and-ipv6.patch
 Patch19:	search-for-specific-config-file-for-netboot.patch
 Patch20:	ignore-kernel-symlinks.patch
 Patch21:	choose-preferred-initrd.patch
+Patch22:	%{name}-cfg.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -304,6 +305,7 @@ Motyw starfield dla GRUB-a.
 %patch19 -p1
 %patch20 -p1
 %patch21 -p1
+%patch22 -p0
 
 %build
 # if gold is used then grub doesn't even boot
