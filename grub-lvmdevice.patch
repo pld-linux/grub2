@@ -1,6 +1,6 @@
 --- grub-1.97.1/util/grub-mkconfig.in~	2009-11-17 17:02:16.626243372 +0200
 +++ grub-1.97.1/util/grub-mkconfig.in	2009-11-17 17:02:08.346050859 +0200
-@@ -120,6 +120,21 @@
+@@ -120,6 +120,27 @@
  
  # Device containing our userland.  Typically used for root= parameter.
  GRUB_DEVICE="`${grub_probe} --target=device /`"
@@ -10,13 +10,19 @@
 +# /dev/mapper/blodnatt-blah--bleh -> /dev/blodnatt/blah-bleh
 +# /dev/mapper/vg--meaw-root -> /dev/vg-meaw/root
 +case "$GRUB_DEVICE" in
-+/dev/mapper/*-*)
-+	# change "--" to / (as "/" is impossible in LV name)
-+	local dev=$(awk -vdev="${GRUB_DEVICE#/dev/mapper/}" 'BEGIN{gsub(/--/, "/", dev); print dev}')
-+	local VG=$(awk -vdev="$dev" 'BEGIN{split(dev, v, "-"); gsub("/", "-", v[1]); print v[1]}')
-+	local LV=$(awk -vdev="$dev" 'BEGIN{split(dev, v, "-"); gsub("/", "-", v[2]); print v[2]}')
-+	GRUB_DEVICE=/dev/$VG/$LV
-+;;
++	/dev/mapper/*-*)
++		DM_REAL_DEVICE="$(readlink -f "$GRUB_DEVICE")"
++		DM_UUID="$(cat /sys/block/${DM_REAL_DEVICE#/dev/}/dm/uuid)"
++		case "$DM_UUID" in
++			LVM-*)
++				# change "--" to / (as "/" is impossible in LV name)
++				local dev=$(awk -vdev="${GRUB_DEVICE#/dev/mapper/}" 'BEGIN{gsub(/--/, "/", dev); print dev}')
++				local VG=$(awk -vdev="$dev" 'BEGIN{split(dev, v, "-"); gsub("/", "-", v[1]); print v[1]}')
++				local LV=$(awk -vdev="$dev" 'BEGIN{split(dev, v, "-"); gsub("/", "-", v[2]); print v[2]}')
++				GRUB_DEVICE=/dev/$VG/$LV
++				;;
++		esac
++	;;
 +esac
 +
  GRUB_DEVICE_UUID="`${grub_probe} --device ${GRUB_DEVICE} --target=fs_uuid 2> /dev/null`" || true
