@@ -77,6 +77,7 @@ Patch19:	search-for-specific-config-file-for-netboot.patch
 Patch20:	ignore-kernel-symlinks.patch
 Patch21:	choose-preferred-initrd.patch
 Patch22:	%{name}-cfg.patch
+Patch23:	%{name}-freetype_include.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -306,6 +307,7 @@ Motyw starfield dla GRUB-a.
 %patch20 -p1
 %patch21 -p1
 %patch22 -p0
+%patch23 -p1
 
 %build
 # if gold is used then grub doesn't even boot
