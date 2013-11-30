@@ -46,7 +46,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.00
-Release:	5
+Release:	6
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -65,7 +65,7 @@ Patch7:		%{name}-awk.patch
 Patch8:		posix.patch
 Patch9:		%{name}-gets.patch
 Patch10:	%{name}-fonts_path.patch
-Patch11:	%{name}-tftp_fix.patch
+Patch11:	%{name}-tftp_fixes.patch
 Patch12:	add-vlan-tag-support.patch
 Patch13:	just-say-linux.patch
 Patch14:	add-GRUB-DISABLE-SUBMENU-option.patch
