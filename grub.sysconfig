@@ -20,7 +20,8 @@ GRUB_TIMEOUT=15
 # entry for recovery mode. This option lists command-line arguments
 # to add only to the default menu entry, after those listed in
 # `GRUB_CMDLINE_LINUX'.
-GRUB_CMDLINE_LINUX_DEFAULT="quiet panic=120"
+# To disable IPv6 in kernel, append: ipv6.disable=1
+GRUB_CMDLINE_LINUX_DEFAULT="panic=120 quiet"
 
 # Command-line arguments to add to menu entries for the Linux kernel.
 GRUB_CMDLINE_LINUX=""
