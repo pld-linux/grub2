@@ -79,8 +79,11 @@ Patch21:	choose-preferred-initrd.patch
 Patch22:	%{name}-cfg.patch
 Patch23:	%{name}-freetype_include.patch
 Patch24:	%{name}-efinet_fix.patch
+Patch25:	%{name}-linuxefi.patch
+Patch26:	%{name}-generated_files.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
+BuildRequires:	autogen
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
 BuildRequires:	device-mapper-devel
@@ -310,6 +313,8 @@ Motyw starfield dla GRUB-a.
 %patch22 -p0
 %patch23 -p1
 %patch24 -p1
+%patch25 -p1
+%patch26 -p1
 
 %build
 # if gold is used then grub doesn't even boot
