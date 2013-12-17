@@ -46,7 +46,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.00
-Release:	6.1
+Release:	6
 License:	GPL v2
 Group:		Base
 Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -81,7 +81,6 @@ Patch23:	%{name}-freetype_include.patch
 Patch24:	%{name}-efinet_fix.patch
 Patch25:	%{name}-linuxefi.patch
 Patch26:	%{name}-generated_files.patch
-Patch27:	%{name}-linux16-non-bios.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	autogen
@@ -316,7 +315,6 @@ Motyw starfield dla GRUB-a.
 %patch24 -p1
 %patch25 -p1
 %patch26 -p1
-%patch27 -p1
 
 %build
 # if gold is used then grub doesn't even boot
