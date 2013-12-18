@@ -45,45 +45,38 @@ Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	2.00
-Release:	6
+Version:	2.00.git20131218
+Release:	0.1
 License:	GPL v2
 Group:		Base
-Source0:	http://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
-# Source0-md5:	a1043102fbc7bcedbf53e7ee3d17ab91
+# git://git.savannah.gnu.org/grub.git
+# TS=$(date +'%Y%m%d') ; \
+# git archive --format=tar --prefix=grub-2.00.git$TS/ master | \
+# xz > grub-2.00.git$TS.tar.xz
+Source0:	grub-%{version}.tar.xz
+# Source0-md5:	64bd6ea9d99205559fbe576ed3d80800
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
+# ./linguas.sh
+# TS=$(date +'%Y%m%d') ; tar cjvf grub-po-2.00.git$TS.tar.bz2 po/*.po po/LINGUAS
+Source5:	grub-po-%{version}.tar.bz2
+# Source5-md5:	274b652b6616780318cf7bd43f183ab9
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
 Patch3:		grub-lvmdevice.patch
 Patch4:		pld-mkconfigdir.patch
 Patch5:		grub-mkconfig-diagnostics.patch
-Patch6:		ppc.patch
-Patch7:		%{name}-awk.patch
 Patch8:		posix.patch
-Patch9:		%{name}-gets.patch
 Patch10:	%{name}-fonts_path.patch
-Patch11:	%{name}-tftp_fixes.patch
 Patch12:	add-vlan-tag-support.patch
 Patch13:	just-say-linux.patch
-Patch14:	add-GRUB-DISABLE-SUBMENU-option.patch
-Patch15:	add-X-option-to-printf-functions.patch
-Patch16:	dhcp-client-id-and-uuid-options-added.patch
-Patch17:	fix-http-crash.patch
-Patch18:	Issue-separate-DNS-queries-for-ipv4-and-ipv6.patch
-Patch19:	search-for-specific-config-file-for-netboot.patch
 Patch20:	ignore-kernel-symlinks.patch
 Patch21:	choose-preferred-initrd.patch
 Patch22:	%{name}-cfg.patch
-Patch23:	%{name}-freetype_include.patch
-Patch24:	%{name}-efinet_fix.patch
-Patch25:	%{name}-linuxefi.patch
-Patch26:	%{name}-generated_files.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
-BuildRequires:	autogen
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
 BuildRequires:	device-mapper-devel
@@ -92,11 +85,14 @@ BuildRequires:	fonts-TTF-DejaVu
 BuildRequires:	freetype-devel >= 2
 BuildRequires:	gawk
 BuildRequires:	gettext-devel
+BuildRequires:	glibc-localedb-all
 BuildRequires:	glibc-static
 BuildRequires:	help2man
 BuildRequires:	libfuse-devel
 BuildRequires:	libtool
 BuildRequires:	ncurses-devel
+BuildRequires:	python
+BuildRequires:	python-modules
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	sed >= 4.0
@@ -288,33 +284,22 @@ starfield theme for GRUB.
 Motyw starfield dla GRUB-a.
 
 %prep
-%setup -q -n grub-%{version}
+%setup -q -n grub-%{version} -a5
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
-%patch6 -p1
-%patch7 -p1
 %patch8 -p1
-%patch9 -p1
 %patch10 -p1
-%patch11 -p1
 %patch12 -p1
 %patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
-%patch19 -p1
 %patch20 -p1
 %patch21 -p1
 %patch22 -p0
-%patch23 -p1
-%patch24 -p1
-%patch25 -p1
-%patch26 -p1
+
+# we don't have C.utf-8 and need an UTF-8 locale for build
+sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
 
 %build
 # if gold is used then grub doesn't even boot
@@ -324,13 +309,8 @@ install -d our-ld
 ln -s /usr/bin/ld.bfd our-ld/ld
 export PATH=$(pwd)/our-ld:$PATH
 
-cp -f /usr/share/automake/config.sub .
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoheader}
-echo timestamp > stamp-h.in
-%{__autoconf}
-%{__automake}
+# not only the typicall autotools stuff
+./autogen.sh
 
 for platform in %{platforms} ; do
 	install -d build-${platform}
@@ -446,8 +426,11 @@ fi
 %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/grub
 %attr(755,root,root) %{_sbindir}/grub-editenv
 %attr(755,root,root) %{_sbindir}/grub-fstest
+%attr(755,root,root) %{_sbindir}/grub-file
+%attr(755,root,root) %{_sbindir}/grub-glue-efi
 %attr(755,root,root) %{_sbindir}/grub-kbdcomp
 %attr(755,root,root) %{_sbindir}/grub-install
+%attr(755,root,root) %{_sbindir}/grub-macbless
 %attr(755,root,root) %{_sbindir}/grub-menulst2cfg
 %attr(755,root,root) %{_sbindir}/grub-mkconfig
 %attr(755,root,root) %{_sbindir}/grub-mklayout
@@ -459,8 +442,10 @@ fi
 %attr(755,root,root) %{_sbindir}/grub-mount
 %attr(755,root,root) %{_sbindir}/grub-ofpathname
 %attr(755,root,root) %{_sbindir}/grub-reboot
+%attr(755,root,root) %{_sbindir}/grub-render-label
 %attr(755,root,root) %{_sbindir}/grub-script-check
 %attr(755,root,root) %{_sbindir}/grub-set-default
+%attr(755,root,root) %{_sbindir}/grub-syslinux2cfg
 %attr(755,root,root) %{_sbindir}/update-grub
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-bios-setup
@@ -478,19 +463,24 @@ fi
 %{_mandir}/man8/grub-sparc64-setup.8*
 %endif
 %{_mandir}/man1/grub-editenv.1*
+%{_mandir}/man1/grub-file.1*
 %{_mandir}/man1/grub-fstest.1*
+%{_mandir}/man1/grub-glue-efi.1*
 %{_mandir}/man1/grub-kbdcomp.1*
+%{_mandir}/man1/grub-macbless.1*
 %{_mandir}/man1/grub-menulst2cfg.1*
 %{_mandir}/man1/grub-mklayout.1*
+%{_mandir}/man1/grub-mknetdir.1*
 %{_mandir}/man1/grub-mkpasswd-pbkdf2.1*
 %{_mandir}/man1/grub-mkrelpath.1*
 %{_mandir}/man1/grub-mkrescue.1*
 %{_mandir}/man1/grub-mkstandalone.1*
 %{_mandir}/man1/grub-mount.1*
+%{_mandir}/man1/grub-render-label.1*
 %{_mandir}/man1/grub-script-check.1*
+%{_mandir}/man1/grub-syslinux2cfg.1*
 %{_mandir}/man8/grub-install.8*
 %{_mandir}/man8/grub-mkconfig.8*
-%{_mandir}/man8/grub-mknetdir.8*
 %{_mandir}/man8/grub-ofpathname.8*
 %{_mandir}/man8/grub-reboot.8*
 %{_mandir}/man8/grub-set-default.8*
@@ -517,7 +507,12 @@ fi
 %dir /lib/grub.d
 %doc /lib/grub.d/README
 %attr(755,root,root) /lib/grub.d/00_header
+%attr(755,root,root) /lib/grub.d/10_hurd
+%attr(755,root,root) /lib/grub.d/10_illumos
+%attr(755,root,root) /lib/grub.d/10_kfreebsd
 %attr(755,root,root) /lib/grub.d/10_linux
+%attr(755,root,root) /lib/grub.d/10_netbsd
+%attr(755,root,root) /lib/grub.d/10_xnu
 %attr(755,root,root) /lib/grub.d/20_linux_xen
 %attr(755,root,root) /lib/grub.d/30_os-prober
 %attr(755,root,root) /lib/grub.d/41_custom
@@ -551,6 +546,7 @@ fi
 %{_libexecdir}/*-pc/kernel.img
 %ifarch %{ix86} %{x8664} sparc sparc64
 %{_libexecdir}/*-pc/boot.img
+%{_libexecdir}/*-pc/boot_hybrid.img
 %{_libexecdir}/*-pc/cdboot.img
 %{_libexecdir}/*-pc/diskboot.img
 %{_libexecdir}/*-pc/lnxboot.img

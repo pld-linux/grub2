@@ -1,7 +1,7 @@
-diff -dur grub-2.00.orig/util/grub-mkconfig.in grub-2.00/util/grub-mkconfig.in
---- grub-2.00.orig/util/grub-mkconfig.in	2012-10-27 15:05:15.000000000 +0200
-+++ grub-2.00/util/grub-mkconfig.in	2012-10-27 15:14:32.787243346 +0200
-@@ -221,11 +236,16 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub-mkconfig.in grub-2.00.git20131218/util/grub-mkconfig.in
+--- grub-2.00.git20131218.orig/util/grub-mkconfig.in	2013-12-18 14:24:56.000000000 +0100
++++ grub-2.00.git20131218/util/grub-mkconfig.in	2013-12-18 14:31:16.000000000 +0100
+@@ -259,11 +259,16 @@
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
    oldumask=$(umask); umask 077
@@ -13,19 +13,21 @@ diff -dur grub-2.00.orig/util/grub-mkconfig.in grub-2.00/util/grub-mkconfig.in
 +  # open fd &3 for diagnostic messages
 +  exec 3>&2
  fi
--gettext "Generating grub.cfg ..." >&2
+-gettext "Generating grub configuration file ..." >&2
 -echo >&2
-+gettext "Generating grub.cfg ..." >&3
++gettext "Generating grub configuration file ..." >&3
 +echo >&3
  
  cat << EOF
  #
-@@ -259,12 +279,15 @@
+@@ -325,13 +330,16 @@
      gettext_printf "Syntax errors are detected in generated GRUB config file.
  Ensure that there are no errors in /etc/sysconfig/grub
  and /etc/grub.d/* files or please file a bug report with
 -%s file attached." "${grub_cfg}.new" >&2
+-    echo >&2
 +%s file attached." "${grub_cfg}.new" >&3
++    echo >&3
    else
      # none of the children aborted with error, install the new grub.cfg
      mv -f ${grub_cfg}.new ${grub_cfg}
@@ -39,10 +41,10 @@ diff -dur grub-2.00.orig/util/grub-mkconfig.in grub-2.00/util/grub-mkconfig.in
 +
 +# close diagnostic stream
 +exec 3>&-
-diff -dur grub-2.00.orig/util/grub.d/00_header.in grub-2.00/util/grub.d/00_header.in
---- grub-2.00.orig/util/grub.d/00_header.in	2012-05-04 01:04:39.000000000 +0200
-+++ grub-2.00/util/grub.d/00_header.in	2012-10-27 15:16:00.665356307 +0200
-@@ -219,7 +219,7 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/00_header.in grub-2.00.git20131218/util/grub.d/00_header.in
+--- grub-2.00.git20131218.orig/util/grub.d/00_header.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/00_header.in	2013-12-18 14:29:45.000000000 +0100
+@@ -229,7 +229,7 @@
  if [ "x$gfxterm" = x1 ]; then
      if [ "x$GRUB_THEME" != x ] && [ -f "$GRUB_THEME" ] \
  	&& is_path_readable_by_grub "$GRUB_THEME"; then
@@ -51,7 +53,7 @@ diff -dur grub-2.00.orig/util/grub.d/00_header.in grub-2.00/util/grub.d/00_heade
  
  	prepare_grub_to_access_device `${grub_probe} --target=device "$GRUB_THEME"`
  	cat << EOF
-@@ -255,12 +255,12 @@
+@@ -265,12 +265,12 @@
  EOF
      elif [ "x$GRUB_BACKGROUND" != x ] && [ -f "$GRUB_BACKGROUND" ] \
  	    && is_path_readable_by_grub "$GRUB_BACKGROUND"; then
@@ -66,13 +68,13 @@ diff -dur grub-2.00.orig/util/grub.d/00_header.in grub-2.00/util/grub.d/00_heade
  	esac
  	prepare_grub_to_access_device `${grub_probe} --target=device "$GRUB_BACKGROUND"`
  	cat << EOF
-diff -dur grub-2.00.orig/util/grub.d/10_hurd.in grub-2.00/util/grub.d/10_hurd.in
---- grub-2.00.orig/util/grub.d/10_hurd.in	2012-03-04 21:10:04.000000000 +0100
-+++ grub-2.00/util/grub.d/10_hurd.in	2012-10-27 15:16:00.665356307 +0200
-@@ -45,8 +45,8 @@
-     basename=`basename $i`
-     dirname=`dirname $i`
-     rel_dirname=`make_system_path_relative_to_its_root $dirname`
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/10_hurd.in grub-2.00.git20131218/util/grub.d/10_hurd.in
+--- grub-2.00.git20131218.orig/util/grub.d/10_hurd.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/10_hurd.in	2013-12-18 14:32:14.000000000 +0100
+@@ -55,8 +55,8 @@
+     basename=`basename "$i"`
+     dirname=`dirname "$i"`
+     rel_dirname=`make_system_path_relative_to_its_root "$dirname"`
 -    gettext_printf "Found GNU Mach: %s" "$i" >&2
 -    echo >&2
 +    gettext_printf "Found GNU Mach: %s" "$i" >&3
@@ -80,10 +82,10 @@ diff -dur grub-2.00.orig/util/grub.d/10_hurd.in grub-2.00/util/grub.d/10_hurd.in
      kernels="${kernels} ${rel_dirname}/${basename}"
      at_least_one=true
    fi
-@@ -60,8 +60,8 @@
+@@ -70,8 +70,8 @@
  
- for i in /hurd/${hurd_fs}.static /hurd/exec ; do
-   if test -e "$i" ; then
+ for i in "$GRUB_ROOT"/hurd/${hurd_fs}.static "$GRUB_ROOT"/hurd/exec ; do
+   if test -f "$i" ; then
 -    gettext_printf "Found Hurd module: %s" "$i" >&2
 -    echo >&2
 +    gettext_printf "Found Hurd module: %s" "$i" >&3
@@ -91,10 +93,10 @@ diff -dur grub-2.00.orig/util/grub.d/10_hurd.in grub-2.00/util/grub.d/10_hurd.in
      at_least_one=true
    else
      all_of_them=false
-@@ -74,8 +74,8 @@
+@@ -84,8 +84,8 @@
  fi
  
- if ${all_of_them} && test -e /lib/ld.so.1 ; then : ; else
+ if ${all_of_them} && test -f "$GRUB_ROOT"/lib/ld.so.1 ; then : ; else
 -  gettext "Some Hurd stuff found, but not enough to boot." >&2
 -  echo >&2
 +  gettext "Some Hurd stuff found, but not enough to boot." >&3
@@ -102,10 +104,10 @@ diff -dur grub-2.00.orig/util/grub.d/10_hurd.in grub-2.00/util/grub.d/10_hurd.in
    exit 1
  fi
  
-diff -dur grub-2.00.orig/util/grub.d/10_kfreebsd.in grub-2.00/util/grub.d/10_kfreebsd.in
---- grub-2.00.orig/util/grub.d/10_kfreebsd.in	2012-03-04 22:02:30.000000000 +0100
-+++ grub-2.00/util/grub.d/10_kfreebsd.in	2012-10-27 15:16:00.668689695 +0200
-@@ -158,7 +158,7 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/10_kfreebsd.in grub-2.00.git20131218/util/grub.d/10_kfreebsd.in
+--- grub-2.00.git20131218.orig/util/grub.d/10_kfreebsd.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/10_kfreebsd.in	2013-12-18 14:29:45.000000000 +0100
+@@ -168,7 +168,7 @@
  
  while [ "x$list" != "x" ] ; do
    kfreebsd=`version_find_latest $list`
@@ -114,7 +116,7 @@ diff -dur grub-2.00.orig/util/grub.d/10_kfreebsd.in grub-2.00/util/grub.d/10_kfr
    basename=`basename $kfreebsd`
    dirname=`dirname $kfreebsd`
    rel_dirname=`make_system_path_relative_to_its_root $dirname`
-@@ -207,7 +207,7 @@
+@@ -217,7 +217,7 @@
      fi
    done
    if test -n "${module_dir}" ; then
@@ -123,11 +125,11 @@ diff -dur grub-2.00.orig/util/grub.d/10_kfreebsd.in grub-2.00/util/grub.d/10_kfr
      module_dir_rel=$(make_system_path_relative_to_its_root $module_dir)
    fi
  
-diff -dur grub-2.00.orig/util/grub.d/10_linux.in grub-2.00/util/grub.d/10_linux.in
---- grub-2.00.orig/util/grub.d/10_linux.in	2012-10-27 15:05:15.000000000 +0200
-+++ grub-2.00/util/grub.d/10_linux.in	2012-10-27 15:16:00.668689695 +0200
-@@ -182,7 +182,7 @@
- is_first_entry=true
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/10_linux.in grub-2.00.git20131218/util/grub.d/10_linux.in
+--- grub-2.00.git20131218.orig/util/grub.d/10_linux.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/10_linux.in	2013-12-18 14:29:45.000000000 +0100
+@@ -189,7 +189,7 @@
+ is_top_level=true
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`
 -  gettext_printf "Found linux image: %s\n" "$linux" >&2
@@ -135,7 +137,7 @@ diff -dur grub-2.00.orig/util/grub.d/10_linux.in grub-2.00/util/grub.d/10_linux.
    basename=`basename $linux`
    dirname=`dirname $linux`
    rel_dirname=`make_system_path_relative_to_its_root $dirname`
-@@ -220,7 +220,7 @@
+@@ -226,7 +226,7 @@
    fi
  
    if test -n "${initrd}" ; then
@@ -144,21 +146,21 @@ diff -dur grub-2.00.orig/util/grub.d/10_linux.in grub-2.00/util/grub.d/10_linux.
    elif test -z "${initramfs}" ; then
      # "UUID=" and "ZFS=" magic is parsed by initrd or initramfs.  Since there's
      # no initrd or builtin initramfs, it can't work here.
-diff -dur grub-2.00.orig/util/grub.d/10_netbsd.in grub-2.00/util/grub.d/10_netbsd.in
---- grub-2.00.orig/util/grub.d/10_netbsd.in	2012-03-04 20:47:35.000000000 +0100
-+++ grub-2.00/util/grub.d/10_netbsd.in	2012-10-27 15:16:00.668689695 +0200
-@@ -155,7 +155,7 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/10_netbsd.in grub-2.00.git20131218/util/grub.d/10_netbsd.in
+--- grub-2.00.git20131218.orig/util/grub.d/10_netbsd.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/10_netbsd.in	2013-12-18 14:29:45.000000000 +0100
+@@ -166,7 +166,7 @@
      continue
    fi
  
 -  gettext_printf "Found NetBSD kernel: %s\n" "$k" >&2
 +  gettext_printf "Found NetBSD kernel: %s\n" "$k" >&3
  
-   if [ "x$is_first_entry" = xtrue ]; then
+   if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ]; then
        netbsd_entry "knetbsd"   "$k" simple "${GRUB_CMDLINE_NETBSD_DEFAULT}"
-diff -dur grub-2.00.orig/util/grub.d/10_windows.in grub-2.00/util/grub.d/10_windows.in
---- grub-2.00.orig/util/grub.d/10_windows.in	2012-03-04 22:11:43.000000000 +0100
-+++ grub-2.00/util/grub.d/10_windows.in	2012-10-27 15:16:00.668689695 +0200
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/10_windows.in grub-2.00.git20131218/util/grub.d/10_windows.in
+--- grub-2.00.git20131218.orig/util/grub.d/10_windows.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/10_windows.in	2013-12-18 14:29:45.000000000 +0100
 @@ -82,7 +82,7 @@
    # Get boot device.
    dev=`${grub_probe} -t device "$dir" 2>/dev/null` || continue
@@ -168,10 +170,10 @@ diff -dur grub-2.00.orig/util/grub.d/10_windows.in grub-2.00/util/grub.d/10_wind
    cat << EOF
  menuentry '$(echo "$OS" | grub_quote)' \$menuentry_id_option '$osid-$(grub_get_device_id "${dev}")' {
  EOF
-diff -dur grub-2.00.orig/util/grub.d/20_linux_xen.in grub-2.00/util/grub.d/20_linux_xen.in
---- grub-2.00.orig/util/grub.d/20_linux_xen.in	2012-06-03 21:57:42.000000000 +0200
-+++ grub-2.00/util/grub.d/20_linux_xen.in	2012-10-27 15:16:00.672023083 +0200
-@@ -203,7 +203,7 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/20_linux_xen.in grub-2.00.git20131218/util/grub.d/20_linux_xen.in
+--- grub-2.00.git20131218.orig/util/grub.d/20_linux_xen.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/20_linux_xen.in	2013-12-18 14:29:45.000000000 +0100
+@@ -198,7 +198,7 @@
      fi
      while [ "x$list" != "x" ] ; do
  	linux=`version_find_latest $list`
@@ -180,7 +182,7 @@ diff -dur grub-2.00.orig/util/grub.d/20_linux_xen.in grub-2.00/util/grub.d/20_li
  	basename=`basename $linux`
  	dirname=`dirname $linux`
  	rel_dirname=`make_system_path_relative_to_its_root $dirname`
-@@ -226,7 +226,7 @@
+@@ -221,7 +221,7 @@
  	    fi
  	done
  	if test -n "${initrd}" ; then
@@ -189,10 +191,10 @@ diff -dur grub-2.00.orig/util/grub.d/20_linux_xen.in grub-2.00/util/grub.d/20_li
  	else
      # "UUID=" magic is parsed by initrds.  Since there's no initrd, it can't work here.
  	    linux_root_device_thisversion=${GRUB_DEVICE}
-diff -dur grub-2.00.orig/util/grub.d/30_os-prober.in grub-2.00/util/grub.d/30_os-prober.in
---- grub-2.00.orig/util/grub.d/30_os-prober.in	2012-03-04 21:52:03.000000000 +0100
-+++ grub-2.00/util/grub.d/30_os-prober.in	2012-10-27 15:16:00.675356471 +0200
-@@ -117,7 +117,7 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/30_os-prober.in grub-2.00.git20131218/util/grub.d/30_os-prober.in
+--- grub-2.00.git20131218.orig/util/grub.d/30_os-prober.in	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/30_os-prober.in	2013-12-18 14:29:45.000000000 +0100
+@@ -134,7 +134,7 @@
      LONGNAME="${LABEL}"
    fi
  
@@ -201,7 +203,7 @@ diff -dur grub-2.00.orig/util/grub.d/30_os-prober.in grub-2.00/util/grub.d/30_os
  
    case ${BOOT} in
      chain)
-@@ -267,7 +267,7 @@
+@@ -321,7 +321,7 @@
      *)
        echo -n "  "
        # TRANSLATORS: %s is replaced by OS name.
