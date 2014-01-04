@@ -341,7 +341,7 @@ for platform in %{platforms} ; do
 		$platform_opts \
 		TARGET_LDFLAGS=-static
 
-	%{__make} -C po update-gmo
+	%{__make} -j1 -C po update-gmo
 	%{__make}
 	cd ..
 done
