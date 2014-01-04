@@ -45,24 +45,23 @@ Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	2.00.git20131218
-Release:	0.1
+Version:	2.02
+%define	beta	beta2
+Release:	0.%{beta}.1
 License:	GPL v2
 Group:		Base
 # git://git.savannah.gnu.org/grub.git
-# TS=$(date +'%Y%m%d') ; \
-# git archive --format=tar --prefix=grub-2.00.git$TS/ master | \
-# xz > grub-2.00.git$TS.tar.xz
-Source0:	grub-%{version}.tar.xz
-# Source0-md5:	64bd6ea9d99205559fbe576ed3d80800
+# git checkout %{version}~%{beta} ; make dist
+Source0:	grub-%{version}~%{beta}.tar.gz
+# Source0-md5:	ca6c18f6c5f1ed05b7444017a40573d9
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
 # ./linguas.sh
 # TS=$(date +'%Y%m%d') ; tar cjvf grub-po-2.00.git$TS.tar.bz2 po/*.po po/LINGUAS
-Source5:	grub-po-%{version}.tar.bz2
-# Source5-md5:	274b652b6616780318cf7bd43f183ab9
+Source5:	grub-po-2.02.git20140104.tar.bz2
+# Source5-md5:	aeef3e636178093cf9d780d92da7afdb
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
 Patch3:		grub-lvmdevice.patch
@@ -284,7 +283,7 @@ starfield theme for GRUB.
 Motyw starfield dla GRUB-a.
 
 %prep
-%setup -q -n grub-%{version} -a5
+%setup -q -n grub-%{version}~%{beta} -a5
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -309,8 +308,14 @@ install -d our-ld
 ln -s /usr/bin/ld.bfd our-ld/ld
 export PATH=$(pwd)/our-ld:$PATH
 
-# not only the typicall autotools stuff
-./autogen.sh
+## not only the typicall autotools stuff
+#./autogen.sh
+
+%{__gettextize}
+%{__aclocal} -I m4
+%{__autoconf}
+%{__autoheader}
+%{__automake}
 
 for platform in %{platforms} ; do
 	install -d build-${platform}
@@ -336,6 +341,7 @@ for platform in %{platforms} ; do
 		$platform_opts \
 		TARGET_LDFLAGS=-static
 
+	%{__make} -C po update-gmo
 	%{__make}
 	cd ..
 done
@@ -507,15 +513,17 @@ fi
 %dir /lib/grub.d
 %doc /lib/grub.d/README
 %attr(755,root,root) /lib/grub.d/00_header
-%attr(755,root,root) /lib/grub.d/10_hurd
-%attr(755,root,root) /lib/grub.d/10_illumos
-%attr(755,root,root) /lib/grub.d/10_kfreebsd
 %attr(755,root,root) /lib/grub.d/10_linux
-%attr(755,root,root) /lib/grub.d/10_netbsd
-%attr(755,root,root) /lib/grub.d/10_xnu
 %attr(755,root,root) /lib/grub.d/20_linux_xen
 %attr(755,root,root) /lib/grub.d/30_os-prober
 %attr(755,root,root) /lib/grub.d/41_custom
+
+# these are now installed only on matching hosts
+#%attr(755,root,root) /lib/grub.d/10_hurd
+#%attr(755,root,root) /lib/grub.d/10_illumos
+#%attr(755,root,root) /lib/grub.d/10_kfreebsd
+#%attr(755,root,root) /lib/grub.d/10_netbsd
+#%attr(755,root,root) /lib/grub.d/10_xnu
 
 %ifarch %{ix86} %{x8664}
 %attr(755,root,root) %{_sbindir}/grub-probe

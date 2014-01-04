@@ -1,10 +1,10 @@
-diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub-mkconfig.in grub-2.00.git20131218/util/grub-mkconfig.in
---- grub-2.00.git20131218.orig/util/grub-mkconfig.in	2013-12-18 14:20:33.000000000 +0100
-+++ grub-2.00.git20131218/util/grub-mkconfig.in	2013-12-18 14:21:31.000000000 +0100
-@@ -138,6 +138,27 @@
+diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub-mkconfig.in grub-2.02~beta2/util/grub-mkconfig.in
+--- grub-2.02~beta2.orig/util/grub-mkconfig.in	2014-01-04 10:59:07.595221161 +0100
++++ grub-2.02~beta2/util/grub-mkconfig.in	2014-01-04 11:00:01.898554984 +0100
+@@ -130,6 +130,27 @@
  
  # Device containing our userland.  Typically used for root= parameter.
- GRUB_DEVICE="`${grub_probe} --target=device "$GRUB_ROOT"/`"
+ GRUB_DEVICE="`${grub_probe} --target=device /`"
 +
 +# Rewrite to sane LVM node (Code from PLD Linux geninitrd):
 +# /dev/mapper/sys-rootfs -> /dev/sys/rootfs
