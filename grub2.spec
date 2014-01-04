@@ -67,13 +67,13 @@ Patch2:		grub-garbage.patch
 Patch3:		grub-lvmdevice.patch
 Patch4:		pld-mkconfigdir.patch
 Patch5:		grub-mkconfig-diagnostics.patch
-Patch8:		posix.patch
-Patch10:	%{name}-fonts_path.patch
-Patch12:	add-vlan-tag-support.patch
-Patch13:	just-say-linux.patch
-Patch20:	ignore-kernel-symlinks.patch
-Patch21:	choose-preferred-initrd.patch
-Patch22:	%{name}-cfg.patch
+Patch6:		posix.patch
+Patch7:		%{name}-fonts_path.patch
+Patch8:		add-vlan-tag-support.patch
+Patch9:		just-say-linux.patch
+Patch10:	ignore-kernel-symlinks.patch
+Patch11:	choose-preferred-initrd.patch
+Patch12:	%{name}-cfg.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -289,13 +289,13 @@ Motyw starfield dla GRUB-a.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
+%patch7 -p1
 %patch8 -p1
+%patch9 -p1
 %patch10 -p1
-%patch12 -p1
-%patch13 -p1
-%patch20 -p1
-%patch21 -p1
-%patch22 -p0
+%patch11 -p1
+%patch12 -p0
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
