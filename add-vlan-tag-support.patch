@@ -1,29 +1,7 @@
-From 5573f16fd05c1f8f310f2ead176b52ed6d4a08ec Mon Sep 17 00:00:00 2001
-From: Paulo Flabiano Smorigo <pfsmorigo@br.ibm.com>
-Date: Tue, 30 Oct 2012 15:19:39 -0200
-Subject: [PATCH] Add vlan-tag support
-
-This patch adds support for virtual LAN (VLAN) tagging. VLAN tagging allows
-multiple VLANs in a bridged network to share the same physical network link but
-maintain isolation:
-
-http://en.wikipedia.org/wiki/IEEE_802.1Q
-
-This patch should fix this bugzilla:
-https://bugzilla.redhat.com/show_bug.cgi?id=871563
----
- grub-core/kern/ieee1275/init.c   |    1 +
- grub-core/kern/ieee1275/openfw.c |   30 +++++++++++++++++++++++++++
- grub-core/net/ethernet.c         |   42 +++++++++++++++++++++++++++++++++++---
- include/grub/ieee1275/ieee1275.h |    1 +
- include/grub/net.h               |    2 ++
- 5 files changed, 73 insertions(+), 3 deletions(-)
-
-diff --git a/grub-core/kern/ieee1275/init.c b/grub-core/kern/ieee1275/init.c
-index 5c45947..209cf8a 100644
---- a/grub-core/kern/ieee1275/init.c
-+++ b/grub-core/kern/ieee1275/init.c
-@@ -102,6 +102,7 @@ grub_machine_get_bootlocation (char **device, char **path)
+diff -dur grub-2.00.git20131218.orig/grub-core/kern/ieee1275/init.c grub-2.00.git20131218/grub-core/kern/ieee1275/init.c
+--- grub-2.00.git20131218.orig/grub-core/kern/ieee1275/init.c	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/grub-core/kern/ieee1275/init.c	2013-12-18 14:39:17.000000000 +0100
+@@ -118,6 +118,7 @@
        char *dev, *canon;
        char *ptr;
        dev = grub_ieee1275_get_aliasdevname (bootpath);
@@ -31,10 +9,10 @@ index 5c45947..209cf8a 100644
        canon = grub_ieee1275_canonicalise_devname (dev);
        ptr = canon + grub_strlen (canon) - 1;
        while (ptr > canon && (*ptr == ',' || *ptr == ':'))
-diff --git a/grub-core/kern/ieee1275/openfw.c b/grub-core/kern/ieee1275/openfw.c
-index c2b1bdf..9fdfafa 100644
---- a/grub-core/kern/ieee1275/openfw.c
-+++ b/grub-core/kern/ieee1275/openfw.c
+Only in grub-2.00.git20131218/grub-core/kern/ieee1275: init.c.orig
+diff -dur grub-2.00.git20131218.orig/grub-core/kern/ieee1275/openfw.c grub-2.00.git20131218/grub-core/kern/ieee1275/openfw.c
+--- grub-2.00.git20131218.orig/grub-core/kern/ieee1275/openfw.c	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/grub-core/kern/ieee1275/openfw.c	2013-12-18 14:39:17.000000000 +0100
 @@ -23,6 +23,7 @@
  #include <grub/mm.h>
  #include <grub/ieee1275/ieee1275.h>
@@ -43,7 +21,7 @@ index c2b1bdf..9fdfafa 100644
  
  enum grub_ieee1275_parse_type
  {
-@@ -413,6 +414,35 @@ fail:
+@@ -451,6 +452,35 @@
    return ret;
  }
  
@@ -79,10 +57,10 @@ index c2b1bdf..9fdfafa 100644
  char *
  grub_ieee1275_get_device_type (const char *path)
  {
-diff --git a/grub-core/net/ethernet.c b/grub-core/net/ethernet.c
-index b38e2c8..5e45d46 100644
---- a/grub-core/net/ethernet.c
-+++ b/grub-core/net/ethernet.c
+Only in grub-2.00.git20131218/grub-core/kern/ieee1275: openfw.c.orig
+diff -dur grub-2.00.git20131218.orig/grub-core/net/ethernet.c grub-2.00.git20131218/grub-core/net/ethernet.c
+--- grub-2.00.git20131218.orig/grub-core/net/ethernet.c	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/grub-core/net/ethernet.c	2013-12-18 14:39:17.000000000 +0100
 @@ -23,6 +23,7 @@
  #include <grub/net/arp.h>
  #include <grub/net/netbuff.h>
@@ -91,7 +69,7 @@ index b38e2c8..5e45d46 100644
  #include <grub/time.h>
  #include <grub/net/arp.h>
  
-@@ -56,10 +57,19 @@ send_ethernet_packet (struct grub_net_network_level_interface *inf,
+@@ -56,10 +57,19 @@
  {
    struct etherhdr *eth;
    grub_err_t err;
@@ -113,7 +91,7 @@ index b38e2c8..5e45d46 100644
    if (err)
      return err;
    eth = (struct etherhdr *) nb->data;
-@@ -76,6 +86,19 @@ send_ethernet_packet (struct grub_net_network_level_interface *inf,
+@@ -76,6 +86,19 @@
  	return err;
        inf->card->opened = 1;
      }
@@ -133,7 +111,7 @@ index b38e2c8..5e45d46 100644
    return inf->card->driver->send (inf->card, nb);
  }
  
-@@ -90,10 +113,23 @@ grub_net_recv_ethernet_packet (struct grub_net_buff *nb,
+@@ -90,10 +113,23 @@
    grub_net_link_level_address_t hwaddress;
    grub_net_link_level_address_t src_hwaddress;
    grub_err_t err;
@@ -158,28 +136,25 @@ index b38e2c8..5e45d46 100644
    if (err)
      return err;
  
-diff --git a/include/grub/ieee1275/ieee1275.h b/include/grub/ieee1275/ieee1275.h
-index 416a544..a8cf093 100644
---- a/include/grub/ieee1275/ieee1275.h
-+++ b/include/grub/ieee1275/ieee1275.h
-@@ -210,5 +210,6 @@ char *EXPORT_FUNC(grub_ieee1275_canonicalise_devname) (const char *path);
- char *EXPORT_FUNC(grub_ieee1275_get_aliasdevname) (const char *path);
+diff -dur grub-2.00.git20131218.orig/include/grub/ieee1275/ieee1275.h grub-2.00.git20131218/include/grub/ieee1275/ieee1275.h
+--- grub-2.00.git20131218.orig/include/grub/ieee1275/ieee1275.h	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/include/grub/ieee1275/ieee1275.h	2013-12-18 14:40:11.000000000 +0100
+@@ -226,6 +226,7 @@
  char *EXPORT_FUNC(grub_ieee1275_canonicalise_devname) (const char *path);
  char *EXPORT_FUNC(grub_ieee1275_get_device_type) (const char *path);
+ char *EXPORT_FUNC(grub_ieee1275_get_devname) (const char *path);
 +int EXPORT_FUNC(grub_ieee1275_parse_net_options) (const char *path);
  
- #endif /* ! GRUB_IEEE1275_HEADER */
-diff --git a/include/grub/net.h b/include/grub/net.h
-index a7e5b2c..f4fec17 100644
---- a/include/grub/net.h
-+++ b/include/grub/net.h
-@@ -532,4 +532,6 @@ extern char *grub_net_default_server;
+ void EXPORT_FUNC(grub_ieee1275_devalias_init_iterator) (struct grub_ieee1275_devalias *alias);
+ void EXPORT_FUNC(grub_ieee1275_devalias_free) (struct grub_ieee1275_devalias *alias);
+diff -dur grub-2.00.git20131218.orig/include/grub/net.h grub-2.00.git20131218/include/grub/net.h
+--- grub-2.00.git20131218.orig/include/grub/net.h	2013-12-18 13:11:29.000000000 +0100
++++ grub-2.00.git20131218/include/grub/net.h	2013-12-18 14:39:18.000000000 +0100
+@@ -533,4 +533,6 @@
  #define GRUB_NET_TRIES 40
  #define GRUB_NET_INTERVAL 400
  
 +#define VLANTAG_IDENTIFIER 0x8100
 +
  #endif /* ! GRUB_NET_HEADER */
--- 
-1.7.10.4
-
+Only in grub-2.00.git20131218/include/grub: net.h.orig

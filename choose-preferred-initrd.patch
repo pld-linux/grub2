@@ -1,18 +1,20 @@
---- grub-2.00/util/grub-mkconfig.in~	2013-04-15 00:03:09.162253769 +0200
-+++ grub-2.00/util/grub-mkconfig.in	2013-04-15 01:39:22.112705322 +0200
-@@ -233,7 +233,8 @@
-   GRUB_SAVEDEFAULT \
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub-mkconfig.in grub-2.00.git20131218/util/grub-mkconfig.in
+--- grub-2.00.git20131218.orig/util/grub-mkconfig.in	2013-12-18 14:44:31.000000000 +0100
++++ grub-2.00.git20131218/util/grub-mkconfig.in	2013-12-18 14:45:37.000000000 +0100
+@@ -255,7 +255,8 @@
    GRUB_ENABLE_CRYPTODISK \
    GRUB_BADRAM \
+   GRUB_OS_PROBER_SKIP_LIST \
 -  GRUB_DISABLE_SUBMENU
 +  GRUB_DISABLE_SUBMENU \
 +  GRUB_PREFER_DRACUT
  
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
---- grub-2.00/util/grub.d/10_linux.in~	2013-04-15 00:03:09.162253769 +0200
-+++ grub-2.00/util/grub.d/10_linux.in	2013-04-15 01:38:26.992181771 +0200
-@@ -191,10 +191,12 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/10_linux.in grub-2.00.git20131218/util/grub.d/10_linux.in
+--- grub-2.00.git20131218.orig/util/grub.d/10_linux.in	2013-12-18 14:44:31.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/10_linux.in	2013-12-18 14:44:49.000000000 +0100
+@@ -198,10 +198,12 @@
    linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
  
    initrd=
@@ -29,9 +31,10 @@
  	   "initramfs-genkernel-${version}" \
  	   "initramfs-genkernel-${alt_version}" \
  	   "initramfs-genkernel-${GENKERNEL_ARCH}-${version}" \
---- grub-2.00/util/grub.d/20_linux_xen.in~	2013-04-15 11:47:30.852286811 +0200
-+++ grub-2.00/util/grub.d/20_linux_xen.in	2013-04-15 11:49:05.606550816 +0200
-@@ -212,10 +212,12 @@
+diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/20_linux_xen.in grub-2.00.git20131218/util/grub.d/20_linux_xen.in
+--- grub-2.00.git20131218.orig/util/grub.d/20_linux_xen.in	2013-12-18 14:44:31.000000000 +0100
++++ grub-2.00.git20131218/util/grub.d/20_linux_xen.in	2013-12-18 14:44:49.000000000 +0100
+@@ -207,10 +207,12 @@
  	linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
  
  	initrd=

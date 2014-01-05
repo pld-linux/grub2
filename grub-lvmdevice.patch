@@ -1,6 +1,7 @@
---- grub-1.97.1/util/grub-mkconfig.in~	2009-11-17 17:02:16.626243372 +0200
-+++ grub-1.97.1/util/grub-mkconfig.in	2009-11-17 17:02:08.346050859 +0200
-@@ -120,6 +120,27 @@
+diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub-mkconfig.in grub-2.02~beta2/util/grub-mkconfig.in
+--- grub-2.02~beta2.orig/util/grub-mkconfig.in	2014-01-04 10:59:07.595221161 +0100
++++ grub-2.02~beta2/util/grub-mkconfig.in	2014-01-04 11:00:01.898554984 +0100
+@@ -130,6 +130,27 @@
  
  # Device containing our userland.  Typically used for root= parameter.
  GRUB_DEVICE="`${grub_probe} --target=device /`"
