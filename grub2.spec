@@ -44,10 +44,10 @@ Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
+%define	beta	beta2
 Name:		grub2
 Version:	2.02
-%define	beta	beta2
-Release:	0.%{beta}.1
+Release:	0.%{beta}.2
 License:	GPL v2
 Group:		Base
 # git://git.savannah.gnu.org/grub.git
@@ -60,7 +60,7 @@ Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
 # ./linguas.sh
 # TS=$(date +'%Y%m%d') ; tar cjvf grub-po-2.00.git$TS.tar.bz2 po/*.po po/LINGUAS
-Source5:	grub-po-2.02.git20140104.tar.bz2
+Source5:	grub-po-%{version}.git20140104.tar.bz2
 # Source5-md5:	aeef3e636178093cf9d780d92da7afdb
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch

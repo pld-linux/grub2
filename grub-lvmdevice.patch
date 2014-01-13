@@ -1,7 +1,6 @@
-diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub-mkconfig.in grub-2.02~beta2/util/grub-mkconfig.in
---- grub-2.02~beta2.orig/util/grub-mkconfig.in	2014-01-04 10:59:07.595221161 +0100
-+++ grub-2.02~beta2/util/grub-mkconfig.in	2014-01-04 11:00:01.898554984 +0100
-@@ -130,6 +130,27 @@
+--- grub-2.02~beta2/util/grub-mkconfig.in~	2014-01-13 16:12:41.020705075 +0200
++++ grub-2.02~beta2/util/grub-mkconfig.in	2014-01-13 16:10:42.000000000 +0200
+@@ -131,6 +131,21 @@
  
  # Device containing our userland.  Typically used for root= parameter.
  GRUB_DEVICE="`${grub_probe} --target=device /`"
@@ -12,17 +11,11 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub-mkconfig.in grub-2.
 +# /dev/mapper/vg--meaw-root -> /dev/vg-meaw/root
 +case "$GRUB_DEVICE" in
 +	/dev/mapper/*-*)
-+		DM_REAL_DEVICE="$(readlink -f "$GRUB_DEVICE")"
-+		DM_UUID="$(cat /sys/block/${DM_REAL_DEVICE#/dev/}/dm/uuid)"
-+		case "$DM_UUID" in
-+			LVM-*)
-+				# change "--" to / (as "/" is impossible in LV name)
-+				local dev=$(awk -vdev="${GRUB_DEVICE#/dev/mapper/}" 'BEGIN{gsub(/--/, "/", dev); print dev}')
-+				local VG=$(awk -vdev="$dev" 'BEGIN{split(dev, v, "-"); gsub("/", "-", v[1]); print v[1]}')
-+				local LV=$(awk -vdev="$dev" 'BEGIN{split(dev, v, "-"); gsub("/", "-", v[2]); print v[2]}')
-+				GRUB_DEVICE=/dev/$VG/$LV
-+				;;
-+		esac
++		LVM2_LV_NAME='' LVM2_VG_NAME=''
++		eval $(lvs --noheadings --nameprefixes "$GRUB_DEVICE" 2>/dev/null)
++		if [ -n "$LVM2_VG_NAME$LVM2_LV_NAME" ]; then
++			GRUB_DEVICE=/dev/$LVM2_VG_NAME/$LVM2_LV_NAME
++		fi
 +	;;
 +esac
 +
