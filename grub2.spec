@@ -327,7 +327,7 @@ for platform in %{platforms} ; do
 		platform_opts=""
 	fi
 
-	ln -s ../configure .
+	ln -f -s ../configure .
 	# mawk stalls at ./genmoddep.awk, so force gawk
 	AWK=gawk \
 	%configure \
