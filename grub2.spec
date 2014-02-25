@@ -305,7 +305,7 @@ sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
 # https://savannah.gnu.org/bugs/?34539
 # http://sourceware.org/bugzilla/show_bug.cgi?id=14196
 install -d our-ld
-ln -s /usr/bin/ld.bfd our-ld/ld
+ln -f -s /usr/bin/ld.bfd our-ld/ld
 export PATH=$(pwd)/our-ld:$PATH
 
 ## not only the typicall autotools stuff
