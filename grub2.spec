@@ -83,6 +83,7 @@ BuildRequires:	flex >= 2.5.35
 BuildRequires:	fonts-TTF-DejaVu
 BuildRequires:	freetype-devel >= 2
 BuildRequires:	gawk
+BuildRequires:	gcc >= 5:3.4
 BuildRequires:	gettext-devel
 BuildRequires:	glibc-localedb-all
 BuildRequires:	glibc-static
