@@ -13,20 +13,20 @@
 %bcond_without	pc	# do not build for PC BIOS platform
 %bcond_without	efi	# do not build for EFI platform
 
-%ifnarch %{ix86} %{x8664}
+%ifnarch %{ix86} %{x8664} x32
 %undefine	with_pc
 %endif
-%ifnarch %{ix86} %{x8664} ia64
+%ifnarch %{ix86} %{x8664} x32 ia64
 %undefine	with_efi
 %endif
 
-%ifnarch %{x8664}
+%ifnarch %{x8664} x32
 # non-x86_64 arch doesn't support this
 %undefine	with_efiemu
 %endif
 
 # the 'most natural' platform should go last
-%ifarch %{ix86} %{x8664} ia64
+%ifarch %{ix86} %{x8664} x32 ia64
 %define		platforms %{?with_efi:efi} %{?with_pc:pc}
 %endif
 %ifarch ppc ppc64 sparc64
@@ -106,7 +106,7 @@ BuildRequires:	/usr/lib/libc.so
 %if "%{pld_release}" == "ac"
 BuildRequires:	libgcc32
 %else
-BuildRequires:	gcc-multilib
+BuildRequires:	gcc-multilib-32
 %endif
 %endif
 Requires:	%{name}-platform = %{version}-%{release}
@@ -119,7 +119,7 @@ Suggests:	cdrkit-mkisofs
 Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
-ExclusiveArch:	%{ix86} %{x8664} ia64 mips mipsel ppc ppc64 sparc64
+ExclusiveArch:	%{ix86} %{x8664} x32 ia64 mips mipsel ppc ppc64 sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
@@ -317,7 +317,7 @@ export PATH=$(pwd)/our-ld:$PATH
 ## not only the typicall autotools stuff
 #./autogen.sh
 
-%{__gettextize}
+#{__gettextize}
 %{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
@@ -390,7 +390,7 @@ cp -p %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/grub
 rm -f $RPM_BUILD_ROOT%{_infodir}/dir
 
 # platform specific, unnecessarily always installed
-%ifnarch %{ix86} %{x8664}
+%ifnarch %{ix86} %{x8664} x32
 %{__rm} $RPM_BUILD_ROOT{%{_sbindir}/grub-bios-setup,%{_mandir}/man8/grub-bios-setup.8}
 %endif
 %ifnarch sparc64
@@ -459,11 +459,11 @@ fi
 %attr(755,root,root) %{_sbindir}/grub-set-default
 %attr(755,root,root) %{_sbindir}/grub-syslinux2cfg
 %attr(755,root,root) %{_sbindir}/update-grub
-%ifarch %{ix86} %{x8664}
+%ifarch %{ix86} %{x8664} x32
 %attr(755,root,root) %{_sbindir}/grub-bios-setup
 %{_mandir}/man8/grub-bios-setup.8*
 %endif
-%ifarch %{ix86} %{x8664}
+%ifarch %{ix86} %{x8664} x32
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %{_mandir}/man1/grub-mkimage.1*
 %else
@@ -531,7 +531,7 @@ fi
 #%attr(755,root,root) /lib/grub.d/10_netbsd
 #%attr(755,root,root) /lib/grub.d/10_xnu
 
-%ifarch %{ix86} %{x8664}
+%ifarch %{ix86} %{x8664} x32
 %attr(755,root,root) %{_sbindir}/grub-probe
 %{_mandir}/man8/grub-probe.8*
 %endif
@@ -558,7 +558,7 @@ fi
 %{_libexecdir}/*-pc/efiemu*.o
 %endif
 %{_libexecdir}/*-pc/kernel.img
-%ifarch %{ix86} %{x8664} sparc sparc64
+%ifarch %{ix86} %{x8664} x32 sparc sparc64
 %{_libexecdir}/*-pc/boot.img
 %{_libexecdir}/*-pc/boot_hybrid.img
 %{_libexecdir}/*-pc/cdboot.img
