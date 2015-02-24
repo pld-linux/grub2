@@ -39,7 +39,7 @@
 %define		platforms loongson
 %endif
 
-$define		rel	4
+%define		rel	4
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
