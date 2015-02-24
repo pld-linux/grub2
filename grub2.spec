@@ -39,6 +39,7 @@
 %define		platforms loongson
 %endif
 
+$define		rel	4
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
@@ -47,7 +48,7 @@ Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 %define	beta	beta2
 Name:		grub2
 Version:	2.02
-Release:	0.%{beta}.4
+Release:	0.%{beta}.%{rel}
 License:	GPL v2
 Group:		Base
 # git://git.savannah.gnu.org/grub.git
