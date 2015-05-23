@@ -80,6 +80,7 @@ Patch14:	grub2-xfs-Add-helper-for-inode-size.patch
 Patch15:	grub2-xfs-Convert-inode-numbers-to-cpu-endianity-immediate.patch
 Patch16:	grub2-xfs-Fix-termination-loop-for-directory-iteration.patch
 Patch17:	grub2-xfs-V5-filesystem-format-support.patch
+Patch18:	blscfg.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -311,6 +312,7 @@ Motyw starfield dla GRUB-a.
 %patch15 -p1
 %patch16 -p1
 %patch17 -p1
+%patch18 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
