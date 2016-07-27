@@ -39,13 +39,13 @@
 %define		platforms loongson
 %endif
 
-%define		rel	6
+%define		rel	1
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
-%define	beta	beta2
+%define	beta	beta3
 Name:		grub2
 Version:	2.02
 Release:	0.%{beta}.%{rel}
@@ -54,15 +54,15 @@ Group:		Base
 # git://git.savannah.gnu.org/grub.git
 # git checkout %{version}~%{beta} ; make dist
 Source0:	grub-%{version}~%{beta}.tar.gz
-# Source0-md5:	ca6c18f6c5f1ed05b7444017a40573d9
+# Source0-md5:	ed969fcf7ead029a1cfa0fca83e48a06
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
 # ./linguas.sh
 # TS=$(date +'%Y%m%d') ; tar cjvf grub-po-2.00.git$TS.tar.bz2 po/*.po po/LINGUAS
-Source5:	grub-po-%{version}.git20140104.tar.bz2
-# Source5-md5:	aeef3e636178093cf9d780d92da7afdb
+Source5:	grub-po-%{version}.git20160727.tar.bz2
+# Source5-md5:	34fb607fa6b0338bf5cc8d63e3852968
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
 Patch3:		grub-lvmdevice.patch
@@ -76,11 +76,7 @@ Patch10:	ignore-kernel-symlinks.patch
 Patch11:	choose-preferred-initrd.patch
 Patch12:	%{name}-cfg.patch
 Patch13:	efi-net-fix.patch
-Patch14:	grub2-xfs-Add-helper-for-inode-size.patch
-Patch15:	grub2-xfs-Convert-inode-numbers-to-cpu-endianity-immediate.patch
-Patch16:	grub2-xfs-Fix-termination-loop-for-directory-iteration.patch
-Patch17:	grub2-xfs-V5-filesystem-format-support.patch
-Patch18:	blscfg.patch
+Patch14:	blscfg.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -309,10 +305,6 @@ Motyw starfield dla GRUB-a.
 %patch12 -p0
 %patch13 -p1
 %patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
@@ -490,7 +482,6 @@ fi
 %{_mandir}/man1/grub-fstest.1*
 %{_mandir}/man1/grub-glue-efi.1*
 %{_mandir}/man1/grub-kbdcomp.1*
-%{_mandir}/man1/grub-macbless.1*
 %{_mandir}/man1/grub-menulst2cfg.1*
 %{_mandir}/man1/grub-mklayout.1*
 %{_mandir}/man1/grub-mknetdir.1*
@@ -503,6 +494,7 @@ fi
 %{_mandir}/man1/grub-script-check.1*
 %{_mandir}/man1/grub-syslinux2cfg.1*
 %{_mandir}/man8/grub-install.8*
+%{_mandir}/man8/grub-macbless.8*
 %{_mandir}/man8/grub-mkconfig.8*
 %{_mandir}/man8/grub-ofpathname.8*
 %{_mandir}/man8/grub-reboot.8*

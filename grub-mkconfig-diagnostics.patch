@@ -20,17 +20,16 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub-mkconfig.in grub-2.
  
  cat << EOF
  #
-@@ -289,13 +294,16 @@
+@@ -286,7 +291,7 @@
      gettext_printf "Syntax errors are detected in generated GRUB config file.
  Ensure that there are no errors in /etc/sysconfig/grub
  and /etc/grub.d/* files or please file a bug report with
 -%s file attached." "${grub_cfg}.new" >&2
--    echo >&2
 +%s file attached." "${grub_cfg}.new" >&3
-+    echo >&3
+     echo >&2
+     exit 1
    else
-     # none of the children aborted with error, install the new grub.cfg
-     mv -f ${grub_cfg}.new ${grub_cfg}
+@@ -295,5 +300,8 @@
    fi
  fi
  
@@ -203,12 +202,12 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/30_os-prober.in g
  
    case ${BOOT} in
      chain)
-@@ -321,7 +321,7 @@
+@@ -329,7 +329,7 @@
+     ;;
      *)
-       echo -n "  "
        # TRANSLATORS: %s is replaced by OS name.
--      gettext_printf "%s is not yet supported by grub-mkconfig.\n" "${LONGNAME}" >&2
-+      gettext_printf "%s is not yet supported by grub-mkconfig.\n" "${LONGNAME}" >&3
+-      gettext_printf "%s is not yet supported by grub-mkconfig.\n" "  ${LONGNAME}" >&2
++      gettext_printf "%s is not yet supported by grub-mkconfig.\n" "  ${LONGNAME}" >&3
      ;;
    esac
  done
