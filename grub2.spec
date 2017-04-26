@@ -45,24 +45,17 @@ Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
-%define	beta	beta3
 Name:		grub2
 Version:	2.02
-Release:	0.%{beta}.%{rel}
+Release:	1
 License:	GPL v2
 Group:		Base
-# git://git.savannah.gnu.org/grub.git
-# git checkout %{version}~%{beta} ; make dist
-Source0:	grub-%{version}~%{beta}.tar.gz
-# Source0-md5:	ed969fcf7ead029a1cfa0fca83e48a06
+Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
+# Source0-md5:	8a4a2a95aac551fb0fba860ceabfa1d3
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
 Source4:	grub-custom.cfg
-# ./linguas.sh
-# TS=$(date +'%Y%m%d') ; tar cjvf grub-po-2.00.git$TS.tar.bz2 po/*.po po/LINGUAS
-Source5:	grub-po-%{version}.git20160727.tar.bz2
-# Source5-md5:	34fb607fa6b0338bf5cc8d63e3852968
 Patch1:		pld-sysconfdir.patch
 Patch2:		grub-garbage.patch
 Patch3:		grub-lvmdevice.patch
@@ -290,7 +283,7 @@ starfield theme for GRUB.
 Motyw starfield dla GRUB-a.
 
 %prep
-%setup -q -n grub-%{version}~%{beta} -a5
+%setup -q -n grub-%{version}
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
