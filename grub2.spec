@@ -340,6 +340,7 @@ for platform in %{platforms} ; do
 	%configure \
 		--with-platform=${platform} \
 		--disable-werror \
+		--enable-grub-themes \
 	%if %{with grubemu}
 		--enable-grub-emu-usb \
 		--enable-grub-emu-sdl \
