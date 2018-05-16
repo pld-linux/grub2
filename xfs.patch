@@ -1,0 +1,37 @@
+The sparse inode metadata format became a mkfs.xfs default in
+xfsprogs-4.16.0, and such filesystems are now rejected by grub as
+containing an incompatible feature.
+
+In essence, this feature allows xfs to allocate inodes into fragmented
+freespace.  (Without this feature, if xfs could not allocate contiguous
+space for 64 new inodes, inode creation would fail.)
+
+In practice, the disk format change is restricted to the inode btree,
+which as far as I can tell is not used by grub.  If all you're doing
+today is parsing a directory, reading an inode number, and converting
+that inode number to a disk location, then ignoring this feature
+should be fine, so I've added it to XFS_SB_FEAT_INCOMPAT_SUPPORTED
+
+I did some brief testing of this patch by hacking up the regression
+tests to completely fragment freespace on the test xfs filesystem, and
+then write a large-ish number of inodes to consume any existing
+contiguous 64-inode chunk.  This way any files the grub tests add and
+traverse would be in such a fragmented inode allocation.  Tests passed,
+but I'm not sure how to cleanly integrate that into the test harness.
+
+Signed-off-by: Eric Sandeen <sandeen@redhat.com>
+---
+
+diff --git a/grub-core/fs/xfs.c b/grub-core/fs/xfs.c
+index c6031bd3f..effe9de17 100644
+--- a/grub-core/fs/xfs.c
++++ b/grub-core/fs/xfs.c
+@@ -82,6 +82,7 @@ GRUB_MOD_LICENSE ("GPLv3+");
+ /* We do not currently verify metadata UUID so it is safe to read such filesystem */
+ #define XFS_SB_FEAT_INCOMPAT_SUPPORTED \
+ 	(XFS_SB_FEAT_INCOMPAT_FTYPE | \
++	 XFS_SB_FEAT_INCOMPAT_SPINODES | \
+ 	 XFS_SB_FEAT_INCOMPAT_META_UUID)
+ 
+ struct grub_xfs_sblock
+
