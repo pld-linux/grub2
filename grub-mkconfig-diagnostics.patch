@@ -124,10 +124,9 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_kfreebsd.in gr
      module_dir_rel=$(make_system_path_relative_to_its_root $module_dir)
    fi
  
-diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_linux.in grub-2.02~beta2/util/grub.d/10_linux.in
---- grub-2.02~beta2.orig/util/grub.d/10_linux.in	2014-01-04 10:50:51.000000000 +0100
-+++ grub-2.02~beta2/util/grub.d/10_linux.in	2014-01-04 11:34:50.135240649 +0100
-@@ -176,7 +176,7 @@
+--- grub-2.04/util/grub.d/10_linux.in.orig	2018-11-24 18:13:02.000000000 +0100
++++ grub-2.04/util/grub.d/10_linux.in	2019-07-05 13:53:33.737370014 +0200
+@@ -194,7 +194,7 @@
  is_top_level=true
  while [ "x$list" != "x" ] ; do
    linux=`version_find_latest $list`
@@ -136,15 +135,15 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_linux.in grub-
    basename=`basename $linux`
    dirname=`dirname $linux`
    rel_dirname=`make_system_path_relative_to_its_root $dirname`
-@@ -213,7 +213,7 @@
+@@ -233,7 +233,7 @@
+     for i in ${initrd}; do
+       initrd_display="${initrd_display} ${dirname}/${i}"
+     done
+-    gettext_printf "Found initrd image: %s\n" "$(echo $initrd_display)" >&2
++    gettext_printf "Found initrd image: %s\n" "$(echo $initrd_display)" >&3
    fi
  
-   if test -n "${initrd}" ; then
--    gettext_printf "Found initrd image: %s\n" "${dirname}/${initrd}" >&2
-+    gettext_printf "Found initrd image: %s\n" "${dirname}/${initrd}" >&3
-   elif test -z "${initramfs}" ; then
-     # "UUID=" and "ZFS=" magic is parsed by initrd or initramfs.  Since there's
-     # no initrd or builtin initramfs, it can't work here.
+   config=
 diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_netbsd.in grub-2.02~beta2/util/grub.d/10_netbsd.in
 --- grub-2.02~beta2.orig/util/grub.d/10_netbsd.in	2013-12-17 18:25:57.000000000 +0100
 +++ grub-2.02~beta2/util/grub.d/10_netbsd.in	2014-01-04 11:34:50.135240649 +0100
@@ -169,11 +168,10 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_windows.in gru
    cat << EOF
  menuentry '$(echo "$OS" | grub_quote)' \$menuentry_id_option '$osid-$(grub_get_device_id "${dev}")' {
  EOF
-diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/20_linux_xen.in grub-2.02~beta2/util/grub.d/20_linux_xen.in
---- grub-2.02~beta2.orig/util/grub.d/20_linux_xen.in	2014-01-04 10:50:51.000000000 +0100
-+++ grub-2.02~beta2/util/grub.d/20_linux_xen.in	2014-01-04 11:34:50.135240649 +0100
-@@ -204,7 +204,7 @@
-     fi
+--- grub-2.04/util/grub.d/20_linux_xen.in.orig	2019-04-23 10:54:47.000000000 +0200
++++ grub-2.04/util/grub.d/20_linux_xen.in	2019-07-05 13:55:11.220267798 +0200
+@@ -243,7 +243,7 @@
+ 
      while [ "x$list" != "x" ] ; do
  	linux=`version_find_latest $list`
 -	gettext_printf "Found linux image: %s\n" "$linux" >&2
@@ -181,15 +179,15 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/20_linux_xen.in g
  	basename=`basename $linux`
  	dirname=`dirname $linux`
  	rel_dirname=`make_system_path_relative_to_its_root $dirname`
-@@ -227,7 +227,7 @@
- 	    fi
- 	done
- 	if test -n "${initrd}" ; then
--	    gettext_printf "Found initrd image: %s\n" "${dirname}/${initrd}" >&2
-+	    gettext_printf "Found initrd image: %s\n" "${dirname}/${initrd}" >&3
- 	else
-     # "UUID=" magic is parsed by initrds.  Since there's no initrd, it can't work here.
- 	    linux_root_device_thisversion=${GRUB_DEVICE}
+@@ -274,7 +274,7 @@
+ 	    for i in ${initrd}; do
+ 		initrd_display="${initrd_display} ${dirname}/${i}"
+ 	    done
+-	    gettext_printf "Found initrd image: %s\n" "$(echo $initrd_display)" >&2
++	    gettext_printf "Found initrd image: %s\n" "$(echo $initrd_display)" >&3
+ 	fi
+ 
+ 	if test -z "${initrd_real}"; then
 diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/30_os-prober.in grub-2.02~beta2/util/grub.d/30_os-prober.in
 --- grub-2.02~beta2.orig/util/grub.d/30_os-prober.in	2014-01-04 10:50:51.000000000 +0100
 +++ grub-2.02~beta2/util/grub.d/30_os-prober.in	2014-01-04 11:34:50.135240649 +0100

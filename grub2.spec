@@ -46,12 +46,12 @@ Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	2.02
-Release:	5
+Version:	2.04
+Release:	0.1
 License:	GPL v2
 Group:		Base
 Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
-# Source0-md5:	8a4a2a95aac551fb0fba860ceabfa1d3
+# Source0-md5:	5aaca6713b47ca2456d8324a58755ac7
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
@@ -63,18 +63,12 @@ Patch4:		pld-mkconfigdir.patch
 Patch5:		grub-mkconfig-diagnostics.patch
 Patch6:		posix.patch
 Patch7:		%{name}-fonts_path.patch
-Patch8:		add-vlan-tag-support.patch
 Patch9:		just-say-linux.patch
 Patch10:	ignore-kernel-symlinks.patch
 Patch11:	choose-preferred-initrd.patch
 Patch12:	%{name}-cfg.patch
 Patch13:	efi-net-fix.patch
 Patch14:	blscfg.patch
-# https://git.archlinux.org/svntogit/packages.git/plain/trunk/0002-intel-ucode.patch?h=packages/grub
-Patch15:	intel-ucode.patch
-Patch16:	xfs.patch
-Patch17:	gcc8.patch
-Patch18:	grub2-binutils.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.53
 BuildRequires:	automake >= 1:1.11.1-1
@@ -296,17 +290,12 @@ Motyw starfield dla GRUB-a.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
 %patch12 -p0
 %patch13 -p1
-%patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
-%patch18 -p1
+#%patch14 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
