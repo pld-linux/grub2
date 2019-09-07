@@ -47,7 +47,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.04
-Release:	0.1
+Release:	1
 License:	GPL v2
 Group:		Base
 Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -295,7 +295,7 @@ Motyw starfield dla GRUB-a.
 %patch11 -p1
 %patch12 -p0
 %patch13 -p1
-#%patch14 -p1
+%patch14 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
