@@ -224,9 +224,7 @@ Summary:	bash-completion for GRUB
 Summary(pl.UTF-8):	Bashowe uzupełnianie nazw dla GRUB-a
 Group:		Applications/Shells
 Requires:	bash-completion
-%if "%{_rpmversion}" >= "5"
 BuildArch:	noarch
-%endif
 
 %description -n bash-completion-%{name}
 This package provides bash-completion for GRUB.
