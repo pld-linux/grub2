@@ -8,15 +8,15 @@
 #   - put grub-emu to subpackage if it is fixed
 #
 # Conditional build:
-%bcond_with	grubemu	# build grub-emu debugging utility
-%bcond_without	efiemu	# build efiemu runtimes
-%bcond_without	pc	# do not build for PC BIOS platform
-%bcond_without	efi	# do not build for EFI platform
+%bcond_with	grubemu	# grub-emu debugging utility
+%bcond_without	efiemu	# efiemu runtimes
+%bcond_without	pc	# PC BIOS platform support (x86 specific)
+%bcond_without	efi	# EFI platform support
 
 %ifnarch %{ix86} %{x8664} x32
 %undefine	with_pc
 %endif
-%ifnarch %{ix86} %{x8664} x32 ia64
+%ifnarch %{ix86} %{x8664} x32 %{arm} aarch64 ia64
 %undefine	with_efi
 %endif
 
@@ -26,17 +26,24 @@
 %endif
 
 # the 'most natural' platform should go last
-%ifarch %{ix86} %{x8664} x32 ia64
+# TODO? coreboot@{ix86,arm}, ieee1275@ix86, multiboot@ix86, qemu@ix86, qemu_mips@{mips,mipsel} xen@x86*, xen_pvh@ix86
+%ifarch %{ix86} %{x8664} x32
 %define		platforms %{?with_efi:efi} %{?with_pc:pc}
 %endif
-%ifarch ppc ppc64 sparc64
-%define		platforms ieee1275
+%ifarch %{arm}
+%define		platforms efi uboot
+%endif
+%ifarch aarch64 ia64 riscv32 riscv64
+%define		platforms efi
 %endif
 %ifarch mips
 %define		platforms arc
 %endif
 %ifarch mipsel
-%define		platforms loongson
+%define		platforms arc loongson
+%endif
+%ifarch ppc ppc64 sparc64
+%define		platforms ieee1275
 %endif
 
 %define		rel	1
@@ -115,7 +122,7 @@ Suggests:	cdrkit-mkisofs
 Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
-ExclusiveArch:	%{ix86} %{x8664} x32 ia64 mips mipsel ppc ppc64 sparc64
+ExclusiveArch:	%{ix86} %{x8664} x32 %{arm} aarch64 ia64 mips mipsel ppc ppc64 riscv32 riscv64 sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
