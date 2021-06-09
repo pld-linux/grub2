@@ -90,6 +90,7 @@ BuildRequires:	pkgconfig
 BuildRequires:	python >= 2.6
 BuildRequires:	python-modules >= 2.6
 BuildRequires:	rpm >= 4.4.9-56
+BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	sed >= 4.0
 BuildRequires:	tar >= 1:1.22
@@ -534,6 +535,10 @@ fi
 
 %dir %{_datadir}/grub/themes
 
+%files -n bash-completion-%{name}
+%defattr(644,root,root,755)
+/etc/bash_completion.d/grub
+
 %if %{with pc}
 %files platform-pc
 %defattr(644,root,root,755)
@@ -552,7 +557,7 @@ fi
 %{_libexecdir}/*-pc/efiemu*.o
 %endif
 %{_libexecdir}/*-pc/kernel.img
-%ifarch %{ix86} %{x8664} x32 sparc sparc64
+%ifarch %{ix86} %{x8664} x32
 %{_libexecdir}/*-pc/boot.img
 %{_libexecdir}/*-pc/boot_hybrid.img
 %{_libexecdir}/*-pc/cdboot.img
@@ -586,7 +591,3 @@ fi
 %files theme-starfield
 %defattr(644,root,root,755)
 %{_datadir}/grub/themes/starfield
-
-%files -n bash-completion-%{name}
-%defattr(644,root,root,755)
-/etc/bash_completion.d/grub
