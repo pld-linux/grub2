@@ -14,8 +14,8 @@ diff -dur grub-2.00.orig/util/grub-mkconfig.in grub-2.00/util/grub-mkconfig.in
 --- grub-2.00.orig/util/grub-mkconfig.in	2012-10-27 15:05:15.000000000 +0200
 +++ grub-2.00/util/grub-mkconfig.in	2012-10-27 15:06:40.696227008 +0200
 @@ -35,7 +35,7 @@
-     pkgdatadir="${datadir}/@PACKAGE@"
- fi
+ export pkgdatadir
+ 
  grub_cfg=""
 -grub_mkconfig_dir="${sysconfdir}"/grub.d
 +grub_mkconfig_dir=/lib/grub.d

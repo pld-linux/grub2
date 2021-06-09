@@ -46,12 +46,12 @@ Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	2.04
+Version:	2.06
 Release:	1
 License:	GPL v2
 Group:		Base
 Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
-# Source0-md5:	5aaca6713b47ca2456d8324a58755ac7
+# Source0-md5:	cf0fd928b1e5479c8108ee52cb114363
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
@@ -70,7 +70,7 @@ Patch12:	%{name}-cfg.patch
 Patch13:	efi-net-fix.patch
 Patch14:	blscfg.patch
 URL:		http://www.gnu.org/software/grub/
-BuildRequires:	autoconf >= 2.53
+BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison
 BuildRequires:	device-mapper-devel
@@ -79,15 +79,16 @@ BuildRequires:	fonts-TTF-DejaVu
 BuildRequires:	freetype-devel >= 2
 BuildRequires:	gawk
 BuildRequires:	gcc >= 5:3.4
-BuildRequires:	gettext-tools
+BuildRequires:	gettext-tools >= 0.18.3
 BuildRequires:	glibc-localedb-all
 BuildRequires:	glibc-static
 BuildRequires:	help2man
 BuildRequires:	libfuse-devel
 BuildRequires:	libtool
 BuildRequires:	ncurses-devel
-BuildRequires:	python
-BuildRequires:	python-modules
+BuildRequires:	pkgconfig
+BuildRequires:	python >= 2.6
+BuildRequires:	python-modules >= 2.6
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpmbuild(macros) >= 1.213
 BuildRequires:	sed >= 4.0
@@ -564,6 +565,7 @@ fi
 %if %{with efi}
 %files platform-efi
 %defattr(644,root,root,755)
+%attr(755,root,root) /lib/grub.d/30_uefi-firmware
 %dir %{_libexecdir}/*-efi
 %{_libexecdir}/*-efi/modinfo.sh
 %{_libexecdir}/*-efi/*.exec

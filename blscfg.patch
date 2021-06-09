@@ -1301,7 +1301,7 @@ index 2c5363da7f5..9faf2be0f64 100644
 +  grub_dprintf ("menu", "menu_id:\"%s\"\n", menu_id);
  
    /* Save argc, args to pass as parameters to block arg later. */
-   menu_args = grub_malloc (sizeof (char*) * (argc + 1));
+   menu_args = grub_calloc (argc + 1, sizeof (char *));
 @@ -170,8 +173,12 @@ grub_normal_add_menu_entry (int argc, const char **args,
    }
  
@@ -1353,7 +1353,7 @@ index 9ef98481f70..a326b192c89 100644
 --- a/grub-core/normal/main.c
 +++ b/grub-core/normal/main.c
 @@ -20,6 +20,7 @@
- #include <grub/kernel.h>
+ #include <grub/net.h>
  #include <grub/normal.h>
  #include <grub/dl.h>
 +#include <grub/menu.h>
@@ -1476,7 +1476,7 @@ index c9e1d7a73dc..9859ff4cc79 100644
 --- a/include/grub/compiler.h
 +++ b/include/grub/compiler.h
 @@ -48,4 +48,6 @@
- #  define WARN_UNUSED_RESULT
+ #  define CLANG_PREREQ(maj,min) 0
  #endif
  
 +#define UNUSED __attribute__((__unused__))

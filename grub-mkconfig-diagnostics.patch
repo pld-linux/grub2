@@ -154,8 +154,8 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_netbsd.in grub
 -  gettext_printf "Found NetBSD kernel: %s\n" "$k" >&2
 +  gettext_printf "Found NetBSD kernel: %s\n" "$k" >&3
  
-   if [ "x$is_top_level" = xtrue ] && [ "x${GRUB_DISABLE_SUBMENU}" != xy ]; then
-       netbsd_entry "knetbsd"   "$k" simple "${GRUB_CMDLINE_NETBSD_DEFAULT}"
+   # The GRUB_DISABLE_SUBMENU option used to be different than others since it was
+   # mentioned in the documentation that has to be set to 'y' instead of 'true' to
 diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_windows.in grub-2.02~beta2/util/grub.d/10_windows.in
 --- grub-2.02~beta2.orig/util/grub.d/10_windows.in	2013-12-17 18:25:57.000000000 +0100
 +++ grub-2.02~beta2/util/grub.d/10_windows.in	2014-01-04 11:34:50.135240649 +0100
@@ -192,8 +192,8 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/30_os-prober.in g
 --- grub-2.02~beta2.orig/util/grub.d/30_os-prober.in	2014-01-04 10:50:51.000000000 +0100
 +++ grub-2.02~beta2/util/grub.d/30_os-prober.in	2014-01-04 11:34:50.135240649 +0100
 @@ -134,7 +134,7 @@
-     LONGNAME="${LABEL}"
-   fi
+   # os-prober returns text string followed by optional counter
+   CLASS="--class $(echo "${LABEL}" | LC_ALL=C sed 's,[[:digit:]]*$,,' | cut -d' ' -f1 | tr 'A-Z' 'a-z' | LC_ALL=C sed 's,[^[:alnum:]_],_,g')"
  
 -  gettext_printf "Found %s on %s\n" "${LONGNAME}" "${DEVICE}" >&2
 +  gettext_printf "Found %s on %s\n" "${LONGNAME}" "${DEVICE}" >&3

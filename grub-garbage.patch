@@ -7,5 +7,5 @@ diff -dur grub-2.00.orig/util/grub-mkconfig_lib.in grub-2.00/util/grub-mkconfig_
        *.rpmsave|*.rpmnew) return 1 ;;
 +      *.bak|*~|.*.swp) return 1 ;;    # backup and swap files from editors
        README*|*/README*)  return 1 ;; # documentation
+       *.sig) return 1 ;; # signatures
      esac
-   else
