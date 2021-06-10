@@ -8,16 +8,54 @@
 #   - put grub-emu to subpackage if it is fixed
 #
 # Conditional build:
-%bcond_with	grubemu	# grub-emu debugging utility
-%bcond_without	efiemu	# efiemu runtimes
-%bcond_without	pc	# PC BIOS platform support (x86 specific)
-%bcond_without	efi	# EFI platform support
+%bcond_with	grubemu		# grub-emu debugging utility
+%bcond_without	efiemu		# efiemu runtimes
+%bcond_without	unifont		# unifont based fonts
+%bcond_without	arc		# MIPS ARC platform support
+%bcond_without	coreboot	# coreboot/linuxbios platform support (x86/arm specific)
+%bcond_without	efi		# EFI platform support
+%bcond_without	ieee1275	# ieee1275 platform support (x86/ppc/sparc specific)
+%bcond_without	loongson	# MIPS loongson platform support (mipsel specific)
+%bcond_without	multiboot	# multiboot platform support (x86/arm specific)
+%bcond_without	pc		# PC BIOS platform support (x86 specific)
+%bcond_without	qemu		# qemu platform support (x86/mips specific)
+%bcond_without	uboot		# ARM uBoot platform support
+%bcond_without	xen		# Xen platform support (x86 specific)
+%bcond_without	xen_pvh		# Xen PVH platform support (x86 specific)
 
-%ifnarch %{ix86} %{x8664} x32
-%undefine	with_pc
+%ifnarch mips mipsel mips64 mips64el
+%undefine	with_arc
+%endif
+%ifnarch %{ix86} %{x8664} x32 %{arm}
+%undefine	with_coreboot
 %endif
 %ifnarch %{ix86} %{x8664} x32 %{arm} aarch64 ia64
 %undefine	with_efi
+%endif
+%ifnarch %{ix86} %{x8664} x32 ppc ppc64 sparc64
+%undefine	with_ieee1275
+%endif
+%ifnarch mipsel mips64el
+%undefine	with_loongson
+%endif
+%ifnarch %{ix86} %{x8664} x32
+%undefine	with_multiboot
+%undefine	with_pc
+%undefine	with_xen
+%undefine	with_xen_pvh
+%endif
+%ifnarch %{ix86} mips mipsel mips64 mips64el
+%undefine	with_qemu
+%endif
+%ifnarch %{arm}
+%undefine	with_uboot
+%endif
+
+# these require unifont
+%if %{without unifont}
+%undefine	with_coreboot
+%undefine	with_loongson
+%undefine	with_qemu
 %endif
 
 %ifnarch %{x8664} x32
@@ -26,27 +64,74 @@
 %endif
 
 # the 'most natural' platform should go last
-# TODO? coreboot@{ix86,arm}, ieee1275@ix86, multiboot@ix86, qemu@ix86, qemu_mips@{mips,mipsel} xen@x86*, xen_pvh@ix86
 %ifarch %{ix86} %{x8664} x32
-%define		platforms %{?with_efi:efi} %{?with_pc:pc}
+%define		platforms %{?with_coreboot:coreboot} %{?with_ieee1275:ieee1275} %{?with_multiboot:multiboot} %{?with_qemu:qemu} %{?with_xen:xen xen_pvh} %{?with_efi:efi} %{?with_pc:pc}
 %endif
 %ifarch %{arm}
-%define		platforms efi uboot
+%define		platforms %{?with_efi:efi} %{?with_uboot:uboot}
 %endif
 %ifarch aarch64 ia64 riscv32 riscv64
 %define		platforms efi
 %endif
-%ifarch mips
+%ifarch mips mips64
 %define		platforms arc
 %endif
-%ifarch mipsel
-%define		platforms arc loongson
+%ifarch mipsel mips64el
+%define		platforms %{?with_arc:arc} %{?with_loongson:loongson}
 %endif
 %ifarch ppc ppc64 sparc64
 %define		platforms ieee1275
 %endif
 
-%define		rel	1
+%ifarch %{ix86}
+%define	coreboot_arch	i386
+%define	efi_arch	i386
+%define	ieee1275_arch	i386
+%define	qemu_arch	i386
+%define	qemu_plat	qemu
+%define	xen_arch	i386
+%endif
+%ifarch %{x8664} x32
+%define	coreboot_arch	i386
+%define	efi_arch	x86_64
+%define	ieee1275_arch	i386
+%define	qemu_arch	i386
+%define	qemu_plat	qemu
+%define	xen_arch	x86_64
+%endif
+%ifarch %{arm}
+%define	coreboot_arch	arm
+%define	efi_arch	arm
+%endif
+%ifarch aarch64
+%define	efi_arch	arm64
+%endif
+%ifarch ia64
+%define	efi_arch	ia64
+%endif
+%ifarch mips mips64
+%define	arc_arch	mips
+%define	qemu_arch	mips
+%define	qemu_plat	qemu_mips
+%endif
+%ifarch mipsel mips64el
+%define	arc_arch	mipsel
+%define	qemu_arch	mipsel
+%define	qemu_plat	qemu_mips
+%endif
+%ifarch ppc ppc64
+%define	ieee1275_arch	powerpc
+%endif
+%ifarch riscv32
+%define	efi_arch	riscv32
+%endif
+%ifarch riscv64
+%define	efi_arch	riscv64
+%endif
+%ifarch sparc64
+%define	ieee1275_arch	sparc64
+%endif
+
 Summary:	GRand Unified Bootloader
 Summary(de.UTF-8):	GRUB2 - ein Bootloader für x86 und ppc
 Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
@@ -57,7 +142,7 @@ Version:	2.06
 Release:	1
 License:	GPL v2
 Group:		Base
-Source0:	ftp://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
+Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
 # Source0-md5:	cf0fd928b1e5479c8108ee52cb114363
 Source1:	update-grub
 Source2:	update-grub.8
@@ -79,13 +164,16 @@ Patch14:	blscfg.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11.1-1
-BuildRequires:	bison
-BuildRequires:	device-mapper-devel
+BuildRequires:	bison >= 2.3
+BuildRequires:	device-mapper-devel >= 1.02.34
 BuildRequires:	flex >= 2.5.35
 BuildRequires:	fonts-TTF-DejaVu
-BuildRequires:	freetype-devel >= 2
+%if %{with unifont}
+BuildRequires:	fonts-misc-unifont
+%endif
+BuildRequires:	freetype-devel >= 2.1.5
 BuildRequires:	gawk
-BuildRequires:	gcc >= 5:3.4
+BuildRequires:	gcc >= 6:5.1
 BuildRequires:	gettext-tools >= 0.18.3
 BuildRequires:	glibc-localedb-all
 BuildRequires:	glibc-static
@@ -94,8 +182,8 @@ BuildRequires:	libfuse-devel
 BuildRequires:	libtool
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig
-BuildRequires:	python >= 2.6
-BuildRequires:	python-modules >= 2.6
+BuildRequires:	python >= 1:2.6
+BuildRequires:	python-modules >= 1:2.6
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.213
@@ -115,14 +203,14 @@ BuildRequires:	gcc-multilib-32
 Requires:	%{name}-platform = %{version}-%{release}
 Requires:	pld-release
 Requires:	which
-%ifarch %{ix86} %{x8664}
+%ifarch %{ix86} %{x8664} x32
 Suggests:	%{name}-platform-pc
 %endif
 Suggests:	cdrkit-mkisofs
 Suggests:	os-prober
 Provides:	bootloader
 Conflicts:	grub
-ExclusiveArch:	%{ix86} %{x8664} x32 %{arm} aarch64 ia64 mips mipsel ppc ppc64 riscv32 riscv64 sparc64
+ExclusiveArch:	%{ix86} %{x8664} x32 %{arm} aarch64 ia64 mips mipsel mips64 mips64el ppc ppc64 riscv32 riscv64 sparc64
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_sbindir	/sbin
@@ -232,6 +320,7 @@ avançados e que querem mais recursos de seu boot loader.
 Summary:	bash-completion for GRUB
 Summary(pl.UTF-8):	Bashowe uzupełnianie nazw dla GRUB-a
 Group:		Applications/Shells
+Requires:	%{name} = %{version}-%{release}
 Requires:	bash-completion
 BuildArch:	noarch
 
@@ -241,22 +330,50 @@ This package provides bash-completion for GRUB.
 %description -n bash-completion-%{name} -l pl.UTF-8
 Pakiet ten dostarcza bashowe uzupełnianie nazw dla GRUB-a.
 
-%package platform-pc
-Summary:	PC BIOS platform support for GRUB
-Summary(pl.UTF-8):	Obsługa platformy PC BIOS dla GRUB-a
+%package fonts
+Summary:	Fonts for GRUB
+Summary(pl.UTF-8):	Fonty dla GRUB-a
 Group:		Base
+Requires:	%{name} = %{version}-%{release}
+
+%description fonts
+Fonts for GRUB.
+
+%description fonts -l pl.UTF-8
+Fonty dla GRUB-a.
+
+%package platform-arc
+Summary:	MIPS ARC platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy MIPS ARC dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
 Provides:	%{name}-platform = %{version}-%{release}
 
-%description platform-pc
-PC BIOS platform support for GRUB.
+%description platform-arc
+MIPS ARC platform support for GRUB.
 
-%description platform-pc -l pl.UTF-8
-Obsługa platformy PC BIOS dla GRUB-a.
+%description platform-arc -l pl.UTF-8
+Obsługa platformy MIPS ARC dla GRUB-a.
+
+%package platform-coreboot
+Summary:	Coreboot (LinuxBIOS) platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy Coreboot (LinuxBIOS) dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-fonts = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-coreboot
+Coreboot (LinuxBIOS) platform support for GRUB.
+
+%description platform-coreboot -l pl.UTF-8
+Obsługa platformy Coreboot (LinuxBIOS) dla GRUB-a.
 
 %package platform-efi
 Summary:	(U)EFI platform support for GRUB
 Summary(pl.UTF-8):	Obsługa platformy (U)EFI dla GRUB-a
 Group:		Base
+Requires:	%{name} = %{version}-%{release}
 Suggests:	efibootmgr
 Provides:	%{name}-platform = %{version}-%{release}
 
@@ -265,6 +382,112 @@ Provides:	%{name}-platform = %{version}-%{release}
 
 %description platform-efi -l pl.UTF-8
 Obsługa platformy (U)EFI dla GRUB-a.
+
+%package platform-ieee1275
+Summary:	IEEE 1275 (OpenFirmware) platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy IEEE 1275 (OpenFirmware) dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-ieee1275
+IEEE 1275 (OpenFirmware) platform support for GRUB.
+
+%description platform-ieee1275 -l pl.UTF-8
+Obsługa platformy IEEE 1275 (OpenFirmware) dla GRUB-a.
+
+%package platform-loongson
+Summary:	MIPS Loongson platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy MIPS Loongson dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-fonts = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-loongson
+MIPS Loongson (yeelong, fuloong) platform support for GRUB.
+
+%description platform-loongson -l pl.UTF-8
+Obsługa platformy MIPS Loongson (yeelong, fuloong) dla GRUB-a.
+
+%package platform-multiboot
+Summary:	Multiboot platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy Multiboot dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-multiboot
+Multiboot platform support for GRUB.
+
+%description platform-multiboot -l pl.UTF-8
+Obsługa platformy Multiboot dla GRUB-a.
+
+%package platform-pc
+Summary:	PC BIOS platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy PC BIOS dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-pc
+PC BIOS platform support for GRUB.
+
+%description platform-pc -l pl.UTF-8
+Obsługa platformy PC BIOS dla GRUB-a.
+
+%package platform-qemu
+Summary:	Qemu platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy Qemu dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-fonts = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-qemu
+Qemu platform support for GRUB.
+
+%description platform-qemu -l pl.UTF-8
+Obsługa platformy Qemu dla GRUB-a.
+
+%package platform-uboot
+Summary:	ARM uBoot platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy ARM uBoot dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-uboot
+ARM uBoot platform support for GRUB.
+
+%description platform-uboot -l pl.UTF-8
+Obsługa platformy ARM uBoot dla GRUB-a.
+
+%package platform-xen
+Summary:	Xen platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy Xen dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-xen
+Xen platform support for GRUB.
+
+%description platform-xen -l pl.UTF-8
+Obsługa platformy Xen dla GRUB-a.
+
+%package platform-xen_pvh
+Summary:	Xen PVH platform support for GRUB
+Summary(pl.UTF-8):	Obsługa platformy Xen PVH dla GRUB-a
+Group:		Base
+Requires:	%{name} = %{version}-%{release}
+Provides:	%{name}-platform = %{version}-%{release}
+
+%description platform-xen_pvh
+Xen PVH platform support for GRUB.
+
+%description platform-xen_pvh -l pl.UTF-8
+Obsługa platformy Xen PVH dla GRUB-a.
 
 %package mkfont
 Summary:	GRUB font files converter
@@ -280,6 +503,7 @@ Program do konwersji popularnych formatów plików fontów do PF2.
 %package theme-starfield
 Summary:	starfield theme for GRUB
 Summary(pl.UTF-8):	Motyw starfield dla GRUB-a
+Requires:	%{name} = %{version}-%{release}
 Group:		Base
 
 %description theme-starfield
@@ -315,7 +539,7 @@ install -d our-ld
 ln -f -s /usr/bin/ld.bfd our-ld/ld
 export PATH=$(pwd)/our-ld:$PATH
 
-## not only the typicall autotools stuff
+## not only the typical autotools stuff
 #./autogen.sh
 
 #{__gettextize}
@@ -526,13 +750,6 @@ fi
 %attr(755,root,root) /lib/grub.d/30_os-prober
 %attr(755,root,root) /lib/grub.d/41_custom
 
-# these are now installed only on matching hosts
-#%attr(755,root,root) /lib/grub.d/10_hurd
-#%attr(755,root,root) /lib/grub.d/10_illumos
-#%attr(755,root,root) /lib/grub.d/10_kfreebsd
-#%attr(755,root,root) /lib/grub.d/10_netbsd
-#%attr(755,root,root) /lib/grub.d/10_xnu
-
 %ifarch %{ix86} %{x8664} x32
 %attr(755,root,root) %{_sbindir}/grub-probe
 %{_mandir}/man8/grub-probe.8*
@@ -546,48 +763,184 @@ fi
 %defattr(644,root,root,755)
 /etc/bash_completion.d/grub
 
-%if %{with pc}
-%files platform-pc
+%if %{with unifont}
+%files fonts
 %defattr(644,root,root,755)
-%dir %{_libexecdir}/*-pc
-%{_libexecdir}/*-pc/modinfo.sh
-%{_libexecdir}/*-pc/*.exec
-%{_libexecdir}/*-pc/*.image
-%{_libexecdir}/*-pc/*.lst
-%{_libexecdir}/*-pc/*.mod
-%{_libexecdir}/*-pc/*.module
-%{_libexecdir}/*-pc/lzma_decompress.img
-%{_libexecdir}/*-pc/config.h
-%{_libexecdir}/*-pc/gdb_grub
-%{_libexecdir}/*-pc/gmodule.pl
-%if %{with efiemu}
-%{_libexecdir}/*-pc/efiemu*.o
+%{_libexecdir}/ascii.h
+%{_libexecdir}/ascii.pf2
+%{_libexecdir}/euro.pf2
+%{_libexecdir}/unicode.pf2
+%{_libexecdir}/widthspec.h
 %endif
-%{_libexecdir}/*-pc/kernel.img
-%ifarch %{ix86} %{x8664} x32
-%{_libexecdir}/*-pc/boot.img
-%{_libexecdir}/*-pc/boot_hybrid.img
-%{_libexecdir}/*-pc/cdboot.img
-%{_libexecdir}/*-pc/diskboot.img
-%{_libexecdir}/*-pc/lnxboot.img
-%{_libexecdir}/*-pc/pxeboot.img
+
+%if %{with arc}
+%files platform-arc
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/%{arc_arch}-arc
+%{_libexecdir}/%{arc_arch}-arc/modinfo.sh
+%{_libexecdir}/%{arc_arch}-arc/*.lst
+%{_libexecdir}/%{arc_arch}-arc/*.mod
+%{_libexecdir}/%{arc_arch}-arc/*.module
+%{_libexecdir}/%{arc_arch}-arc/config.h
+%{_libexecdir}/%{arc_arch}-arc/gdb_grub
+%{_libexecdir}/%{arc_arch}-arc/gmodule.pl
+%{_libexecdir}/%{arc_arch}-arc/kernel.exec
+%{_libexecdir}/%{arc_arch}-arc/kernel.img
 %endif
+
+%if %{with coreboot}
+%files platform-coreboot
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/%{coreboot_arch}-coreboot
+%{_libexecdir}/%{coreboot_arch}-coreboot/modinfo.sh
+%{_libexecdir}/%{coreboot_arch}-coreboot/*.lst
+%{_libexecdir}/%{coreboot_arch}-coreboot/*.mod
+%{_libexecdir}/%{coreboot_arch}-coreboot/*.module
+%{_libexecdir}/%{coreboot_arch}-coreboot/config.h
+%{_libexecdir}/%{coreboot_arch}-coreboot/gdb_grub
+%{_libexecdir}/%{coreboot_arch}-coreboot/gmodule.pl
+%{_libexecdir}/%{coreboot_arch}-coreboot/kernel.exec
+%{_libexecdir}/%{coreboot_arch}-coreboot/kernel.img
 %endif
 
 %if %{with efi}
 %files platform-efi
 %defattr(644,root,root,755)
 %attr(755,root,root) /lib/grub.d/30_uefi-firmware
-%dir %{_libexecdir}/*-efi
-%{_libexecdir}/*-efi/modinfo.sh
-%{_libexecdir}/*-efi/*.exec
-%{_libexecdir}/*-efi/*.lst
-%{_libexecdir}/*-efi/*.mod
-%{_libexecdir}/*-efi/*.module
-%{_libexecdir}/*-efi/config.h
-%{_libexecdir}/*-efi/gdb_grub
-%{_libexecdir}/*-efi/gmodule.pl
-%{_libexecdir}/*-efi/kernel.img
+%dir %{_libexecdir}/%{efi_arch}-efi
+%{_libexecdir}/%{efi_arch}-efi/modinfo.sh
+%{_libexecdir}/%{efi_arch}-efi/*.lst
+%{_libexecdir}/%{efi_arch}-efi/*.mod
+%{_libexecdir}/%{efi_arch}-efi/*.module
+%{_libexecdir}/%{efi_arch}-efi/config.h
+%{_libexecdir}/%{efi_arch}-efi/gdb_grub
+%{_libexecdir}/%{efi_arch}-efi/gmodule.pl
+%{_libexecdir}/%{efi_arch}-efi/kernel.exec
+%{_libexecdir}/%{efi_arch}-efi/kernel.img
+%endif
+
+%if %{with ieee1275}
+%files platform-ieee1275
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/%{ieee1275_arch}-ieee1275
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/modinfo.sh
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/*.lst
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/*.mod
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/*.module
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/config.h
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/gdb_grub
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/gmodule.pl
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/kernel.exec
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/kernel.img
+%endif
+
+%if %{with multiboot}
+%files platform-multiboot
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/i386-multiboot
+%{_libexecdir}/i386-multiboot/modinfo.sh
+%{_libexecdir}/i386-multiboot/*.lst
+%{_libexecdir}/i386-multiboot/*.mod
+%{_libexecdir}/i386-multiboot/*.module
+%{_libexecdir}/i386-multiboot/config.h
+%{_libexecdir}/i386-multiboot/gdb_grub
+%{_libexecdir}/i386-multiboot/gmodule.pl
+%{_libexecdir}/i386-multiboot/kernel.exec
+%{_libexecdir}/i386-multiboot/kernel.img
+%endif
+
+%if %{with pc}
+%files platform-pc
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/i386-pc
+%{_libexecdir}/i386-pc/modinfo.sh
+%{_libexecdir}/i386-pc/*.lst
+%{_libexecdir}/i386-pc/*.mod
+%{_libexecdir}/i386-pc/*.module
+%{_libexecdir}/i386-pc/config.h
+%{_libexecdir}/i386-pc/gdb_grub
+%{_libexecdir}/i386-pc/gmodule.pl
+%{_libexecdir}/i386-pc/boot.image
+%{_libexecdir}/i386-pc/boot.img
+%{_libexecdir}/i386-pc/boot_hybrid.image
+%{_libexecdir}/i386-pc/boot_hybrid.img
+%{_libexecdir}/i386-pc/cdboot.image
+%{_libexecdir}/i386-pc/cdboot.img
+%{_libexecdir}/i386-pc/diskboot.image
+%{_libexecdir}/i386-pc/diskboot.img
+%{_libexecdir}/i386-pc/kernel.exec
+%{_libexecdir}/i386-pc/kernel.img
+%{_libexecdir}/i386-pc/lnxboot.image
+%{_libexecdir}/i386-pc/lnxboot.img
+%{_libexecdir}/i386-pc/lzma_decompress.image
+%{_libexecdir}/i386-pc/lzma_decompress.img
+%{_libexecdir}/i386-pc/pxeboot.image
+%{_libexecdir}/i386-pc/pxeboot.img
+%if %{with efiemu}
+%{_libexecdir}/i386-pc/efiemu*.o
+%endif
+%endif
+
+%if %{with qemu}
+%files platform-qemu
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/%{qemu_arch}-%{qemu_plat}
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/modinfo.sh
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/*.lst
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/*.mod
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/*.module
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/config.h
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/gdb_grub
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/gmodule.pl
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/boot.image
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/boot.img
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/kernel.exec
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/kernel.img
+%endif
+
+%if %{with uboot}
+%files platform-uboot
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/arm-uboot
+%{_libexecdir}/arm-uboot/modinfo.sh
+%{_libexecdir}/arm-uboot/*.lst
+%{_libexecdir}/arm-uboot/*.mod
+%{_libexecdir}/arm-uboot/*.module
+%{_libexecdir}/arm-uboot/config.h
+%{_libexecdir}/arm-uboot/gdb_grub
+%{_libexecdir}/arm-uboot/gmodule.pl
+%{_libexecdir}/arm-uboot/kernel.exec
+%{_libexecdir}/arm-uboot/kernel.img
+%endif
+
+%if %{with xen}
+%files platform-xen
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/%{xen_arch}-xen
+%{_libexecdir}/%{xen_arch}-xen/modinfo.sh
+%{_libexecdir}/%{xen_arch}-xen/*.lst
+%{_libexecdir}/%{xen_arch}-xen/*.mod
+%{_libexecdir}/%{xen_arch}-xen/*.module
+%{_libexecdir}/%{xen_arch}-xen/config.h
+%{_libexecdir}/%{xen_arch}-xen/gdb_grub
+%{_libexecdir}/%{xen_arch}-xen/gmodule.pl
+%{_libexecdir}/%{xen_arch}-xen/kernel.exec
+%{_libexecdir}/%{xen_arch}-xen/kernel.img
+%endif
+
+%if %{with xen_pvh}
+%files platform-xen_pvh
+%defattr(644,root,root,755)
+%dir %{_libexecdir}/i386-xen_pvh
+%{_libexecdir}/i386-xen_pvh/modinfo.sh
+%{_libexecdir}/i386-xen_pvh/*.lst
+%{_libexecdir}/i386-xen_pvh/*.mod
+%{_libexecdir}/i386-xen_pvh/*.module
+%{_libexecdir}/i386-xen_pvh/config.h
+%{_libexecdir}/i386-xen_pvh/gdb_grub
+%{_libexecdir}/i386-xen_pvh/gmodule.pl
+%{_libexecdir}/i386-xen_pvh/kernel.exec
+%{_libexecdir}/i386-xen_pvh/kernel.img
 %endif
 
 %files mkfont
