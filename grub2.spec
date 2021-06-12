@@ -9,7 +9,7 @@
 #
 # Conditional build:
 %bcond_with	grubemu		# grub-emu debugging utility
-%bcond_without	efiemu		# efiemu runtimes
+%bcond_without	efiemu		# efiemu runtimes (64-bit efiemu on 32-bit boot platform)
 %bcond_without	unifont		# unifont based fonts
 %bcond_without	arc		# MIPS ARC platform support
 %bcond_without	coreboot	# coreboot/linuxbios platform support (x86/arm specific)
@@ -51,6 +51,11 @@
 %undefine	with_uboot
 %endif
 
+# FIXME: x86_64-xen build is broken (as of 2.06)
+%ifarch %{x8664} x32
+%undefine	with_xen
+%endif
+
 # these require unifont
 %if %{without unifont}
 %undefine	with_coreboot
@@ -65,7 +70,7 @@
 
 # the 'most natural' platform should go last
 %ifarch %{ix86} %{x8664} x32
-%define		platforms %{?with_coreboot:coreboot} %{?with_ieee1275:ieee1275} %{?with_multiboot:multiboot} %{?with_qemu:qemu} %{?with_xen:xen} %{!?with_xen_pvh:xen_pvh} %{?with_efi:efi} %{?with_pc:pc}
+%define		platforms %{?with_coreboot:coreboot} %{?with_ieee1275:ieee1275} %{?with_multiboot:multiboot} %{?with_qemu:qemu} %{?with_xen:xen} %{?with_xen_pvh:xen_pvh} %{?with_efi:efi} %{?with_pc:pc}
 %endif
 %ifarch %{arm}
 %define		platforms %{?with_efi:efi} %{?with_uboot:uboot}
@@ -174,6 +179,16 @@ BuildRequires:	fonts-misc-unifont
 BuildRequires:	freetype-devel >= 2.1.5
 BuildRequires:	gawk
 BuildRequires:	gcc >= 6:5.1
+%ifarch %{x8664} x32
+%if %{with efiemu} || %{with coreboot} || %{with ieee1275} || %{with multiboot} || %{with pc} || %{with xen_pvh}
+BuildRequires:	gcc-multilib-32 >= 6:5.1
+%endif
+%endif
+%ifarch x32
+%if %{with efiemu} || %{with efi}
+BuildRequires:	gcc-multilib-64 >= 6:5.1
+%endif
+%endif
 BuildRequires:	gettext-tools >= 0.18.3
 BuildRequires:	glibc-localedb-all
 BuildRequires:	glibc-static
@@ -192,14 +207,6 @@ BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo
 BuildRequires:	xz
 BuildRequires:	xz-devel
-%ifarch %{x8664}
-BuildRequires:	/usr/lib/libc.so
-%if "%{pld_release}" == "ac"
-BuildRequires:	libgcc32
-%else
-BuildRequires:	gcc-multilib-32
-%endif
-%endif
 Requires:	%{name}-platform = %{version}-%{release}
 Requires:	pld-release
 Requires:	which
@@ -552,11 +559,12 @@ for platform in %{platforms} ; do
 	install -d build-${platform}
 	cd build-${platform}
 
-	if [ "$platform" != "efi" ] ; then
+	platform_opts=""
+	case platform in
+	  coreboot|ieee1275|multiboot|pc|qemu|xen_pvh)
 		platform_opts="--enable-efiemu%{!?with_efiemu:=no}"
-	else
-		platform_opts=""
-	fi
+		;;
+	esac
 
 	ln -f -s ../configure .
 	# mawk stalls at ./genmoddep.awk, so force gawk
@@ -801,6 +809,9 @@ fi
 %{_libexecdir}/%{coreboot_arch}-coreboot/gmodule.pl
 %{_libexecdir}/%{coreboot_arch}-coreboot/kernel.exec
 %{_libexecdir}/%{coreboot_arch}-coreboot/kernel.img
+%if %{with efiemu}
+%{_libexecdir}/%{coreboot_arch}-coreboot/efiemu*.o
+%endif
 %endif
 
 %if %{with efi}
@@ -832,6 +843,9 @@ fi
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/gmodule.pl
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/kernel.exec
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/kernel.img
+%if %{with efiemu}
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/efiemu*.o
+%endif
 %endif
 
 %if %{with multiboot}
@@ -847,6 +861,9 @@ fi
 %{_libexecdir}/i386-multiboot/gmodule.pl
 %{_libexecdir}/i386-multiboot/kernel.exec
 %{_libexecdir}/i386-multiboot/kernel.img
+%if %{with efiemu}
+%{_libexecdir}/i386-multiboot/efiemu*.o
+%endif
 %endif
 
 %if %{with pc}
@@ -941,6 +958,9 @@ fi
 %{_libexecdir}/i386-xen_pvh/gmodule.pl
 %{_libexecdir}/i386-xen_pvh/kernel.exec
 %{_libexecdir}/i386-xen_pvh/kernel.img
+%if %{with efiemu}
+%{_libexecdir}/i386-xen_pvh/efiemu*.o
+%endif
 %endif
 
 %files mkfont
