@@ -65,7 +65,7 @@
 
 # the 'most natural' platform should go last
 %ifarch %{ix86} %{x8664} x32
-%define		platforms %{?with_coreboot:coreboot} %{?with_ieee1275:ieee1275} %{?with_multiboot:multiboot} %{?with_qemu:qemu} %{?with_xen:xen xen_pvh} %{?with_efi:efi} %{?with_pc:pc}
+%define		platforms %{?with_coreboot:coreboot} %{?with_ieee1275:ieee1275} %{?with_multiboot:multiboot} %{?with_qemu:qemu} %{?with_xen:xen} %{!?with_xen_pvh:xen_pvh} %{?with_efi:efi} %{?with_pc:pc}
 %endif
 %ifarch %{arm}
 %define		platforms %{?with_efi:efi} %{?with_uboot:uboot}
