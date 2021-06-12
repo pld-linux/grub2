@@ -643,15 +643,15 @@ rm -rf $RPM_BUILD_ROOT
 %triggerpostun -- %{name} < 2.00-2
 # Note this trigger on version upgrade needed only for upgrade from
 # old grub2 packages which contained modules in /boot/grub
-# or were built with optimizations enabled
-# don't do anything on --downgrade
+# or were built with optimizations enabled.
+# Don't do anything on --downgrade.
 if [ $1 -le 1 ]; then
 	exit 0
 fi
 echo "Grub was upgraded, trying to setup it to boot sector"
 /sbin/grub-install '(hd0)' || :
 
-%triggerpostun -- %{name} < 1.99-7.3
+# -- %{name} < 1.99-7.3
 # migrate /etc/grub.d/custom.cfg.rpmsave  -> /boot/grub/custom.cfg
 if [ -f %{_sysconfdir}/grub.d/custom.cfg.rpmsave ]; then
 	cp -f %{_grubdir}/custom.cfg{,.rpmnew}
