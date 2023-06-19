@@ -703,10 +703,8 @@ fi
 %endif
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %{_mandir}/man1/grub-mkimage.1*
-%ifnarch %{ix86} %{x8664} x32
 %attr(755,root,root) %{_sbindir}/grub-probe
 %{_mandir}/man8/grub-probe.8*
-%endif
 %ifarch sparc64
 %attr(755,root,root) %{_sbindir}/grub-sparc64-setup
 %{_mandir}/man8/grub-sparc64-setup.8*
@@ -760,11 +758,6 @@ fi
 %attr(755,root,root) /lib/grub.d/20_linux_xen
 %attr(755,root,root) /lib/grub.d/30_os-prober
 %attr(755,root,root) /lib/grub.d/41_custom
-
-%ifarch %{ix86} %{x8664} x32
-%attr(755,root,root) %{_sbindir}/grub-probe
-%{_mandir}/man8/grub-probe.8*
-%endif
 
 %{_infodir}/grub*.info*
 
