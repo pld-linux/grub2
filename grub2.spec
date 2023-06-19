@@ -701,10 +701,9 @@ fi
 %attr(755,root,root) %{_sbindir}/grub-bios-setup
 %{_mandir}/man8/grub-bios-setup.8*
 %endif
-%ifarch %{ix86} %{x8664} x32
 %attr(755,root,root) %{_sbindir}/grub-mkimage
 %{_mandir}/man1/grub-mkimage.1*
-%else
+%ifnarch %{ix86} %{x8664} x32
 %attr(755,root,root) %{_sbindir}/grub-probe
 %{_mandir}/man8/grub-probe.8*
 %endif
