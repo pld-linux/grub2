@@ -73,7 +73,7 @@
 %define		platforms %{?with_coreboot:coreboot} %{?with_ieee1275:ieee1275} %{?with_multiboot:multiboot} %{?with_qemu:qemu} %{?with_xen:xen} %{?with_xen_pvh:xen_pvh} %{?with_efi:efi} %{?with_pc:pc}
 %endif
 %ifarch %{arm}
-%define		platforms %{?with_efi:efi} %{?with_uboot:uboot}
+%define		platforms %{?with_coreboot:coreboot} %{?with_efi:efi} %{?with_uboot:uboot}
 %endif
 %ifarch aarch64 ia64 riscv32 riscv64
 %define		platforms efi
