@@ -144,7 +144,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.06
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		Base
 Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -168,6 +168,7 @@ Patch13:	efi-net-fix.patch
 Patch14:	blscfg.patch
 Patch15:        0193-fs-xfs-Fix-unreadable-filesystem-with-v4-superblock.patch
 Patch16:        0268-grub_fs_probe-dprint-errors-from-filesystems.patch
+Patch17:        ignore-ext4-metadata_csum_seed.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake >= 1:1.11.1-1
@@ -538,6 +539,7 @@ Motyw starfield dla GRUB-a.
 %patch14 -p1
 %patch15 -p1
 %patch16 -p1
+%patch17 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
