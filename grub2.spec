@@ -143,12 +143,12 @@ Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	2.06
-Release:	4
+Version:	2.12
+Release:	0.1
 License:	GPL v2
 Group:		Base
 Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
-# Source0-md5:	cf0fd928b1e5479c8108ee52cb114363
+# Source0-md5:	60c564b1bdc39d8e43b3aab4bc0fb140
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
@@ -164,13 +164,9 @@ Patch9:		just-say-linux.patch
 Patch10:	ignore-kernel-symlinks.patch
 Patch11:	choose-preferred-initrd.patch
 Patch12:	%{name}-cfg.patch
-Patch13:	efi-net-fix.patch
 Patch14:	blscfg.patch
-Patch15:        0193-fs-xfs-Fix-unreadable-filesystem-with-v4-superblock.patch
-Patch16:        0268-grub_fs_probe-dprint-errors-from-filesystems.patch
-Patch17:        ignore-ext4-metadata_csum_seed.patch
 URL:		http://www.gnu.org/software/grub/
-BuildRequires:	autoconf >= 2.63
+BuildRequires:	autoconf >= 2.64
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison >= 2.3
 BuildRequires:	device-mapper-devel >= 1.02.34
@@ -196,12 +192,12 @@ BuildRequires:	gettext-tools >= 0.18.3
 BuildRequires:	glibc-localedb-all
 BuildRequires:	glibc-static
 BuildRequires:	help2man
-BuildRequires:	libfuse-devel
+BuildRequires:	libfuse3-devel
 BuildRequires:	libtool
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig
-BuildRequires:	python >= 1:2.6
-BuildRequires:	python-modules >= 1:2.6
+BuildRequires:	python3
+BuildRequires:	python3-modules
 BuildRequires:	rpm >= 4.4.9-56
 BuildRequires:	rpm-build >= 4.6
 BuildRequires:	rpmbuild(macros) >= 1.213
@@ -536,14 +532,15 @@ Motyw starfield dla GRUB-a.
 %patch10 -p1
 %patch11 -p1
 %patch12 -p0
-%patch13 -p1
 %patch14 -p1
-%patch15 -p1
-%patch16 -p1
-%patch17 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
+
+# missing in tarball
+cat > grub-core/extra_deps.lst <<EOF
+depends bli part_gpt
+EOF
 
 %build
 # if gold is used then grub doesn't even boot
@@ -568,15 +565,16 @@ for platform in %{platforms} ; do
 
 	platform_opts=""
 	case platform in
-	  coreboot|ieee1275|multiboot|pc|qemu|xen_pvh)
-		platform_opts="--enable-efiemu%{!?with_efiemu:=no}"
-		;;
+		coreboot|ieee1275|multiboot|pc|qemu|xen_pvh)
+			platform_opts="--enable-efiemu%{!?with_efiemu:=no}"
+			;;
 	esac
 
 	ln -f -s ../configure .
 	# mawk stalls at ./genmoddep.awk, so force gawk
 	AWK=gawk \
 	%configure \
+		PYTHON="%{__python3}" \
 		--with-platform=${platform} \
 		--disable-werror \
 		--enable-grub-themes \
@@ -759,6 +757,7 @@ fi
 %attr(755,root,root) /lib/grub.d/00_header
 %attr(755,root,root) /lib/grub.d/10_linux
 %attr(755,root,root) /lib/grub.d/20_linux_xen
+%attr(755,root,root) /lib/grub.d/25_bli
 %attr(755,root,root) /lib/grub.d/30_os-prober
 %attr(755,root,root) /lib/grub.d/41_custom
 
@@ -790,7 +789,7 @@ fi
 %{_libexecdir}/%{arc_arch}-arc/*.module
 %{_libexecdir}/%{arc_arch}-arc/config.h
 %{_libexecdir}/%{arc_arch}-arc/gdb_grub
-%{_libexecdir}/%{arc_arch}-arc/gmodule.pl
+%{_libexecdir}/%{arc_arch}-arc/gdb_helper.py
 %{_libexecdir}/%{arc_arch}-arc/kernel.exec
 %{_libexecdir}/%{arc_arch}-arc/kernel.img
 %endif
@@ -805,7 +804,7 @@ fi
 %{_libexecdir}/%{coreboot_arch}-coreboot/*.module
 %{_libexecdir}/%{coreboot_arch}-coreboot/config.h
 %{_libexecdir}/%{coreboot_arch}-coreboot/gdb_grub
-%{_libexecdir}/%{coreboot_arch}-coreboot/gmodule.pl
+%{_libexecdir}/%{coreboot_arch}-coreboot/gdb_helper.py
 %{_libexecdir}/%{coreboot_arch}-coreboot/kernel.exec
 %{_libexecdir}/%{coreboot_arch}-coreboot/kernel.img
 %if %{with efiemu}
@@ -824,7 +823,7 @@ fi
 %{_libexecdir}/%{efi_arch}-efi/*.module
 %{_libexecdir}/%{efi_arch}-efi/config.h
 %{_libexecdir}/%{efi_arch}-efi/gdb_grub
-%{_libexecdir}/%{efi_arch}-efi/gmodule.pl
+%{_libexecdir}/%{efi_arch}-efi/gdb_helper.py
 %{_libexecdir}/%{efi_arch}-efi/kernel.exec
 %{_libexecdir}/%{efi_arch}-efi/kernel.img
 %endif
@@ -839,7 +838,7 @@ fi
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/*.module
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/config.h
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/gdb_grub
-%{_libexecdir}/%{ieee1275_arch}-ieee1275/gmodule.pl
+%{_libexecdir}/%{ieee1275_arch}-ieee1275/gdb_helper.py
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/kernel.exec
 %{_libexecdir}/%{ieee1275_arch}-ieee1275/kernel.img
 %if %{with efiemu}
@@ -857,7 +856,7 @@ fi
 %{_libexecdir}/i386-multiboot/*.module
 %{_libexecdir}/i386-multiboot/config.h
 %{_libexecdir}/i386-multiboot/gdb_grub
-%{_libexecdir}/i386-multiboot/gmodule.pl
+%{_libexecdir}/i386-multiboot/gdb_helper.py
 %{_libexecdir}/i386-multiboot/kernel.exec
 %{_libexecdir}/i386-multiboot/kernel.img
 %if %{with efiemu}
@@ -875,7 +874,7 @@ fi
 %{_libexecdir}/i386-pc/*.module
 %{_libexecdir}/i386-pc/config.h
 %{_libexecdir}/i386-pc/gdb_grub
-%{_libexecdir}/i386-pc/gmodule.pl
+%{_libexecdir}/i386-pc/gdb_helper.py
 %{_libexecdir}/i386-pc/boot.image
 %{_libexecdir}/i386-pc/boot.img
 %{_libexecdir}/i386-pc/boot_hybrid.image
@@ -907,7 +906,7 @@ fi
 %{_libexecdir}/%{qemu_arch}-%{qemu_plat}/*.module
 %{_libexecdir}/%{qemu_arch}-%{qemu_plat}/config.h
 %{_libexecdir}/%{qemu_arch}-%{qemu_plat}/gdb_grub
-%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/gmodule.pl
+%{_libexecdir}/%{qemu_arch}-%{qemu_plat}/gdb_helper.py
 %{_libexecdir}/%{qemu_arch}-%{qemu_plat}/boot.image
 %{_libexecdir}/%{qemu_arch}-%{qemu_plat}/boot.img
 %{_libexecdir}/%{qemu_arch}-%{qemu_plat}/kernel.exec
@@ -924,7 +923,7 @@ fi
 %{_libexecdir}/arm-uboot/*.module
 %{_libexecdir}/arm-uboot/config.h
 %{_libexecdir}/arm-uboot/gdb_grub
-%{_libexecdir}/arm-uboot/gmodule.pl
+%{_libexecdir}/arm-uboot/gdb_helper.py
 %{_libexecdir}/arm-uboot/kernel.exec
 %{_libexecdir}/arm-uboot/kernel.img
 %endif
@@ -939,7 +938,7 @@ fi
 %{_libexecdir}/%{xen_arch}-xen/*.module
 %{_libexecdir}/%{xen_arch}-xen/config.h
 %{_libexecdir}/%{xen_arch}-xen/gdb_grub
-%{_libexecdir}/%{xen_arch}-xen/gmodule.pl
+%{_libexecdir}/%{xen_arch}-xen/gdb_helper.py
 %{_libexecdir}/%{xen_arch}-xen/kernel.exec
 %{_libexecdir}/%{xen_arch}-xen/kernel.img
 %endif
@@ -954,7 +953,7 @@ fi
 %{_libexecdir}/i386-xen_pvh/*.module
 %{_libexecdir}/i386-xen_pvh/config.h
 %{_libexecdir}/i386-xen_pvh/gdb_grub
-%{_libexecdir}/i386-xen_pvh/gmodule.pl
+%{_libexecdir}/i386-xen_pvh/gdb_helper.py
 %{_libexecdir}/i386-xen_pvh/kernel.exec
 %{_libexecdir}/i386-xen_pvh/kernel.img
 %if %{with efiemu}
