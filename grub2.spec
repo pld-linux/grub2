@@ -210,6 +210,7 @@ BuildRequires:	tar >= 1:1.22
 BuildRequires:	texinfo
 BuildRequires:	xz
 BuildRequires:	xz-devel
+BuildRequires:	zfs-devel
 Requires:	%{name}-platform = %{version}-%{release}
 Requires:	pld-release
 Requires:	which

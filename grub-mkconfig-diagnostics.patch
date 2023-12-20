@@ -107,9 +107,9 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_kfreebsd.in gr
 --- grub-2.02~beta2.orig/util/grub.d/10_kfreebsd.in	2013-12-17 18:25:57.000000000 +0100
 +++ grub-2.02~beta2/util/grub.d/10_kfreebsd.in	2014-01-04 11:34:50.135240649 +0100
 @@ -158,7 +158,7 @@
+ is_top_level=true
  
- while [ "x$list" != "x" ] ; do
-   kfreebsd=`version_find_latest $list`
+ for kfreebsd in ${reverse_sorted_list}; do
 -  gettext_printf "Found kernel of FreeBSD: %s\n" "$kfreebsd" >&2
 +  gettext_printf "Found kernel of FreeBSD: %s\n" "$kfreebsd" >&3
    basename=`basename $kfreebsd`
@@ -127,9 +127,9 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_kfreebsd.in gr
 --- grub-2.04/util/grub.d/10_linux.in.orig	2018-11-24 18:13:02.000000000 +0100
 +++ grub-2.04/util/grub.d/10_linux.in	2019-07-05 13:53:33.737370014 +0200
 @@ -194,7 +194,7 @@
+ 
  is_top_level=true
- while [ "x$list" != "x" ] ; do
-   linux=`version_find_latest $list`
+ for linux in ${reverse_sorted_list}; do
 -  gettext_printf "Found linux image: %s\n" "$linux" >&2
 +  gettext_printf "Found linux image: %s\n" "$linux" >&3
    basename=`basename $linux`
@@ -171,9 +171,9 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_windows.in gru
 --- grub-2.04/util/grub.d/20_linux_xen.in.orig	2019-04-23 10:54:47.000000000 +0200
 +++ grub-2.04/util/grub.d/20_linux_xen.in	2019-07-05 13:55:11.220267798 +0200
 @@ -243,7 +243,7 @@
+     done
  
-     while [ "x$list" != "x" ] ; do
- 	linux=`version_find_latest $list`
+     for linux in ${reverse_sorted_linux_list}; do
 -	gettext_printf "Found linux image: %s\n" "$linux" >&2
 +	gettext_printf "Found linux image: %s\n" "$linux" >&3
  	basename=`basename $linux`

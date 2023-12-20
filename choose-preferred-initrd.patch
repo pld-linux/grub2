@@ -11,41 +11,43 @@ diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub-mkconfig.in grub-2.00
  
  if test "x${grub_cfg}" != "x"; then
    rm -f "${grub_cfg}.new"
-diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/10_linux.in grub-2.00.git20131218/util/grub.d/10_linux.in
---- grub-2.00.git20131218.orig/util/grub.d/10_linux.in	2013-12-18 14:44:31.000000000 +0100
-+++ grub-2.00.git20131218/util/grub.d/10_linux.in	2013-12-18 14:44:49.000000000 +0100
-@@ -198,10 +198,12 @@
+--- grub-2.12/util/grub.d/10_linux.in.orig	2023-12-20 18:29:16.010179150 +0100
++++ grub-2.12/util/grub.d/10_linux.in	2023-12-20 18:38:21.914140889 +0100
+@@ -223,12 +223,12 @@
    done
  
    initrd_real=
--  for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
--	   "initrd-${version}" "initramfs-${version}.img" \
+-  for i in "initrd.img-${version}" "initrd-${version}.img" \
+-	   "initrd-${alt_version}.img.old" "initrd-${version}.gz" \
+-	   "initrd-${alt_version}.gz.old" "initrd-${version}" \
+-	   "initramfs-${version}.img" "initramfs-${alt_version}.img.old" \
 -	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
 -	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
 +  if [ x"${GRUB_PREFER_DRACUT}" != "xtrue" ]; then
-+	  initrd_search_list="initrd.img-${version} initrd-${version}.img initrd-${version}.gz initrd-${version} initramfs-${version}.img initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version} initramfs-${alt_version}.img"
++	  initrd_search_list="initrd.img-${version} initrd-${version}.img initrd-${alt_version}.img.old initrd-${version}.gz initrd-${alt_version}.gz.old initrd-${version} initramfs-${version}.img initramfs-${alt_version}.img.old initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version} initramfs-${alt_version}.img"
 +  else
-+	  initrd_search_list="initramfs-${version}.img initrd.img-${version} initrd-${version}.img initrd-${version}.gz initrd-${version}  initramfs-${alt_version}.img initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version}"
++	  initrd_search_list="initramfs-${version}.img initrd.img-${version} initrd-${version}.img initrd-${alt_version}.img.old initrd-${version}.gz initrd-${alt_version}.gz.old initrd-${version} initramfs-${alt_version}.img initramfs-${alt_version}.img.old initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version}"
 +  fi
 +  for i in $initrd_search_list \
  	   "initramfs-genkernel-${version}" \
  	   "initramfs-genkernel-${alt_version}" \
  	   "initramfs-genkernel-${GENKERNEL_ARCH}-${version}" \
-diff -dur -x '*.orig' grub-2.00.git20131218.orig/util/grub.d/20_linux_xen.in grub-2.00.git20131218/util/grub.d/20_linux_xen.in
---- grub-2.00.git20131218.orig/util/grub.d/20_linux_xen.in	2013-12-18 14:44:31.000000000 +0100
-+++ grub-2.00.git20131218/util/grub.d/20_linux_xen.in	2013-12-18 14:44:49.000000000 +0100
-@@ -207,10 +207,12 @@
+--- grub-2.12/util/grub.d/20_linux_xen.in.orig	2023-12-20 18:43:31.667835423 +0100
++++ grub-2.12/util/grub.d/20_linux_xen.in	2023-12-20 18:45:35.230741185 +0100
+@@ -295,12 +295,12 @@
  	linux_root_device_thisversion="${LINUX_ROOT_DEVICE}"
  
  	initrd_real=
--	for i in "initrd.img-${version}" "initrd-${version}.img" "initrd-${version}.gz" \
--	   "initrd-${version}" "initramfs-${version}.img" \
+-	for i in "initrd.img-${version}" "initrd-${version}.img" \
+-	   "initrd-${alt_version}.img.old" "initrd-${version}.gz" \
+-	   "initrd-${alt_version}.gz.old" "initrd-${version}" \
+-	   "initramfs-${version}.img" "initramfs-${alt_version}.img.old" \
 -	   "initrd.img-${alt_version}" "initrd-${alt_version}.img" \
 -	   "initrd-${alt_version}" "initramfs-${alt_version}.img" \
 +	if [ x"${GRUB_PREFER_DRACUT}" != "xtrue" ]; then
-+	    initrd_search_list="initrd.img-${version} initrd-${version}.img initrd-${version}.gz initrd-${version} initramfs-${version}.img initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version} initramfs-${alt_version}.img"
++	    initrd_search_list="initrd.img-${version} initrd-${version}.img initrd-${alt_version}.img.old initrd-${version}.gz initrd-${alt_version}.gz.old initrd-${version} initramfs-${version}.img initramfs-${alt_version}.img.old initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version} initramfs-${alt_version}.img"
 +	else
-+	    initrd_search_list="initramfs-${version}.img initrd.img-${version} initrd-${version}.img initrd-${version}.gz initrd-${version}  initramfs-${alt_version}.img initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version}"
++	    initrd_search_list="initramfs-${version}.img initrd.img-${version} initrd-${version}.img initrd-${alt_version}.img.old initrd-${version}.gz initrd-${alt_version}.gz.old initrd-${version} initramfs-${alt_version}.img initramfs-${alt_version}.img.old initrd.img-${alt_version} initrd-${alt_version}.img initrd-${alt_version}"
 +	fi
 +	for i in $initrd_search_list \
  	   "initramfs-genkernel-${version}" \
