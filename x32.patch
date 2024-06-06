@@ -1,0 +1,11 @@
+--- grub-2.12/include/grub/efi/api.h.orig	2023-11-22 18:52:44.000000000 +0100
++++ grub-2.12/include/grub/efi/api.h	2024-06-06 19:27:51.082911968 +0200
+@@ -587,7 +587,7 @@
+  */
+ #if defined(__i386__)
+ #define __grub_efi_api			__attribute__((regparm(0)))
+-#elif defined(__x86_64__)
++#elif defined(__x86_64__) && !defined(__ILP32__)
+ #define __grub_efi_api			__attribute__((ms_abi))
+ #else
+ #define __grub_efi_api
