@@ -144,7 +144,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.12
-Release:	1
+Release:	2
 License:	GPL v2
 Group:		Base
 Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -160,6 +160,7 @@ Patch4:		pld-mkconfigdir.patch
 Patch5:		grub-mkconfig-diagnostics.patch
 Patch6:		posix.patch
 Patch7:		%{name}-fonts_path.patch
+Patch8:		initrd-max-address.patch
 Patch9:		just-say-linux.patch
 Patch10:	ignore-kernel-symlinks.patch
 Patch11:	choose-preferred-initrd.patch
@@ -529,6 +530,7 @@ Motyw starfield dla GRUB-a.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 %patch9 -p1
 %patch10 -p1
 %patch11 -p1
