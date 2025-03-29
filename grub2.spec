@@ -576,8 +576,8 @@ for platform in %{platforms} ; do
 
 	ln -f -s ../configure .
 	# mawk stalls at ./genmoddep.awk, so force gawk
-	AWK=gawk \
 	%configure \
+		AWK=gawk \
 		PYTHON="%{__python3}" \
 		--with-platform=${platform} \
 		--disable-werror \
