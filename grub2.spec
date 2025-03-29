@@ -578,6 +578,7 @@ for platform in %{platforms} ; do
 	# mawk stalls at ./genmoddep.awk, so force gawk
 	%configure \
 		AWK=gawk \
+		CPP="%{__cc} -E" \
 		PYTHON="%{__python3}" \
 		--with-platform=${platform} \
 		--disable-werror \
