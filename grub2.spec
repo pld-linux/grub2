@@ -523,20 +523,20 @@ Motyw starfield dla GRUB-a.
 
 %prep
 %setup -q -n grub-%{version}
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
-%patch8 -p1
-%patch9 -p1
-%patch10 -p1
-%patch11 -p1
-%patch12 -p0
-%patch14 -p1
-%patch15 -p1
+%patch -P1 -p1
+%patch -P2 -p1
+%patch -P3 -p1
+%patch -P4 -p1
+%patch -P5 -p1
+%patch -P6 -p1
+%patch -P7 -p1
+%patch -P8 -p1
+%patch -P9 -p1
+%patch -P10 -p1
+%patch -P11 -p1
+%patch -P12 -p0
+%patch -P14 -p1
+%patch -P15 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
