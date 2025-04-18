@@ -144,7 +144,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.12
-Release:	3
+Release:	4
 License:	GPL v2
 Group:		Base
 Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -229,6 +229,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define		_libexecdir	%{_libdir}/grub
 %define		_grubdir	/boot/grub
 %define		_localedir	/usr/share/locale
+%define		_docdir		/usr/share/doc
 
 # part of grub code is not relocable (these are not Linux libs)
 # stack protector also breaks non-Linux binaries
