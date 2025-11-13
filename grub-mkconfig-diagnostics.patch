@@ -92,10 +92,10 @@ diff -dur -x '*~' -x '*.orig' grub-2.02~beta2.orig/util/grub.d/10_hurd.in grub-2
      at_least_one=true
    else
      all_of_them=false
-@@ -74,8 +74,8 @@
+@@ -99,8 +99,8 @@ if test -e '/lib/ld-x86-64.so.1' ; then
  fi
  
- if ${all_of_them} && test -e /lib/ld.so.1 ; then : ; else
+ if ${all_of_them} && test -n "$LD_SO" ; then : ; else
 -  gettext "Some Hurd stuff found, but not enough to boot." >&2
 -  echo >&2
 +  gettext "Some Hurd stuff found, but not enough to boot." >&3

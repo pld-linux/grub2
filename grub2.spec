@@ -143,12 +143,13 @@ Summary(hu.UTF-8):	GRUB2 - rendszerbetöltő x86 és ppc gépekhez
 Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
-Version:	2.12
-Release:	5
+Version:	2.14
+Release:	0.1
 License:	GPL v2
 Group:		Base
-Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
-# Source0-md5:	60c564b1bdc39d8e43b3aab4bc0fb140
+#Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
+Source0:	https://alpha.gnu.org/gnu/grub/grub-2.14~rc1.tar.xz
+# Source0-md5:	4a0c906eb17e494fc3151a31a92656f9
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
@@ -165,7 +166,7 @@ Patch9:		just-say-linux.patch
 Patch10:	ignore-kernel-symlinks.patch
 Patch11:	choose-preferred-initrd.patch
 Patch12:	%{name}-cfg.patch
-Patch14:	blscfg.patch
+
 Patch15:	x32.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.64
@@ -523,7 +524,7 @@ starfield theme for GRUB.
 Motyw starfield dla GRUB-a.
 
 %prep
-%setup -q -n grub-%{version}
+%setup -q -n grub-%{version}~rc1
 %patch -P1 -p1
 %patch -P2 -p1
 %patch -P3 -p1
@@ -536,16 +537,11 @@ Motyw starfield dla GRUB-a.
 %patch -P10 -p1
 %patch -P11 -p1
 %patch -P12 -p0
-%patch -P14 -p1
+
 %patch -P15 -p1
 
 # we don't have C.utf-8 and need an UTF-8 locale for build
 sed -i -e 's/LC_ALL=C.UTF-8/LC_ALL=en_US.utf-8/g' po/Makefile* po/Rules*
-
-# missing in tarball
-cat > grub-core/extra_deps.lst <<EOF
-depends bli part_gpt
-EOF
 
 %build
 # if gold is used then grub doesn't even boot
@@ -698,6 +694,7 @@ fi
 %attr(755,root,root) %{_sbindir}/grub-mkstandalone
 %attr(755,root,root) %{_sbindir}/grub-mount
 %attr(755,root,root) %{_sbindir}/grub-ofpathname
+%attr(755,root,root) %{_sbindir}/grub-protect
 %attr(755,root,root) %{_sbindir}/grub-reboot
 %attr(755,root,root) %{_sbindir}/grub-render-label
 %attr(755,root,root) %{_sbindir}/grub-script-check
@@ -729,6 +726,7 @@ fi
 %{_mandir}/man1/grub-mkrescue.1*
 %{_mandir}/man1/grub-mkstandalone.1*
 %{_mandir}/man1/grub-mount.1*
+%{_mandir}/man1/grub-protect.1*
 %{_mandir}/man1/grub-render-label.1*
 %{_mandir}/man1/grub-script-check.1*
 %{_mandir}/man1/grub-syslinux2cfg.1*
@@ -773,7 +771,7 @@ fi
 
 %files -n bash-completion-%{name}
 %defattr(644,root,root,755)
-/etc/bash_completion.d/grub
+%{bash_compdir}/grub*
 
 %if %{with unifont}
 %files fonts
