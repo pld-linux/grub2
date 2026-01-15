@@ -169,6 +169,7 @@ Patch12:	%{name}-cfg.patch
 Patch15:	x32.patch
 URL:		http://www.gnu.org/software/grub/
 BuildRequires:	autoconf >= 2.64
+BuildRequires:	autoconf-archive
 BuildRequires:	automake >= 1:1.11.1-1
 BuildRequires:	bison >= 2.3
 BuildRequires:	device-mapper-devel >= 1.02.34
