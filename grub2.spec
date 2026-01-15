@@ -144,12 +144,11 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.14
-Release:	0.1
+Release:	1
 License:	GPL v2
 Group:		Base
-#Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
-Source0:	https://alpha.gnu.org/gnu/grub/grub-2.14~rc1.tar.xz
-# Source0-md5:	4a0c906eb17e494fc3151a31a92656f9
+Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
+# Source0-md5:	383f9effad01c235d2535357ff717543
 Source1:	update-grub
 Source2:	update-grub.8
 Source3:	grub.sysconfig
@@ -525,7 +524,7 @@ starfield theme for GRUB.
 Motyw starfield dla GRUB-a.
 
 %prep
-%setup -q -n grub-%{version}~rc1
+%setup -q -n grub-%{version}
 %patch -P1 -p1
 %patch -P2 -p1
 %patch -P3 -p1
