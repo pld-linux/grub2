@@ -196,6 +196,7 @@ BuildRequires:	glibc-localedb-all
 BuildRequires:	glibc-static
 BuildRequires:	help2man
 BuildRequires:	libfuse3-devel
+BuildRequires:	libtasn1-devel
 BuildRequires:	libtool
 BuildRequires:	ncurses-devel
 BuildRequires:	pkgconfig
