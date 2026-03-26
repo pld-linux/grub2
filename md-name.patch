@@ -1,0 +1,61 @@
+ diskfilter: Fix md RAID device naming for numeric arrays
+
+  grub-install fails with 'disk `md0' not found' on mdraid1x arrays with
+  numeric names (the common case for /dev/md0, /dev/md1, etc.).
+
+  Two subsystems must agree on GRUB device names for md arrays:
+
+    - grub_util_get_raid_grub_dev() translates OS device paths to GRUB
+      names: /dev/md0 and /dev/md/0 both produce "md0", while
+      /dev/md/boot produces "md/boot".
+
+    - grub_diskfilter_make_raid() constructs the internal array name from
+      on-disk superblock metadata.  It unconditionally prepends "md/" to
+      the identifier, producing "md/0" for a RAID 1.x array whose
+      set_name is "hostname:0" (after homehost stripping).
+
+  The mismatch ("md0" vs "md/0") is normally masked by UUID-based lookup
+  (mduuid/...) when mdadm is available.  When mdadm is unavailable --
+  common in chroot and rescue environments -- the name-based fallback
+  path is taken and the mismatch causes the failure.
+
+  Fix grub_diskfilter_make_raid() to choose "md<N>" for numeric names and
+  "md/<name>" for free-form names, matching grub_util_get_raid_grub_dev().
+
+  Also fix grub_mdraid_detect() for RAID 0.9x which passed "md0" (already
+  prefixed) to grub_diskfilter_make_raid(), producing "md/md0".  Pass just
+  the minor number so the callee applies the prefix consistently.
+
+  Bug: https://savannah.gnu.org/bugs/?67868
+
+diff --git a/grub-core/disk/diskfilter.c b/grub-core/disk/diskfilter.c
+index 3a26de6..de24958 100644
+--- a/grub-core/disk/diskfilter.c
++++ b/grub-core/disk/diskfilter.c
+@@ -1131,8 +1131,11 @@ grub_diskfilter_make_raid (grub_size_t uuidlen, char *uuid, int nmemb,
+     {
+       /* Strip off the homehost if present.  */
+       char *colon = grub_strchr (name, ':');
+-      char *new_name = grub_xasprintf ("md/%s",
+-				       colon ? colon + 1 : name);
++      const char *base = colon ? colon + 1 : name;
++      /* Use "md<N>" for numeric names and "md/<name>" for free-form names,
++	 matching the convention in grub_util_get_raid_grub_dev().  */
++      char *new_name = grub_xasprintf (base[0] >= '0' && base[0] <= '9'
++				       ? "md%s" : "md/%s", base);
+ 
+       if (! new_name)
+ 	goto fail;
+diff --git a/grub-core/disk/mdraid_linux.c b/grub-core/disk/mdraid_linux.c
+index e40216f..e003f6d 100644
+--- a/grub-core/disk/mdraid_linux.c
++++ b/grub-core/disk/mdraid_linux.c
+@@ -252,7 +252,7 @@ grub_mdraid_detect (grub_disk_t disk,
+   id->id = grub_md_to_cpu32 (sb->this_disk.number);
+ 
+   char buf[32];
+-  grub_snprintf (buf, sizeof (buf), "md%d", grub_md_to_cpu32 (sb->md_minor));
++  grub_snprintf (buf, sizeof (buf), "%d", grub_md_to_cpu32 (sb->md_minor));
+   ret = grub_diskfilter_make_raid (16, (char *) uuid,
+ 				   grub_md_to_cpu32 (sb->raid_disks), buf,
+ 				   (sb->size) ? ((grub_disk_addr_t)
