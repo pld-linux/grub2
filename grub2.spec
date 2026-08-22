@@ -144,7 +144,7 @@ Summary(pl.UTF-8):	GRUB2 - bootloader dla x86 i ppc
 Summary(pt_BR.UTF-8):	Gerenciador de inicialização GRUB2
 Name:		grub2
 Version:	2.14
-Release:	4
+Release:	5
 License:	GPL v2
 Group:		Base
 Source0:	https://ftp.gnu.org/gnu/grub/grub-%{version}.tar.xz
@@ -568,7 +568,7 @@ for platform in %{platforms} ; do
 	cd build-${platform}
 
 	platform_opts=""
-	case platform in
+	case $platform in
 		coreboot|ieee1275|multiboot|pc|qemu|xen_pvh)
 			platform_opts="--enable-efiemu%{!?with_efiemu:=no}"
 			;;
